@@ -5,11 +5,11 @@
 
 void main(){
   DDRA = 0xFF;
-  PORTA = 0xFF;
+  PORTA = 0;
   while(1){
     PORTA = 0xFF;
     _delay_ms(10);
-    PORTA = 0xFF;
+    PORTA = 0;
     _delay_ms(10);
   }
   return;
