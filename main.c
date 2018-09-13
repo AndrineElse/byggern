@@ -4,6 +4,9 @@
 #include <util/delay.h>
 #include "UARTdriver.h"
 #include "SRAMDriver.h"
+#include "addressTesting.h"
+#include "joystickTesting.h"
+#include "ADCDriver.h"
 
 #define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -14,10 +17,26 @@ void main(){
   //init
   USART_Init ( MYUBRR );
   SRAM_init ();
+  JoystickOffset joystickOffset;
+  joystickOffset = calculateOffsetJoystick();
+
+
+  while(1){
+    JoystickCoords sample;
+    sample = getCalibratedJoystickCoords(joystickOffset);
+    printf("X: %d\n\r",sample.x);
+    printf("Y: %d\n\r",sample.y);
+  }
+
+
+  //joystickTest();
+  /*while(1){
+    addressTest();
+  }*/
 
   //r/w tests
-  SRAM_test();
-  
+  //SRAM_test();
+
   /*while(1){
     // USART_Transmit('A');
     // _delay_ms(1000);
