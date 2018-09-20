@@ -1,0 +1,12 @@
+void OLED_init();
+void OLED_clear();
+void OLED_home();
+void OLED_goto_line(uint8_t line);
+void OLED_clear_line(uint8_t line);
+void OLED_pos(uint16_t row, uint16_t column);
+void OLED_write_data(char c);
+void OLED_print(char* c);
+void OLED_set_brightness(uint16_t lvl);
+void OLED_write_command(uint8_t c);
+void OLED_fill();
+void OLED_write_char(uint8_t b);

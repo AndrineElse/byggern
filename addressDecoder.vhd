@@ -35,5 +35,6 @@ begin
 	oled_cs <= (a10 OR a11);
 	adc_cs <= (a11 OR (NOT a10));
 	ram_cs <= (NOT a11);
+  oled_dc <= (NOT a9);
 
 end behavioral;
