@@ -22,66 +22,19 @@ void main(){
   USART_Init ( MYUBRR );
   //SRAM_init ();
   OLED_init();
+  OLED_pos(0,0);
   // JoystickOffset joystickOffset;
   // joystickOffset = calculateOffsetJoystick();
-  printf("Fjas");
-  printf("Fjas");
-  printf("Fjas");
-  OLED_pos(0,0);
   _delay_ms(100);
-  for(int i= 0; i<26;i++){
+  printf('f');
+  printf("Fjas");
+  printf("Fjas");
+  char* superfjas = "Dette var mye fjas du. Skriv noe syyyykt!";
+  _delay_ms(100);
+  /*for(int i= 0; i<26;i++){
     OLED_write_char('A'+i);
-  }
-  
-
-
-  // OLED_write_command(0xa5);
-
-
-  /*while(1){
-    OLED_write_data()
-    OLED_write_command(0xa5);
-    _delay_ms(100);
-/*
-    SliderPosition sampleSlider;
-    JoystickCoords sampleJoystick;
-    sampleJoystick = calculateCalibratedJoystickCoords(joystickOffset);
-    sampleSlider = calculateSliderPosition();
-    printf("\033[F");
-    printf("\033[K");
-    printf("\033[F");
-    printf("\033[K");
-    printf("\033[F");
-    printf("\033[K");
-    printf("Left: %d\n\r",sampleSlider.left);
-    printf("Right: %d\n\r",sampleSlider.right);
-    printf("---------------------");
   }*/
+  OLED_print(superfjas);
 
-
-  //joystickTest();
-  /*while(1){
-    addressTest();
-  }*/
-
-  //r/w tests
-  //SRAM_test();
-
-  /*while(1){
-    // USART_Transmit('A');
-    // _delay_ms(1000);
-    // printf("TEST");
-
-  }*/
-  /*
-  Firkantpuls
-  DDRA = 0xFF;
-  PORTA = 0;
-  while(1){
-    PORTA = 0xFF;
-    _delay_ms(10);
-    PORTA = 0;
-    _delay_ms(10);
-  }*/
   return;
 }

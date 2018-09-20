@@ -2,6 +2,7 @@
 #include "../include/OLEDDriver.h"
 #include <avr/pgmspace.h>
 #include "../../fonts.h"
+#include "../include/UARTdriver.h"
 
 volatile char* command_address = (char*)0x1000;
 volatile char* data_address = (char*)0x1200;
@@ -56,10 +57,10 @@ void OLED_init(){
 
 }
 
-void OLED_pos(uint16_t row, uint16_t column){
-  OLED_write_command(0xb2);
-  OLED_write_command(0x03);
-  OLED_write_command(0x10);
+void OLED_pos(uint8_t row, uint8_t column){
+  OLED_write_command(0xb0 + row); //rown (page select)
+  OLED_write_command(column & 0xf);
+  OLED_write_command((column >> 4) + 0x10);
 }
 
 void OLED_write_data(char c){
@@ -73,7 +74,21 @@ void OLED_write_char(uint8_t b){
   }
   uint8_t font_table_index = b - 32;
 
-  for (int i=0; i < 8; i++) {
-    OLED_write_data(pgm_read_byte(&font8[font_table_index][i]));
+  for (int i=0; i < 5; i++) {
+    OLED_write_data(pgm_read_byte(&font5[font_table_index][i]));
+  }
+}
+
+void OLED_print(char* string){
+  uint8_t currentLine = 0;
+  uint16_t i = 0;
+  uint8_t charsInLine = 128/5;
+  while(string[i]) {
+    OLED_write_char(string[i]);
+    if(!(i%charsInLine) && i) {
+      currentLine++;
+      OLED_pos(currentLine,0);
+    }
+    i++;
   }
 }
