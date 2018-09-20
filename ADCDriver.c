@@ -13,8 +13,8 @@ uint8_t readChannel(int channel) {
   //Mapping of channels:
   // 4 -> channel 1 (Joystick, vertical)
   // 5 -> channel 2 (Joystick, horizontal)
-  // 6 -> channel 3 (Slider, x)
-  // 7 -> channel 4 (Slider, y)
+  // 6 -> channel 3 (Slider, x, left)
+  // 7 -> channel 4 (Slider, y, right)
   int mappedChannel = 3 + channel;
 
   // Telling ADC which channel to sample
@@ -70,4 +70,13 @@ JoystickOffset calculateOffsetJoystick() {
   return finalOffset;
 }
 
-Dir 
+JoystickDir calculateJoystickDirection(JoystickCoords coords){
+  if ((coords.x == coords.y) || (abs(abs(coords.x)-abs(coords.y)) < 20)){
+    return NEUTRAL;
+  }
+}
+
+SliderPosition calculateSliderPosition(){
+
+
+}
