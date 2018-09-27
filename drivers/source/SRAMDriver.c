@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <avr/io.h>
+#include "../include/SRAMDriver.h"
 
 void SRAM_init(void)
 {

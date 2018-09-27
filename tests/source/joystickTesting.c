@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
-#include "joystickTesting.h"
+#include "../include/joystickTesting.h"
 
 void joystickTest(void){
   volatile char* adc_ch1 = (char*) 0x1400;

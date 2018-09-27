@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <avr/io.h>
-#include "addressTesting.h"
+#include "../include/addressTesting.h"
 
 void addressTest(void){
   DDRC = 0xFF;

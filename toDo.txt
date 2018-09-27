@@ -1,0 +1,6 @@
+* Lage invers tekst for highlighting av menyvalg
+* printf til skjerm (hvis du føler deg fancy)
+* Kalibreringsrutine til joystick og slider
+* Trigonometri joystickretningfunskjon
+* Minnebuffer til skjerm (slipper å tømme og skrive over alt hver gang)
+* logikk kun oppdaterer sjerm på de områdene som  er forandret
