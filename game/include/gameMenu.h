@@ -1,11 +1,10 @@
-struct Node typedef Node;
 struct Node {
-  Node* parent;
+  struct Node* parent;
   char* options[5];
-  Node* optionNodes[5];
+  struct Node* optionNodes[5];
   char* description;
   uint8_t numOptions;
-} typedef Node;
+};
 
-void menuLoop(Node* startNode);
-void printNode(Node* node, uint8_t selectedOption);
+void menuLoop(struct Node* startNode);
+void printNode(struct Node* node, uint8_t selectedOption);

@@ -1,0 +1,4 @@
+* Lage invers tekst for highlighting av menyvalg
+* printf til skjerm (hvis du føler deg fancy)
+* Kalibreringsrutine til joystick og slider
+* Trigonometri joystickretningfunskjon

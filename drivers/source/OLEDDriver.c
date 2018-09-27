@@ -3,6 +3,7 @@
 #include <avr/pgmspace.h>
 #include "../../fonts.h"
 #include "../include/UARTdriver.h"
+#include <stdint.h>
 
 volatile char* command_address = (char*)0x1000;
 volatile char* data_address = (char*)0x1200;
@@ -15,8 +16,8 @@ void OLED_write_command(uint8_t c) {
 
 void OLED_clear(){
   for (int i = 0; i < 8; i++){
-    OLED_write_command(0b10110000 + i);
-    for (int j =0; j < 128; j++){
+    OLED_write_command(0xb0 + i);
+    for (int j = 0; j < 128; j++){
       data_address[i] = 0x0;
     }
   }
@@ -24,7 +25,7 @@ void OLED_clear(){
 
 void OLED_fill(){
   for (int i = 0; i < 8; i++){
-    OLED_write_command(0b10110000 + i);
+    OLED_write_command(0xb0 + i);
     for (int j =0; j < 128; j++){
       data_address[i] = 0xFF;
     }
