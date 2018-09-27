@@ -1,3 +1,4 @@
+* fiks main til å ikke være så stygg lenger
 * Lage invers tekst for highlighting av menyvalg
 * printf til skjerm (hvis du føler deg fancy)
 * Kalibreringsrutine til joystick og slider

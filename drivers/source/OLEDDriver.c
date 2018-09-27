@@ -80,6 +80,7 @@ void OLED_write_char(uint8_t b){
   }
 }
 
+
 void OLED_print(char* string){
   uint8_t currentLine = 0;
   uint16_t i = 0;
@@ -89,6 +90,25 @@ void OLED_print(char* string){
     if(!(i%charsInLine) && i) {
       currentLine++;
       OLED_pos(currentLine,0);
+    }
+    i++;
+  }
+}
+
+void OLED_buffer_print_line(char* string, uint8_t line, uint8_t inverseFlag){
+  uint16_t i = 0;
+  uint16_t currentByte = line*128;
+  while(string[i]) {
+    uint8_t currentChar = (uint8_t)string[i];
+    if(currentChar < 32){
+      continue;
+    }
+    uint8_t font_table_index = currentChar - 32;
+
+    for (int j=0; j < 5; j++) {
+      OLED_update_buffer_single_byte(currentByte, (inverseFlag ? ~pgm_read_byte(&font5[font_table_index][j]) : pgm_read_byte(&font5[font_table_index][j])));
+      //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
+      currentByte++;
     }
     i++;
   }
@@ -108,9 +128,9 @@ void OLED_update_buffer_single_byte(uint16_t address, uint8_t data ){
 /*Similar to above, but write lots of bytes in sequence, useful for whole lines etc
 *
 */
-void OLED_update_buffer_array(uint16_t start_address, uint8_t[] data, uint8_t data_amount) {
+void OLED_update_buffer_array(uint16_t start_address, uint8_t* data, uint8_t data_amount) {
   if(start_address + data_amount > 1023){
-    printf("attempted to update buffer outside of screen, implement wrap around?")
+    printf("attempted to update buffer outside of screen, implement wrap around?");
     return;
   }
   for (uint8_t i = 0; i < data_amount; i++){
@@ -121,9 +141,9 @@ void OLED_update_buffer_array(uint16_t start_address, uint8_t[] data, uint8_t da
 /*Similar to above, assumes data array has 127 elements.
 * line should be some value between 0 and 7
 */
-void OLED_update_buffer_line(uint8_t line, uint8_t[] data) {
+void OLED_update_buffer_line(uint8_t line, uint8_t* data) {
   if(line > 7){
-    printf("attempted to update buffer with invalid line, implement wrap around?")
+    printf("attempted to update buffer with invalid line, implement wrap around?");
     return;
   }
   uint16_t address = ((uint16_t)line)*128;
@@ -137,8 +157,9 @@ void OLED_update_buffer_line(uint8_t line, uint8_t[] data) {
 * 2: Page mode
 */
 void OLED_set_access_mode(uint8_t mode) {
-  if(mode && mode < 3) {
-    OLED_write_command(0x20 + mode)
+  if(mode < 3) {
+    OLED_write_command(0x20);
+    OLED_write_command(mode);
   }
 }
 
@@ -169,6 +190,13 @@ void OLED_update_screen_from_buffer(){
   OLED_set_vertical_bounds(0,7);
   char* ext_ram = (char*)0x1800;
   for (uint16_t i = 0; i < 1024; i++){
-    OLED_write_data(ext_ram[i])
+    //printf("currentByte: %d, asciivalue: %d\n\r", i, ext_ram[i]);
+    OLED_write_data(ext_ram[i]);
+  }
+}
+
+void OLED_buffer_clear(){
+  for(uint16_t i = 0; i < 1024; i++ ) {
+    OLED_update_buffer_single_byte(i, 0x00);
   }
 }

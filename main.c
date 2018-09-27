@@ -72,8 +72,15 @@ void main(){
   _delay_ms(1000);
   OLED_fill();
   _delay_ms(1000);
-  OLED_clear();
+  //OLED_clear();
+  /*
   OLED_pos(0,0);
+  */
+  OLED_init_buffer_mode();
+  OLED_buffer_clear();
+  OLED_update_screen_from_buffer();
+  _delay_ms(1000);
+
 
 
 

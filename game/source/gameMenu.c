@@ -48,6 +48,7 @@ void menuLoop(struct Node* startNode){
   struct Node* currentNode = startNode;
   JoystickDir lastDir;
   lastDir = calculateJoystickDirection();
+  uint8_t lastButtonValue = 0;
   while(1){
     //get joystick input
     JoystickOffset joystickOffset;
@@ -73,14 +74,18 @@ void menuLoop(struct Node* startNode){
       //evt modulo numOptions her istedet
       lastDir = currentDir;
     }
-    
+
     //NB, this requires selectedoptions to be < length(options)
-    if (joystickButton()) {
+    if (!lastButtonValue && joystickButton()) {
       currentNode = currentNode->optionNodes[selectedOption];
       selectedOption = 0;
+      OLED_buffer_clear();
     }
 
-    printNode(currentNode, selectedOption);
+    lastButtonValue = joystickButton();
+    _delay_ms(50);
+    printNodeUsingBuffer(currentNode, selectedOption);
+    OLED_update_screen_from_buffer();
   }
 }
 
@@ -98,4 +103,18 @@ void printNode(struct Node* node, uint8_t selectedOption){
 
   }
   _delay_ms(500);
+}
+
+void printNodeUsingBuffer(struct Node* node, uint8_t selectedOption){
+
+  OLED_buffer_print_line (node->description,0,0);
+
+  for (int i = 0; i < node->numOptions; i++){
+    if (i == selectedOption){
+      OLED_buffer_print_line(node->options[i], i+1, 1);
+    }
+    else {
+      OLED_buffer_print_line(node->options[i],i+1,0);
+    }
+  }
 }

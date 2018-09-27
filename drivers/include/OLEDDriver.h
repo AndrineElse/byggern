@@ -6,6 +6,7 @@ void OLED_clear_line(uint8_t line);
 void OLED_pos(uint8_t row, uint8_t column);
 void OLED_write_data(char c);
 void OLED_print(char* string);
+void OLED_buffer_print_line(char* string, uint8_t line, uint8_t inverseFlag);
 void OLED_set_brightness(uint16_t lvl);
 void OLED_write_command(uint8_t c);
 void OLED_fill();
@@ -22,12 +23,12 @@ void OLED_update_buffer_single_byte(uint16_t address, uint8_t data );
 /*Similar to above, but write lots of bytes in sequence, useful for whole lines etc
 *
 */
-void OLED_update_buffer_array(uint16_t start_address, uint8_t[] data, uint8_t data_amount);
+void OLED_update_buffer_array(uint16_t start_address, uint8_t* data, uint8_t data_amount);
 
 /*Similar to above, assumes data array has 127 elements.
 * line should be some value between 0 and 7
 */
-void OLED_update_buffer_line(uint8_t line, uint8_t[] data);
+void OLED_update_buffer_line(uint8_t line, uint8_t* data);
 
 
 /*mode should be a number between 0 and 2, key:
@@ -50,3 +51,5 @@ void OLED_set_vertical_bounds(uint8_t lower, uint8_t upper);
 void OLED_init_buffer_mode();
 
 void OLED_update_screen_from_buffer();
+
+void OLED_buffer_clear();
