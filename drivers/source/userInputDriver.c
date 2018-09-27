@@ -78,3 +78,7 @@ SliderPosition calculateSliderPosition(){
 
   return position;
 }
+
+uint8_t joystickButton(){
+  return !((PINB & 0x80)>>7);
+}
