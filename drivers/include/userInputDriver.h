@@ -13,7 +13,7 @@ struct JoystickOffset {
   int8_t y;
 } typedef JoystickOffset;
 
-enum JoystickDir{NEUTRAL, LEFT, RIGHT, UP, DOWN} typedef JoystickDir;
+enum JoystickDir{NEUTRAL, RIGHT, UP, LEFT, DOWN} typedef JoystickDir;
 
 
 JoystickCoords calculateCalibratedJoystickCoords();
