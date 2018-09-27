@@ -9,7 +9,7 @@
 #include "drivers/include/ADCDriver.h"
 #include "drivers/include/OLEDDriver.h"
 #include "game/include/gameMenu.h"
-
+#include "drivers/include/userInputDriver.h"
 
 #define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -19,7 +19,7 @@
 
 
 void main(){
-  
+
   struct Node mainMenuNode;
 
   struct Node playGameNode = {&mainMenuNode, {"Coming soon"} ,((struct Node**){0}), "Game", 1 };
@@ -42,6 +42,8 @@ void main(){
 
   MCUCR = (1<<SRE);
   SFIOR = (1<<XMM2);
+  PORTB = 0x80; //set PB7 as input
+
 
 
   //init
@@ -56,8 +58,12 @@ void main(){
   OLED_clear();
   OLED_pos(0,0);
   printf("Her 2");
-  // JoystickOffset joystickOffset;
-  // joystickOffset = calculateOffsetJoystick();
+
+
+  JoystickOffset joystickOffset;
+  joystickOffset = calculateOffsetJoystick();
+  JoystickCoords joystickCoords;
+
 
   //char* superfjas = "Dette var mye fjas du. Skriv noe syyyykt!";
 
@@ -65,7 +71,12 @@ void main(){
     OLED_write_char('A'+i);
   }*/
   //OLED_print(superfjas);
-
+/*
+  while(1){
+    joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
+    printf("X = %d , Y = %d \n\r", joystickCoords.x , joystickCoords.y);
+  }
+*/
   menuLoop(&mainMenuNode);
 
   return;
