@@ -80,6 +80,9 @@ void main(){
   OLED_buffer_clear();
   OLED_buffer_update_screen();
   _delay_ms(1000);
+  OLED_draw_line(0,30,127,30);
+  OLED_buffer_update_screen();
+  _delay_ms(1000);
 
 
 
@@ -107,7 +110,7 @@ void main(){
     printf("X = %d , Y = %d \n\r", joystickCoords.x , joystickCoords.y);
   }
 */
-  menuLoop(&mainMenuNode);
+  //menuLoop(&mainMenuNode);
 
   return;
 }

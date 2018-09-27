@@ -53,3 +53,8 @@ void OLED_init_buffer_mode();
 void OLED_buffer_update_screen();
 
 void OLED_buffer_clear();
+
+//drawingfunctions
+void OLED_draw_line(uint8_t x0,uint8_t y0,uint8_t x1,uint8_t y1);
+
+void OLED_draw_circle(uint8_t x,uint8_t y,uint8_t r);

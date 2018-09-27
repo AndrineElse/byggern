@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include "../include/OLEDDriver.h"
 #include <avr/pgmspace.h>
+#include <util/delay.h>
 #include "../../fonts.h"
 #include "../include/UARTdriver.h"
 #include <stdint.h>
@@ -65,7 +66,6 @@ void OLED_pos(uint8_t row, uint8_t column){
 }
 
 void OLED_write_data(char c){
-
   data_address[0] = c;
 }
 
@@ -198,7 +198,24 @@ void OLED_buffer_update_screen(){
 void OLED_buffer_clear(){
   for(uint16_t i = 0; i < 1024; i++ ) {
     OLED_update_buffer_single_byte(i, 0x00);
+    _delay_ms(10);
   }
 }
 
-//drawingfunctions
+void OLED_draw_line(uint8_t x0,uint8_t y0,uint8_t x1,uint8_t y1){
+  char* ext_mem = (char*)0x1800;
+  for (int t = 0; t < 1000; t++) {
+    uint8_t xt = (uint8_t)(((x1 - x0)/1000.0)*t + x0);
+    uint8_t yt = (uint8_t)(((y1 - y0)/1000.0)*t + y0);
+
+    uint16_t Z = xt + 128*(yt/8);
+    uint8_t b = 1<<(yt%8);
+
+    ext_mem[Z] = ext_mem[Z] | b;
+  }
+}
+
+
+void OLED_draw_circle(uint8_t x,uint8_t y,uint8_t r){
+
+}
