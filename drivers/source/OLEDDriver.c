@@ -185,7 +185,7 @@ void OLED_init_buffer_mode(){
   OLED_set_access_mode(0);
 }
 
-void OLED_update_screen_from_buffer(){
+void OLED_buffer_update_screen(){
   OLED_set_horizontal_bounds(0,127);
   OLED_set_vertical_bounds(0,7);
   char* ext_ram = (char*)0x1800;
@@ -200,3 +200,5 @@ void OLED_buffer_clear(){
     OLED_update_buffer_single_byte(i, 0x00);
   }
 }
+
+//drawingfunctions

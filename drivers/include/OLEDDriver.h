@@ -50,6 +50,6 @@ void OLED_set_vertical_bounds(uint8_t lower, uint8_t upper);
 
 void OLED_init_buffer_mode();
 
-void OLED_update_screen_from_buffer();
+void OLED_buffer_update_screen();
 
 void OLED_buffer_clear();

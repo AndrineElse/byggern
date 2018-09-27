@@ -85,7 +85,7 @@ void menuLoop(struct Node* startNode){
     lastButtonValue = joystickButton();
     _delay_ms(50);
     printNodeUsingBuffer(currentNode, selectedOption);
-    OLED_update_screen_from_buffer();
+    OLED_buffer_update_screen();
   }
 }
 

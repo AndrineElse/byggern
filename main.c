@@ -78,7 +78,7 @@ void main(){
   */
   OLED_init_buffer_mode();
   OLED_buffer_clear();
-  OLED_update_screen_from_buffer();
+  OLED_buffer_update_screen();
   _delay_ms(1000);
 
 
