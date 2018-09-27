@@ -93,3 +93,82 @@ void OLED_print(char* string){
     i++;
   }
 }
+
+/*buffer for oled starts at 0x1800
+* uses 1024 addresses, each containing 8 bits
+* should have final adress at 0x1bFF
+* each mem is stored sequentially
+* first 128 is each byte of first row, etc..
+*/
+void OLED_update_buffer_single_byte(uint16_t address, uint8_t data ){
+  char* ext_ram = (char*)0x1800;
+  ext_ram[address] = data;
+}
+
+/*Similar to above, but write lots of bytes in sequence, useful for whole lines etc
+*
+*/
+void OLED_update_buffer_array(uint16_t start_address, uint8_t[] data, uint8_t data_amount) {
+  if(start_address + data_amount > 1023){
+    printf("attempted to update buffer outside of screen, implement wrap around?")
+    return;
+  }
+  for (uint8_t i = 0; i < data_amount; i++){
+    OLED_update_buffer_single_byte(start_address + i, data[i]);
+  }
+}
+
+/*Similar to above, assumes data array has 127 elements.
+* line should be some value between 0 and 7
+*/
+void OLED_update_buffer_line(uint8_t line, uint8_t[] data) {
+  if(line > 7){
+    printf("attempted to update buffer with invalid line, implement wrap around?")
+    return;
+  }
+  uint16_t address = ((uint16_t)line)*128;
+  OLED_update_buffer_array(address,data,128);
+}
+
+
+/*mode should be a number between 0 and 2, key:
+* 0: Horizontal mode
+* 1: Vertical mode
+* 2: Page mode
+*/
+void OLED_set_access_mode(uint8_t mode) {
+  if(mode && mode < 3) {
+    OLED_write_command(0x20 + mode)
+  }
+}
+
+/* sets coordinate bounds for horizontal addressing mode
+* bounds should be within [0,127]
+*/
+void OLED_set_horizontal_bounds(uint8_t lower, uint8_t upper) {
+  OLED_write_command(0x21);
+  OLED_write_command(lower);
+  OLED_write_command(upper);
+}
+
+/* sets coordinate bounds for horizontal addressing mode
+* bounds should be within [0,7]
+*/
+void OLED_set_vertical_bounds(uint8_t lower, uint8_t upper) {
+  OLED_write_command(0x22);
+  OLED_write_command(lower);
+  OLED_write_command(upper);
+}
+
+void OLED_init_buffer_mode(){
+  OLED_set_access_mode(0);
+}
+
+void OLED_update_screen_from_buffer(){
+  OLED_set_horizontal_bounds(0,127);
+  OLED_set_vertical_bounds(0,7);
+  char* ext_ram = (char*)0x1800;
+  for (uint16_t i = 0; i < 1024; i++){
+    OLED_write_data(ext_ram[i])
+  }
+}
