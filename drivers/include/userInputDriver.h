@@ -21,3 +21,4 @@ int8_t calculateJoystickMapping(int16_t rawValue, int8_t offset);
 JoystickOffset calculateOffsetJoystick();
 JoystickDir calculateJoystickDirection();
 SliderPosition calculateSliderPosition();
+uint8_t joystickButton();

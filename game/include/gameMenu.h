@@ -8,3 +8,4 @@ struct Node {
 
 void menuLoop(struct Node* startNode);
 void printNode(struct Node* node, uint8_t selectedOption);
+void menuInit(struct Node* mainMenuNode);

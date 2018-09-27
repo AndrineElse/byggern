@@ -21,12 +21,29 @@
 void main(){
 
   struct Node mainMenuNode;
+  // menuInit(&mainMenuNode);
 
-  struct Node playGameNode = {&mainMenuNode, {"Coming soon"} ,((struct Node**){0}), "Game", 1 };
+  struct Node playGameNode;
+  playGameNode.parent = &mainMenuNode;
+  playGameNode.options[0] = "Go back";
+  playGameNode.optionNodes[0] = playGameNode.parent;
+  playGameNode.description = "Game";
+  playGameNode.numOptions = 1;
 
-  struct Node highScoresNode = {&mainMenuNode, {"Coming soon"} ,((struct Node**){0}), "highscore", 1};
+  struct Node highScoresNode;
+  highScoresNode.parent = &mainMenuNode;
+  highScoresNode.options[0] = "Go back";
+  highScoresNode.optionNodes[0] = highScoresNode.parent;
+  highScoresNode.description = "highscore";
+  highScoresNode.numOptions = 1;
 
-  struct Node optionsNode = {&mainMenuNode, {"Coming soon"} ,((struct Node**){0}), "options", 1 };
+  struct Node optionsNode;
+  optionsNode.parent = &mainMenuNode;
+  optionsNode.options[0] = "Go back";
+  optionsNode.optionNodes[0] = optionsNode.parent;
+  optionsNode.description = "options";
+  optionsNode.numOptions = 1;
+
 
   mainMenuNode.parent = (struct Node*)0;
   mainMenuNode.options[0] = "Play game";
@@ -57,12 +74,8 @@ void main(){
   _delay_ms(1000);
   OLED_clear();
   OLED_pos(0,0);
-  printf("Her 2");
 
 
-  JoystickOffset joystickOffset;
-  joystickOffset = calculateOffsetJoystick();
-  JoystickCoords joystickCoords;
 
 
   //char* superfjas = "Dette var mye fjas du. Skriv noe syyyykt!";
@@ -73,6 +86,16 @@ void main(){
   //OLED_print(superfjas);
 /*
   while(1){
+    JoystickOffset joystickOffset;
+    joystickOffset = calculateOffsetJoystick();
+    JoystickCoords joystickCoords;
+    joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
+    JoystickDir joystickDir;
+    joystickDir = calculateJoystickDirection(joystickCoords);
+    //printf("Joystickbutton: %d \n\r", joystickButton() );
+    printf("Joystickdir : %d \n\r", joystickDir);
+
+
     joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
     printf("X = %d , Y = %d \n\r", joystickCoords.x , joystickCoords.y);
   }
