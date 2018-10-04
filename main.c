@@ -10,6 +10,10 @@
 #include "drivers/include/OLEDDriver.h"
 #include "game/include/gameMenu.h"
 #include "drivers/include/userInputDriver.h"
+#include "drivers/include/SPIDriver.h"
+#include "drivers/include/MCP2515Driver.h"
+#include "drivers/include/MCP2515.h"
+#include "drivers/include/CANDriver.h"
 
 #define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -59,7 +63,7 @@ void main(){
 
   MCUCR = (1<<SRE);
   SFIOR = (1<<XMM2);
-  PORTB = 0x80; //set PB7 as input
+  // PORTB = 0x01; //set PB1 as input
 
 
 
@@ -67,6 +71,16 @@ void main(){
   USART_Init ( MYUBRR );
   // printf("Her 1");
   //SRAM_init ();
+  SPI_init();
+  mcp2515_init();
+  CAN_init();
+
+  // SPI_SlaveInit();
+  while(1){
+    _delay_ms(2);
+    printf("mcp Status: %d\n\r", mcp2515_read_status());
+  }
+
   OLED_init();
   OLED_clear();
   _delay_ms(1000);
@@ -81,7 +95,7 @@ void main(){
   OLED_buffer_update_screen();
   _delay_ms(1000);
 
-
+  menuLoop(&mainMenuNode);
 
 
 
@@ -107,7 +121,7 @@ void main(){
     printf("X = %d , Y = %d \n\r", joystickCoords.x , joystickCoords.y);
   }
 */
-  menuLoop(&mainMenuNode);
+
 
   return;
 }
