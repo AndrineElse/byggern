@@ -61,7 +61,7 @@ uint8_t mcp2515_read_status(){
 
 void mcp2515_request_to_send(){
   PORTB &= ~(1<<CAN_CS);
-  SPI_write(MCP_RTS_ALL);
+  SPI_write(0x81);
   PORTB |= (1<<CAN_CS); //may be high???
 }
 

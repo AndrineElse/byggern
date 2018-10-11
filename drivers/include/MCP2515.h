@@ -157,7 +157,29 @@ Copyright 2003 Kimberly Otten Software Consulting
 
 // OUR OWN REGISTERS
 #define MCP_TXB0SIDH 0x31
-#define MCP_TXB0SIDH 0x32
+#define MCP_TXB0SIDL 0x32
+
+#define MCP_TXB0DLC 0x35
+
+#define MCP_TXB0D0 0x36
+#define MCP_TXB0D1 0x37
+#define MCP_TXB0D2 0x38
+#define MCP_TXB0D3 0x39
+#define MCP_TXB0D4 0x3A
+#define MCP_TXB0D5 0x3B
+#define MCP_TXB0D6 0x3C
+#define MCP_TXB0D7 0x3D
 
 
+#define MCP_RXB0SIDL	0x62
+#define MCP_RXB0DLC 0x65
+
+#define MCP_RXB0D0 0x66
+#define MCP_RXB0D1 0x67
+#define MCP_RXB0D2 0x68
+#define MCP_RXB0D3 0x69
+#define MCP_RXB0D4 0x6A
+#define MCP_RXB0D5 0x6B
+#define MCP_RXB0D6 0x6C
+#define MCP_RXB0D7 0x6D
 #endif
