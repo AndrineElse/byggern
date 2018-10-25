@@ -36,13 +36,12 @@ void main(){
   SPI_init();
   mcp2515_init();
   CAN_init();
+  JoystickOffset offset = userInputInit();
   DDRB |= 0x01;
   // OLEDTest();
-  int i = 1;
   while(1){
-    send_joystick_position(i);
-    _delay_ms(20);
-    i++;
+    send_joystick_position(offset);
+    _delay_ms(2000);
   }
 
 

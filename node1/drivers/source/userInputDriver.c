@@ -7,12 +7,23 @@
 #include "../include/userInputDriver.h"
 #include "../include/CANDriver.h"
 
+JoystickOffset userInputInit(){
+  JoystickOffset offset = calculateOffsetJoystick();
+  return offset;
+}
+
 JoystickCoords calculateCalibratedJoystickCoords(JoystickOffset offset) {
   uint8_t rawX = readChannel(2);
   uint8_t rawY = readChannel(1);
 
-  int16_t xValue = (int16_t)(rawX) - offset.x;
-  int16_t yValue = (int16_t)(rawY) - offset.y;
+  //int16_t xValue = (int16_t)(rawX) - offset.x;
+  //int16_t yValue = (int16_t)(rawY) - offset.y;
+ // NEED TO FIX OFFSET, PLEASE  !!!!!!!!!!
+
+ //subtract offset with saturation? 
+   int16_t xValue = (int16_t)(rawX);
+   int16_t yValue = (int16_t)(rawY);
+
 
   //Completely right should be 255, completely left should be 0
   JoystickCoords sampledValues;
@@ -22,13 +33,17 @@ JoystickCoords calculateCalibratedJoystickCoords(JoystickOffset offset) {
 }
 
 int8_t calculateJoystickMapping(int16_t rawValue, int8_t offset) {
+  printf("Joystick raw value: %d \n\r And Offset: %d \n\r", rawValue, offset );
   if(rawValue>= 128){
-    return (int8_t)((rawValue-128 )/((128-offset)/100.0));
+     // NEED TO FIX OFFSET, PLEASE  !!!!!!!!!!
+    //return (int8_t)((rawValue-128 )/((128-offset)/100.0));
+    return (int8_t)((rawValue-128 )/((128)/100.0));
   }
   else{
-    return (int8_t)((rawValue-128 )/((128+offset)/100.0));
+     // NEED TO FIX OFFSET, PLEASE  !!!!!!!!!!
+    //return (int8_t)((rawValue-128 )/((128+offset)/100.0));
+    return (int8_t)((rawValue-128 )/((128)/100.0));
   }
-
 }
 
 JoystickOffset calculateOffsetJoystick() {
@@ -95,27 +110,22 @@ JoystickDir getCurrentJoystickDir(){
   return joystickDir;
 }
 
-JoystickCoords getCurrentJoystickCoords(){
-  JoystickOffset joystickOffset;
-  joystickOffset = calculateOffsetJoystick();
-  JoystickCoords joystickCoords;
-  joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
-  return joystickCoords;
-}
+
 //MAPPING
-// id for joystickDir = 1
+// id for joystick = 1
 // data[0] = x
 // data[1] = y
 // data[2] = button (LSB = button), 7 unused bits here
 
 
-void send_joystick_position(int8_t id){
+void send_joystick_position(JoystickOffset offset){
   //sends joystick position from node 1 to node 2
   struct CAN_msg msg;
   struct JoystickCoords coords;
-  coords = getCurrentJoystickCoords();
-  msg.id = id;
+  coords = calculateCalibratedJoystickCoords(offset);
+  msg.id = 1;
   uint8_t array[8] = {coords.x,coords.y,joystickButton(),0,0,0,0,0};
+  printf("ID: %d \n\r", msg.id);
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
     if (j < 3){
@@ -123,6 +133,7 @@ void send_joystick_position(int8_t id){
     }
   }
   msg.length = 3;
+  printf("Length: %d \n\r", msg.length);
   send_CAN_msg(&msg);
 
 }

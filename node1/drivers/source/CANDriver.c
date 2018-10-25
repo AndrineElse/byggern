@@ -100,7 +100,7 @@ struct CAN_msg receive_msg(){
     //printf("data : %d\n\r", msg.data[i]);
   }
 
-  mcp2515_bit_modify(CANINTF,0x01,MCP_RX0IF);
+  mcp2515_bit_modify(MCP_CANINTF,0x01,MCP_RX0IF);
 
   return msg;
 

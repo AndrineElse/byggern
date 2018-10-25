@@ -8,25 +8,21 @@
 #include "../../drivers/include/CANDriver2.h"
 #include "../include/CANTesting2.h"
 
+// MAPPING:
+//joystickCoords id = 1
+
 void testCAN() {
-  /*struct CAN_msg msg;
-  msg.id = 1;
-  uint8_t array[8] = {1,2,3,4,5,6,7,8};
-  for (int j = 0; j < 8; j++){
-    msg.data[j] = array[j];
-  }
-
-  msg.length = 8;
-
-  send_CAN_msg(&msg);
-  _delay_ms(100);*/
   printf("testCan\n\r");
   struct CAN_msg recieved_message = receive_msg();
-  // recieved_message = receive_msg();
-
   printf("Message ID: %d \n\r",recieved_message.id);
-  for (int i = 0; i < recieved_message.length ; i++){
-    printf("Message data: %d , i = %d \n\r",recieved_message.data[i], i);
+
+  if (recieved_message.id == 1){
+    for (int i = 0; i < recieved_message.length ; i++){
+      int8_t temp_data = (int8_t)recieved_message.data[i];
+      printf("Message data: %d , i = %d \n\r",temp_data, i);
+    }
   }
+
   printf("Message length : %d \n\r",recieved_message.length);
+  _delay_ms(2000);
 }
