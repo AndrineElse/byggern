@@ -22,8 +22,8 @@ JoystickCoords calculateCalibratedJoystickCoords(JoystickOffset offset) {
   //saturation in offset, maintains strict interval [0,255]
   xValue = (xValue > 255) ? 255 : xValue;
   xValue = (xValue < 0) ? 0 : xValue;
-  xValue = (yValue > 255) ? 255 : yValue;
-  xValue = (yValue < 0) ? 0 : yValue;
+  yValue = (yValue > 255) ? 255 : yValue;
+  yValue = (yValue < 0) ? 0 : yValue;
 
   printf("JS_pre_map_x: %d \n\r",xValue);
   printf("JS_pre_map_y: %d \n\r",yValue);
