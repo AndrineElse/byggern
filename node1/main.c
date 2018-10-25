@@ -41,7 +41,6 @@ void main(){
   // OLEDTest();
   while(1){
     send_joystick_position(offset);
-    _delay_ms(2000);
   }
 
 

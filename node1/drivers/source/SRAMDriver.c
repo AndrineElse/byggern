@@ -8,7 +8,6 @@ void SRAM_init(void)
 {
   //MCUCR |= ( 1 >> 7 ); //sets 7th bit of MCUCR to high, leaves remaining unchanged.
   MCUCR = ( 1 << 7 );
-  printf("%d\n\r",MCUCR);
 }
 
 void SRAM_test(void)
