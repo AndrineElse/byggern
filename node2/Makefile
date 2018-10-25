@@ -1,5 +1,7 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := main.c drivers/source/SPIDriver2.c drivers/source/UARTDriver2.c drivers/source/MCP2515Driver2.c drivers/source/CANDriver2.c tests/source/CANTesting2.c
+SOURCE_FILES := main.c drivers/source/SPIDriver2.c drivers/source/UARTDriver2.c drivers/source/MCP2515Driver2.c \
+ drivers/source/CANDriver2.c tests/source/CANTesting2.c drivers/source/PWMDriver.c drivers/source/servoDriver.c \
+ tests/source/servoTesting.c
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes

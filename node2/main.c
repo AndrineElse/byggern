@@ -6,6 +6,8 @@
 #include "drivers/include/UARTDriver2.h"
 #include "drivers/include/SPIDriver2.h"
 #include "tests/include/CANTesting2.h"
+#include "drivers/include/PWMDriver.h"
+#include "tests/include/servoTesting.h"
 
 //#define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -19,9 +21,9 @@ void main(){
   USART_Init ( MYUBRR );
   //DDRB = 0x80;
   CAN_init();
-
+  timer_init();
   while (1) {
-    testCAN();
+    servo_test();
     _delay_ms(10);
   }
 
