@@ -40,12 +40,7 @@ JoystickCoords calculateCalibratedJoystickCoords(JoystickOffset offset) {
 }
 
 int8_t calculateJoystickMapping(int16_t rawValue) {
-  if (rawValue >= 128) {
-    return (int8_t)((rawValue-128 )/(128/100.0));
-  }
-  else {
-    return (int8_t)((rawValue-128 )/(128/100.0));
-  }
+  return (int8_t)((rawValue-128 )/(128/100.0));
 }
 
 JoystickOffset calculateOffsetJoystick() {
@@ -127,6 +122,11 @@ void send_joystick_position(JoystickOffset offset){
   coords = calculateCalibratedJoystickCoords(offset);
   msg.id = 1;
   uint8_t array[8] = {coords.x,coords.y,joystickButton(),0,0,0,0,0};
+
+  //after first uint cast
+  printf("JS_post_cast_x: %d \n\r",array[0]);
+  printf("JS_post_cast_y: %d \n\r",array[1]);
+
   printf("ID: %d \n\r", msg.id);
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
