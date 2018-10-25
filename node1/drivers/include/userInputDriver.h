@@ -17,7 +17,7 @@ enum JoystickDir{NEUTRAL, LEFT, RIGHT, UP, DOWN} typedef JoystickDir;
 
 JoystickOffset userInputInit();
 JoystickCoords calculateCalibratedJoystickCoords(JoystickOffset offset);
-int8_t calculateJoystickMapping(int16_t rawValue, int8_t offset);
+int8_t calculateJoystickMapping(int16_t rawValue);
 JoystickOffset calculateOffsetJoystick();
 JoystickDir calculateJoystickDirection();
 SliderPosition calculateSliderPosition();
