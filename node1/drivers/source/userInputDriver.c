@@ -127,6 +127,9 @@ void send_joystick_position(JoystickOffset offset){
   printf("JS_post_cast_x: %d \n\r",array[0]);
   printf("JS_post_cast_y: %d \n\r",array[1]);
 
+  printf("JS_REcast_x: %d \n\r",(int8_t)array[0]);
+  printf("JS_REcast_y: %d \n\r",(int8_t)array[1]);
+
   printf("ID: %d \n\r", msg.id);
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
