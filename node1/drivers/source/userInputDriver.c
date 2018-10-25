@@ -15,34 +15,36 @@ JoystickOffset userInputInit(){
 JoystickCoords calculateCalibratedJoystickCoords(JoystickOffset offset) {
   uint8_t rawX = readChannel(2);
   uint8_t rawY = readChannel(1);
+  
+  int16_t xValue = ((int16_t)rawX) - offset.x;
+  int16_t yValue = ((int16_t)rawY) - offset.y;
 
-  //int16_t xValue = (int16_t)(rawX) - offset.x;
-  //int16_t yValue = (int16_t)(rawY) - offset.y;
- // NEED TO FIX OFFSET, PLEASE  !!!!!!!!!!
+  //saturation in offset, maintains strict interval [0,255]
+  xValue = (xValue > 255) ? 255 : xValue;
+  xValue = (xValue < 0) ? 0 : xValue;
+  xValue = (yValue > 255) ? 255 : yValue;
+  xValue = (yValue < 0) ? 0 : yValue;
 
- //subtract offset with saturation? 
-   int16_t xValue = (int16_t)(rawX);
-   int16_t yValue = (int16_t)(rawY);
-
+  printf("JS_pre_map_x: %d \n\r",xValue);
+  printf("JS_pre_map_y: %d \n\r",yValue);
 
   //Completely right should be 255, completely left should be 0
   JoystickCoords sampledValues;
-  sampledValues.x = calculateJoystickMapping(xValue, offset.x);
-  sampledValues.y = calculateJoystickMapping(yValue, offset.y);
+  sampledValues.x = calculateJoystickMapping(xValue);
+  sampledValues.y = calculateJoystickMapping(yValue);
+
+  printf("JS_post_map_x: %d \n\r",sampledValues.x);
+  printf("JS_post_map_y: %d \n\r",sampledValues.y);
+
   return sampledValues;
 }
 
-int8_t calculateJoystickMapping(int16_t rawValue, int8_t offset) {
-  printf("Joystick raw value: %d \n\r And Offset: %d \n\r", rawValue, offset );
-  if(rawValue>= 128){
-     // NEED TO FIX OFFSET, PLEASE  !!!!!!!!!!
-    //return (int8_t)((rawValue-128 )/((128-offset)/100.0));
-    return (int8_t)((rawValue-128 )/((128)/100.0));
+int8_t calculateJoystickMapping(int16_t rawValue) {
+  if (rawValue >= 128) {
+    return (int8_t)((rawValue-128 )/(128/100.0));
   }
-  else{
-     // NEED TO FIX OFFSET, PLEASE  !!!!!!!!!!
-    //return (int8_t)((rawValue-128 )/((128+offset)/100.0));
-    return (int8_t)((rawValue-128 )/((128)/100.0));
+  else {
+    return (int8_t)((rawValue-128 )/(128/100.0));
   }
 }
 
