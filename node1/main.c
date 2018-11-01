@@ -37,7 +37,7 @@ void main(){
   mcp2515_init();
   CAN_init();
   JoystickOffset offset = userInputInit();
-  DDRB |= 0x01;
+  PORTB |= 1<<PB0; // set pinB0 as pull-up resistor input
   // OLEDTest();
   while(1){
     send_joystick_position(offset);

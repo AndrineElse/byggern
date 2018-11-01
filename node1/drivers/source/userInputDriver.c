@@ -123,5 +123,6 @@ void send_joystick_position(JoystickOffset offset){
   }
   msg.length = 3;
   send_CAN_msg(&msg);
+  printf("CoordsX: %d, CoordsY: %d, Button: %d\n\r", coords.x, coords.y, joystickButton());
 
 }

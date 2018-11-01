@@ -2,10 +2,11 @@
 #include <avr/interrupt.h>
 #include <stdint.h>
 #include "../include/PWMDriver.h"
+#include "../include/servoDriver.h"
 
 
 
-void timer_init(){
+void pwm_init(){
   // Set output
   DDRB |= (1<<DDB5);
   //WGM00 and WGM01 is set
@@ -37,5 +38,5 @@ void timer_init(){
   //OCR1B = 0x20;
   sei();
   //SREG = sreg;
-
+  servo_set_duty_cycle(128);
 }
