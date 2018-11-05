@@ -38,6 +38,7 @@ void main(){
   //game_test(&IR_sample_container);
 
   while (1) {
+    sei();
     printf("OCR: %d\n\r",OCR3A);
     printf("CNT: %d\n\r",TCNT3);
     printf("counter: %d\n\r",counter);
