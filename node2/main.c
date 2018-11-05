@@ -22,20 +22,19 @@ void main(){
 
   //init
   USART_Init ( MYUBRR );
-  //DDRB = 0x80;
   CAN_init();
   pwm_init();
   adc_init();
-
   struct IR_status IR_sample_container;
   IR_init(&IR_sample_container);
 
+  //tests
   game_test(&IR_sample_container);
+
   while (1) {
     // testCAN();
     // servo_joystick_test();
     // adc_test();
-
     _delay_ms(1000);
   }
 

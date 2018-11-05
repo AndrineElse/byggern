@@ -3,24 +3,37 @@
 #include <stdint.h>
 
 void timer_init(){
-  //WGM00 and WGM01 is set
-  TCCR3B |= 0x00;
-  //WGM02 is set and COM1A1
-  TCCR3A |= 0x80;
-  //WGM03 is set and COM1A0 to zero
-  TCCR3A &= 0xBE;
-  // Assume that WGM03 is 1?
+  // we want: 
+  // * CTC mode, 
+  // * 10hz, 
+  // * an interrupt that increments a number for each match compare
 
-  //Set the prescaler to 256
-  TCCR3B |= 0x04;
-  TCCR3B &= 0xFC;
+  // using prescaler of 256
+  // TOP has to be 0xC34 for the frequency to be 10Hz
+  cli();
+  // Set WGM to 0100 (CTC mode with OCRA containing top) 
+  // WGM 2:1 = 0b01, 
+  // CS3 2:0 = 0b100 (prescaler of 256)
+  TCCR3B |= 0x0C;
+  //WGM 1:0 = 0b00, all compare channels disabled
+  TCCR3A |= 0x00;
+
+  // Set OCR3A to contain 0xC34
+  OCR3A = 0xC34
+
+  // Set OCIE3A to high, which enables the interrupt call when
+  // a compare matches on OCR3A. This interrupt activates by setting
+  // the corresponding flag OCF3A in TIFR3. 
+  // This flag clears automatically when the interrupt handler is called.
+  TIMSK3 |= 0x02;
+  sei();
+}
+//overwrite interrupt handler for OCF3A here
+ISR(0x0040) {
+  printf("yolo\n\r");
 }
 
 uint16_t get_time(){
-  cli();
-  // ICR1 = 0x4E1; input capture register, used for defining counter TOP value
-  uint16_t clock_count = TCNT3L;
-  clock_count |= (TCNT3H << 7);
-  sei();
-  return (clock_count*50);
+  //donothing
+  return 0;
 }
