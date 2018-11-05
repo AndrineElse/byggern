@@ -31,7 +31,7 @@ void timer_init(){
 
 //overwrite interrupt handler for OCF3A here
 ISR(TIM3_COMPA_vect) {
-  printf("yolo\n\r");
+  counter++;
 }
 
 uint16_t get_time(){

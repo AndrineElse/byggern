@@ -17,6 +17,7 @@
 #define MYUBRR F_CPU/16/BAUD-1
 
 volatile int8_t counter;
+
 void main(){
   counter = 0;
 
@@ -39,7 +40,7 @@ void main(){
   while (1) {
     printf("OCR: %d\n\r",OCR3A);
     printf("CNT: %d\n\r",TCNT3);
-    printf("int: %d\n\r",TIFR3);
+    printf("counter: %d\n\r",counter);
     //_delay_ms(100);
   }
 
