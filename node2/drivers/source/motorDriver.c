@@ -9,6 +9,10 @@
 void motor_init(){
   TWI_Master_Initialise();
   TWCR |= (1 << TWIE);
+  DDRH |= (1 << DDH1)|(1 << DDH4);
+  PORTH |= (1<<PH1) | (1<<PH4);
+  //PINH4 = 0xFF;
+  //PINH1 = 0xFF;
 }
 
 void set_motor_speed(){
@@ -18,7 +22,7 @@ void set_motor_speed(){
   unsigned char msg[msgSize];
   unsigned char slave_address = 0b01011110;
   // slave_address |= (AD0 << 1) | (AD1 << 2) | (AD2 << 3) | (0101 << 4);
-  printf("Slave address: %A\n\r", slave_address);
+  printf("Slave address: %d\n\r", slave_address);
 
   msg[0] = slave_address;
   msg[1] = (unsigned char)coords.y;
