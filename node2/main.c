@@ -39,7 +39,8 @@ void main(){
   while (1) {
     printf("OCR: %d\n\r",OCR3A);
     printf("CNT: %d\n\r",TCNT3);
-    _delay_ms(100);
+    printf("int: %d\n\r",TIFR3);
+    //_delay_ms(100);
   }
 
   return;
