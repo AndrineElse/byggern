@@ -29,11 +29,6 @@ void timer_init(){
   sei();
 }
 
-//overwrite interrupt handler for OCF3A here
-ISR(TIM3_COMPA_vect) {
-  counter++;
-}
-
 uint16_t get_time(){
   //donothing
   return 0;

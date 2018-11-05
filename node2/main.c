@@ -3,6 +3,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <avr/interrupt.h>
 #include "drivers/include/UARTDriver2.h"
 #include "drivers/include/SPIDriver2.h"
 #include "drivers/include/ADCDriver2.h"
@@ -16,7 +18,11 @@
 #define BAUD 9600
 #define MYUBRR F_CPU/16/BAUD-1
 
-volatile int8_t counter;
+volatile uint8_t counter;
+
+ISR(TIM3_COMPA_vect) {
+  counter++;
+}
 
 void main(){
   counter = 0;
