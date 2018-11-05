@@ -16,8 +16,9 @@
 #define BAUD 9600
 #define MYUBRR F_CPU/16/BAUD-1
 
+volatile int8_t counter;
 void main(){
-
+  counter = 0;
 
 
   //init
