@@ -7,13 +7,15 @@
 #include <avr/interrupt.h>
 #include "drivers/include/UARTDriver2.h"
 #include "drivers/include/SPIDriver2.h"
-#include "drivers/include/ADCDriver2.h"
-#include "drivers/include/PWMDriver.h"
 #include "tests/include/CANTesting2.h"
+#include "drivers/include/PWMDriver.h"
 #include "tests/include/servoTesting.h"
+#include "drivers/include/ADCDriver2.h"
 #include "tests/include/ADCTesting.h"
 #include "tests/include/gameTesting.h"
 #include "drivers/include/IRDriver.h"
+#include "drivers/include/motorDriver.h"
+
 //#define FOSC 1843200// Clock Speed
 #define BAUD 9600
 #define MYUBRR F_CPU/16/BAUD-1
@@ -25,6 +27,7 @@ void main(){
   USART_Init ( MYUBRR );
   /*
   CAN_init();
+  //timer_init();
   pwm_init();
   adc_init();
   struct IR_status IR_sample_container;
@@ -32,17 +35,16 @@ void main(){
   */
   timer_init();
 
-
-  //tests
-  //game_test(&IR_sample_container);
-
+  motor_init();
+  game_test(&IR_sample_container);
   while (1) {
-    sei();
-    printf("OCR: %d\n\r",OCR3A);
-    printf("CNT: %d\n\r",TCNT3);
-    printf("counter: %d\n\r",get_time());
-    //_delay_ms(100);
+    // servo_test();
+    set_motor_speed();
+    _delay_ms(10);
   }
+
+
+
 
   return;
 }
