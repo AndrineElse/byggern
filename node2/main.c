@@ -27,7 +27,7 @@ void main(){
   adc_init();
   struct IR_status IR_sample_container;
   IR_init(&IR_sample_container);
-
+  timer_init();
   //tests
   game_test(&IR_sample_container);
 
