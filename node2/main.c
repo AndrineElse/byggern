@@ -5,10 +5,13 @@
 #include <stdio.h>
 #include "drivers/include/UARTDriver2.h"
 #include "drivers/include/SPIDriver2.h"
-#include "tests/include/CANTesting2.h"
+#include "drivers/include/ADCDriver2.h"
 #include "drivers/include/PWMDriver.h"
+#include "tests/include/CANTesting2.h"
 #include "tests/include/servoTesting.h"
-
+#include "tests/include/ADCTesting.h"
+#include "tests/include/gameTesting.h"
+#include "drivers/include/IRDriver.h"
 //#define FOSC 1843200// Clock Speed
 #define BAUD 9600
 #define MYUBRR F_CPU/16/BAUD-1
@@ -19,16 +22,21 @@ void main(){
 
   //init
   USART_Init ( MYUBRR );
-  //DDRB = 0x80;
   CAN_init();
+  pwm_init();
+  adc_init();
+  struct IR_status IR_sample_container;
+  IR_init(&IR_sample_container);
   timer_init();
+  //tests
+  game_test(&IR_sample_container);
+
   while (1) {
-    servo_test();
-    _delay_ms(10);
+    // testCAN();
+    // servo_joystick_test();
+    // adc_test();
+    _delay_ms(1000);
   }
-
-
-
 
   return;
 }

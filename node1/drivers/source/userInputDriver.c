@@ -15,7 +15,7 @@ JoystickOffset userInputInit(){
 JoystickCoords calculateCalibratedJoystickCoords(JoystickOffset offset) {
   uint8_t rawX = readChannel(2);
   uint8_t rawY = readChannel(1);
-  
+
   int16_t xValue = ((int16_t)rawX) - offset.x;
   int16_t yValue = ((int16_t)rawY) - offset.y;
 
@@ -25,16 +25,10 @@ JoystickCoords calculateCalibratedJoystickCoords(JoystickOffset offset) {
   yValue = (yValue > 255) ? 255 : yValue;
   yValue = (yValue < 0) ? 0 : yValue;
 
-  printf("JS_pre_map_x: %d \n\r",xValue);
-  printf("JS_pre_map_y: %d \n\r",yValue);
-
   //Completely right should be 255, completely left should be 0
   JoystickCoords sampledValues;
   sampledValues.x = calculateJoystickMapping(xValue);
   sampledValues.y = calculateJoystickMapping(yValue);
-
-  printf("JS_post_map_x: %d \n\r",sampledValues.x);
-  printf("JS_post_map_y: %d \n\r",sampledValues.y);
 
   return sampledValues;
 }
@@ -123,22 +117,12 @@ void send_joystick_position(JoystickOffset offset){
   msg.id = 1;
   uint8_t array[8] = {coords.x,coords.y,joystickButton(),0,0,0,0,0};
 
-  //after first uint cast
-  printf("JS_post_cast_x: %d \n\r",array[0]);
-  printf("JS_post_cast_y: %d \n\r",array[1]);
-
-  printf("JS_REcast_x: %d \n\r",(int8_t)array[0]);
-  printf("JS_REcast_y: %d \n\r",(int8_t)array[1]);
-
-  printf("ID: %d \n\r", msg.id);
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
-    if (j < 3){
-      printf("Data: %d , index : %d \n\r", msg.data[j], j);
-    }
+
   }
   msg.length = 3;
-  printf("Length: %d \n\r", msg.length);
   send_CAN_msg(&msg);
+  printf("CoordsX: %d, CoordsY: %d, Button: %d\n\r", coords.x, coords.y, joystickButton());
 
 }
