@@ -8,7 +8,7 @@
 
 void motor_init(){
   TWI_Master_Initialise();
-  TWCR |= (1 << TWIE);
+  //TWCR |= (1 << TWIE);
   DDRH |= (1 << DDH1)|(1 << DDH4);
   PORTH |= (1<<PH1) | (1<<PH4);
   //PINH4 = 0xFF;
@@ -27,6 +27,7 @@ void set_motor_speed(){
   msg[0] = slave_address;
   msg[1] = (unsigned char)coords.y;
   TWI_Start_Transceiver_With_Data(msg, msgSize);
+  printf("TWI data sent\n\r");
 }
 
 

@@ -86,6 +86,7 @@ void TWI_Start_Transceiver_With_Data( unsigned char *msg, unsigned char msgSize 
   {
     for ( temp = 1; temp < msgSize; temp++ )
       TWI_buf[ temp ] = msg[ temp ];
+      printf("Inside for loop\n\r");
   }
   TWI_statusReg.all = 0;
   TWI_state         = TWI_NO_STATE ;
