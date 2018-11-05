@@ -28,6 +28,7 @@ void timer_init(){
   TIMSK3 |= 0x02;
   sei();
 }
+
 //overwrite interrupt handler for OCF3A here
 ISR(TIM3_COMPA_vect) {
   printf("yolo\n\r");

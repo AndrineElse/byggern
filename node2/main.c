@@ -22,20 +22,23 @@ void main(){
 
   //init
   USART_Init ( MYUBRR );
+  /*
   CAN_init();
   pwm_init();
   adc_init();
   struct IR_status IR_sample_container;
   IR_init(&IR_sample_container);
+  */
   timer_init();
+
+
   //tests
-  game_test(&IR_sample_container);
+  //game_test(&IR_sample_container);
 
   while (1) {
-    // testCAN();
-    // servo_joystick_test();
-    // adc_test();
-    _delay_ms(1000);
+    printf("OCR: %d\n\r",OCR3A);
+    printf("CNT: %d\n\r",TCNT3);
+    _delay_ms(100);
   }
 
   return;
