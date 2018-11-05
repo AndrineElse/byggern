@@ -86,14 +86,13 @@ void TWI_Start_Transceiver_With_Data( unsigned char *msg, unsigned char msgSize 
   {
     for ( temp = 1; temp < msgSize; temp++ )
       TWI_buf[ temp ] = msg[ temp ];
-      printf("Inside for loop\n\r");
   }
   TWI_statusReg.all = 0;
   TWI_state         = TWI_NO_STATE ;
   TWCR = (1<<TWEN)|                             // TWI Interface enabled.
          (1<<TWIE)|(1<<TWINT)|                  // Enable TWI Interupt and clear the flag.
          (0<<TWEA)|(1<<TWSTA)|(0<<TWSTO)|       // Initiate a START condition.
-         (0<<TWWC);                             //
+         (0<<TWWC);
 }
 
 /****************************************************************************
