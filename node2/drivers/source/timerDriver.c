@@ -2,6 +2,8 @@
 #include <avr/interrupt.h>
 #include <stdint.h>
 
+volatile uint8_t counter = 0;
+
 void timer_init(){
   // we want:
   // * CTC mode,
@@ -29,7 +31,11 @@ void timer_init(){
   sei();
 }
 
+ISR(TIMER3_COMPA_vect) {
+  counter++;
+}
+
 uint16_t get_time(){
   //donothing
-  return 0;
+  return counter;
 }

@@ -18,14 +18,7 @@
 #define BAUD 9600
 #define MYUBRR F_CPU/16/BAUD-1
 
-volatile uint8_t counter;
-
-ISR(TIM3_COMPA_vect) {
-  counter++;
-}
-
 void main(){
-  counter = 0;
 
 
   //init
@@ -47,7 +40,7 @@ void main(){
     sei();
     printf("OCR: %d\n\r",OCR3A);
     printf("CNT: %d\n\r",TCNT3);
-    printf("counter: %d\n\r",counter);
+    printf("counter: %d\n\r",get_time());
     //_delay_ms(100);
   }
 
