@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
+#include "../include/timerDriver.h"
 
 void timer_init(){
   //WGM00 and WGM01 is set

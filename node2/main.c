@@ -12,6 +12,7 @@
 #include "tests/include/ADCTesting.h"
 #include "tests/include/gameTesting.h"
 #include "drivers/include/IRDriver.h"
+#include "drivers/include/motorDriver.h"
 //#define FOSC 1843200// Clock Speed
 #define BAUD 9600
 #define MYUBRR F_CPU/16/BAUD-1
@@ -30,8 +31,11 @@ void main(){
   struct IR_status IR_sample_container;
   IR_init(&IR_sample_container);
 
+  motor_init();
+
   game_test(&IR_sample_container);
   while (1) {
+    set_motor_speed();
     // testCAN();
     // servo_joystick_test();
     // adc_test();
