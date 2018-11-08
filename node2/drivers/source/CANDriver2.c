@@ -12,7 +12,7 @@ void CAN_init(){
 
   mcp2515_bit_modify(MCP_RXB0CTRL, 0x60 , 0xFF);
   // mcp2515_bit_modify(MCP_CANINTE, 0x40 , 0xFF);
-  // enables interrupt on message transfer to RX0. 
+  // enables interrupt on message transfer to RX0.
   mcp2515_bit_modify(MCP_CANINTE, 0x01 , 0xFF);
   // mcp2515_bit_modify(MCP_CANCTRL, 0xE0, MODE_LOOPBACK);
   mcp2515_bit_modify(MCP_CANCTRL, 0xE0, MODE_NORMAL);
@@ -24,7 +24,7 @@ void CAN_interrupt_init(){
   PCICR |= 0x01;
 
   // sets portb pin 4 (PB4) as a pin change interrupt source
-  PIMSK0 |= 0x10;
+  PCMSK0 == 0x10;
 
   // configure PB4 as an input
   //donothing, should be input by default

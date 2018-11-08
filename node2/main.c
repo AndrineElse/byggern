@@ -36,7 +36,10 @@ void main(){
   motor_init();
 
   // game loop
-  game_test(&IR_sample_container);
-
+  //game_test(&IR_sample_container);
+  while(1){
+    printf("pinb: %d\n\r", PINB);
+    _delay_ms(1000);
+  }
   return;
 }
