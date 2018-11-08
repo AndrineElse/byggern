@@ -2,7 +2,8 @@
 #include <util/delay.h>
 #include <stdio.h>
 #include <avr/interrupt.h>
-#include "../include/pid.h"
+#include <float.h>
+#include "../include/PIDriver.h"
 #include "../include/TWI_Master.h"
 #include "../include/motorDriver.h"
 #include "../include/servoDriver.h"
@@ -19,8 +20,8 @@ void motor_init(struct PID_data *pid){
   //PINH4 = 0xFF; // EN
   //PINH1 = 0xFF;// DIR
 
-  double p_factor = 2;
-  double i_factor = 1;
+  int8_t p_factor = 2;
+  int8_t i_factor = 2;
   pid_init(p_factor, i_factor, pid);
 }
 
@@ -31,13 +32,13 @@ void set_motor_speed(struct PID_data *pid){
   unsigned char msg[msgSize];
   unsigned char slave_address = 0b01011110;
   // slave_address |= (AD0 << 1) | (AD1 << 2) | (AD2 << 3) | (0101 << 4);
-
+  uint16_t power = pid_controller(pid);
   msg[0] = slave_address;
   //msg[1] = (unsigned char)coords.y;
   msg[1] = 0;
-  msg[2] = motor_vertical(pid_controller(pid));
+  printf("Power: %d\n\r", power);
+  msg[2] = motor_vertical(power);
   TWI_Start_Transceiver_With_Data(msg, msgSize);
-  printf("Coords data: %d \n\r", msg[2]);
 }
 
 

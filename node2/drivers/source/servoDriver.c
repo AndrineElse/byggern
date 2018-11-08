@@ -11,7 +11,6 @@
 
 //
 void servo_set_duty_cycle(uint8_t u){
-  printf("Pådrag: %d\n\r", u);
   uint8_t d_0 = 56; //(0.9/20))*1249
   float u_scalar = 0.294; //(((u*1.0)/255)*(1.2/20))*1249;
 

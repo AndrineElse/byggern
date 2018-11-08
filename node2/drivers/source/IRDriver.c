@@ -30,7 +30,7 @@ uint16_t get_IR_mean_value(struct IR_status* status){
   uint8_t mean_current_IR_value = 0;
   uint8_t index = status->current_sample_index;
   status->IR_samples[index] = adc_read();
-  printf("IR_sample: %d\n\r", status->IR_samples[index]);
+  // printf("IR_sample: %d\n\r", status->IR_samples[index]);
   status->current_sample_index = (index + 1)%5;
   uint16_t sum = 0;
   for (int i = 0; i < status->sample_counter; i++){
@@ -41,7 +41,7 @@ uint16_t get_IR_mean_value(struct IR_status* status){
 
 uint8_t IR_poll_failure(struct IR_status* IR_sample_container){
   uint16_t current_IR_value = get_IR_mean_value(IR_sample_container);
-  printf("Current: %d\n\r", current_IR_value);
+  // printf("Current: %d\n\r", current_IR_value);
   if (current_IR_value < 100){
     //*last_IR_value = current_IR_value;
     for (size_t i = 0; i < IR_sample_container->sample_counter; i++) {

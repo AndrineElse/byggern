@@ -16,7 +16,7 @@
 #include "drivers/include/IRDriver.h"
 #include "drivers/include/motorDriver.h"
 #include "drivers/include/servoDriver.h"
-#include "drivers/include/pid.h"
+#include "drivers/include/PIDriver.h"
 
 //#define FOSC 1843200// Clock Speed
 #define BAUD 9600
