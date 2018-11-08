@@ -96,3 +96,19 @@ ISR(PCINT0_vect){
   }
   sei();
 }
+
+// This function should be called whenever a interrupt 
+// corresponding to a new message being ready.
+// It will load the message, 
+//    look at the id, 
+//    and perform the appropriate action
+void CAN_message_handler(){
+
+  struct CAN_msg new_message = receive_msg();
+  
+  // id of 1 correspond to a new set of user inputs from node 1
+  if (CAN_msg.id == 1) {
+    update_input(new_message);
+  }
+  // add more elements here for further message types
+}

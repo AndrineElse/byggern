@@ -5,6 +5,7 @@
 #include "../include/TWI_Master.h"
 #include "../include/motorDriver.h"
 #include "../include/servoDriver.h"
+#include "../../containers/include/userInputContainer.h"
 
 
 void motor_init(){
@@ -20,7 +21,8 @@ void motor_init(){
 
 void set_motor_speed(){
   DDRD = 0x00;
-  JoystickCoords coords = get_new_joystick_values();
+  //JoystickCoords coords = get_new_joystick_values();
+  JoystickCoords coords = get_input_ptr()->joystick
   unsigned char msgSize = 3;
   unsigned char msg[msgSize];
   unsigned char slave_address = 0b01011110;

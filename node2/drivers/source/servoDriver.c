@@ -11,7 +11,7 @@
 
 //
 void servo_set_duty_cycle(uint8_t u){
-  printf("Pådrag: %d\n\r", u);
+  printf("Power: %d\n\r", u);
   uint8_t d_0 = 56; //(0.9/20))*1249
   float u_scalar = 0.294; //(((u*1.0)/255)*(1.2/20))*1249;
 
@@ -21,7 +21,10 @@ void servo_set_duty_cycle(uint8_t u){
   sei();
 }
 
+// not in use
+/*
 JoystickCoords get_new_joystick_values(){
+  // old, on demand message loading
   JoystickCoords coords;
   struct CAN_msg received_message = receive_msg();
   if (received_message.id == 1){ //Because joystick messages has id 1
@@ -32,9 +35,11 @@ JoystickCoords get_new_joystick_values(){
     coords.y = y;
   }
   return coords;
-}
+}*/
 
 void update_servo_position(JoystickCoords coords){
   uint8_t x_transform = (coords.x*1.28)+128;
   servo_set_duty_cycle(x_transform);
 }
+
+
