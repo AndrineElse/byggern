@@ -22,30 +22,21 @@
 
 void main(){
 
+  // status containers
+  struct IR_status IR_sample_container;
 
-  //init
+  // init
   USART_Init ( MYUBRR );
-
   CAN_init();
-  //timer_init();
+  CAN_interrupt_init();
   pwm_init();
   adc_init();
-  struct IR_status IR_sample_container;
   IR_init(&IR_sample_container);
-
   timer_init();
-
   motor_init();
+
+  // game loop
   game_test(&IR_sample_container);
-  while (1) {
-    // servo_test();
-    adc_test();
-    
-    _delay_ms(1000);
-  }
-
-
-
 
   return;
 }
