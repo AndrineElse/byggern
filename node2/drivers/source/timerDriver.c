@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "../include/timerDriver.h"
 
-volatile uint8_t counter = 0;
+volatile uint16_t counter;
 
 void timer_init(){
   // we want:
@@ -30,13 +30,14 @@ void timer_init(){
   // This flag clears automatically when the interrupt handler is called.
   TIMSK3 |= 0x02;
   sei();
+  counter = 0;
 }
 
 ISR(TIMER3_COMPA_vect) {
   counter++;
 }
 
-uint16_t get_time(){
+uint16_t time_get_counter(){
   //donothing
   return counter;
 }

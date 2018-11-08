@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <util/delay.h>
 #include "../../drivers/include/IRDriver.h"
+#include "../../drivers/include/timerDriver.h"
+#include "../../drivers/include/motorDriver.h"
 
 #include "../include/game.h"
 
@@ -12,10 +14,15 @@ void game_loop(struct IR_status* IR_sample_container){
   struct Game_status game;
   game.lives = 3;
   game.fails = 0;
+  game.timer = time_get_counter();
   while(game.fails < game.lives){
     servo_joystick_test();
+    set_motor_speed();
     count_game_score(&game, IR_sample_container);
+    printf("Encoder counter: %d\n\r", read_motor_encoder());
+    _delay_ms(10000);
   }
+  game.score = time_get_counter() - game.timer;
 }
 
 
@@ -26,7 +33,8 @@ void count_game_score(struct Game_status* game,struct IR_status* IR_sample_conta
     if (IR_poll_failure(IR_sample_container)){
       printf("Fail registered:\n\r");
       game->fails++;
-      _delay_ms(1000);  //need timer like in PWM
+      //uint16_t pause =
+      _delay_ms(2000);  //need timer like in PWM
     }
     printf("Num fails: %d\n\r", game->fails);
   // }

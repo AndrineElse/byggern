@@ -25,22 +25,23 @@ void main(){
 
   //init
   USART_Init ( MYUBRR );
-  /*
+
   CAN_init();
   //timer_init();
   pwm_init();
   adc_init();
   struct IR_status IR_sample_container;
   IR_init(&IR_sample_container);
-  */
+
   timer_init();
 
   motor_init();
   game_test(&IR_sample_container);
   while (1) {
     // servo_test();
-    set_motor_speed();
-    _delay_ms(10);
+    adc_test();
+    
+    _delay_ms(1000);
   }
 
 
