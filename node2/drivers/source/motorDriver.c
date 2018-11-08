@@ -2,12 +2,14 @@
 #include <util/delay.h>
 #include <stdio.h>
 #include <avr/interrupt.h>
+#include "../include/pid.h"
 #include "../include/TWI_Master.h"
 #include "../include/motorDriver.h"
 #include "../include/servoDriver.h"
 
 
-void motor_init(){
+
+void motor_init(struct PID_data *pid){
   TWI_Master_Initialise();
   //TWCR |= (1 << TWIE);
   DDRH |= (1 << DDH1)|(1 << DDH3)|(1 << DDH4)|(1 << DDH5)|(1 << DDH6);
@@ -16,9 +18,13 @@ void motor_init(){
   PORTH |= (1<<PH6);
   //PINH4 = 0xFF; // EN
   //PINH1 = 0xFF;// DIR
+
+  double p_factor = 2;
+  double i_factor = 1;
+  pid_init(p_factor, i_factor, pid);
 }
 
-void set_motor_speed(){
+void set_motor_speed(struct PID_data *pid){
   DDRD = 0x00;
   JoystickCoords coords = get_new_joystick_values();
   unsigned char msgSize = 3;
@@ -29,7 +35,7 @@ void set_motor_speed(){
   msg[0] = slave_address;
   //msg[1] = (unsigned char)coords.y;
   msg[1] = 0;
-  msg[2] = motor_vertical(coords.y);
+  msg[2] = motor_vertical(pid_controller(pid));
   TWI_Start_Transceiver_With_Data(msg, msgSize);
   printf("Coords data: %d \n\r", msg[2]);
 }
@@ -50,23 +56,20 @@ unsigned char motor_vertical(int8_t y){
 // 0101 + AD0 + AD1 + AD2 + 0 // LSB 0 when writing to MAX520
 // coords.y skal styre motorhastighet
 
-unsigned char motor_contoller(){
-
-}
 
 uint16_t read_motor_encoder(){
   cli();
   DDRK = 0x00;
-  printf("PINK: %d\n\r", PINK);
+
   PORTH &= ~(1<<PH5); // Output enable of encoder !OE
   PORTH &= ~(1<<PH3); // SEL high/low set low
   _delay_ms(20);
   uint16_t encoder_counter = (PINK << 8); // read MSB
-  printf("MSB: %d\n\r", encoder_counter);
+
   PORTH |= (1<<PH3); // SEL high/low set high
   _delay_ms(20);
   encoder_counter |= PINK; // read LSB
-  printf("LSB: %d\n\r", encoder_counter);
+
   PORTH &= ~(1<<PH6); // toggle RST
   _delay_ms(20);
   PORTH |= (1<<PH6);

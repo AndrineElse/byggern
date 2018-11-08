@@ -38,6 +38,5 @@ ISR(TIMER3_COMPA_vect) {
 }
 
 uint16_t time_get_counter(){
-  //donothing
   return counter;
 }

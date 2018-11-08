@@ -12,9 +12,11 @@
 #include "tests/include/servoTesting.h"
 #include "drivers/include/ADCDriver2.h"
 #include "tests/include/ADCTesting.h"
-#include "tests/include/gameTesting.h"
+#include "game/include/game.h"
 #include "drivers/include/IRDriver.h"
 #include "drivers/include/motorDriver.h"
+#include "drivers/include/servoDriver.h"
+#include "drivers/include/pid.h"
 
 //#define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -35,12 +37,13 @@ void main(){
 
   timer_init();
 
-  motor_init();
-  game_test(&IR_sample_container);
+  struct PID_data pid;
+  motor_init(&pid);
+  game_loop(&IR_sample_container, &pid);
   while (1) {
     // servo_test();
     adc_test();
-    
+
     _delay_ms(1000);
   }
 
