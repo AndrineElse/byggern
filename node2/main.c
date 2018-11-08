@@ -5,18 +5,18 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <avr/interrupt.h>
-#include "drivers/include/UARTDriver2.h"
-#include "drivers/include/SPIDriver2.h"
-#include "tests/include/CANTesting2.h"
-#include "drivers/include/PWMDriver.h"
-#include "tests/include/servoTesting.h"
-#include "drivers/include/ADCDriver2.h"
-#include "tests/include/ADCTesting.h"
+#include "drivers/include/UART_driver.h"
+#include "drivers/include/SPI_driver.h"
+#include "tests/include/CAN_testing.h"
+#include "drivers/include/PWM_driver.h"
+#include "tests/include/servo_testing.h"
+#include "drivers/include/ADC_driver.h"
+#include "tests/include/ADC_testing.h"
 #include "game/include/game.h"
-#include "drivers/include/IRDriver.h"
-#include "drivers/include/motorDriver.h"
-#include "drivers/include/servoDriver.h"
-#include "drivers/include/PIDriver.h"
+#include "drivers/include/IR_driver.h"
+#include "drivers/include/motor_driver.h"
+#include "drivers/include/servo_driver.h"
+#include "drivers/include/PI_driver.h"
 
 //#define FOSC 1843200// Clock Speed
 #define BAUD 9600

@@ -2,11 +2,11 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <util/delay.h>
-#include "../../drivers/include/PIDriver.h"
-#include "../../drivers/include/IRDriver.h"
-#include "../../drivers/include/timerDriver.h"
-#include "../../drivers/include/motorDriver.h"
-#include "../../drivers/include/servoDriver.h"
+#include "../../drivers/include/PI_driver.h"
+#include "../../drivers/include/IR_driver.h"
+#include "../../drivers/include/timer_driver.h"
+#include "../../drivers/include/motor_driver.h"
+#include "../../drivers/include/servo_driver.h"
 
 
 #include "../include/game.h"
