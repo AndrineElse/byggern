@@ -39,6 +39,7 @@ void main(){
   //game_test(&IR_sample_container);
   while(1){
     printf("pinb: %d\n\r", PINB);
+    printf("PCIFR: %d\n\r",PCIFR);
     _delay_ms(1000);
   }
   return;
