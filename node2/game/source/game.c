@@ -8,6 +8,7 @@
 #include "../../drivers/include/motorDriver.h"
 #include "../../drivers/include/servoDriver.h"
 #include "../../drivers/include/solenoidDriver.h"
+#include "../../tests/include/servoTesting.h"
 
 
 #include "../include/game.h"

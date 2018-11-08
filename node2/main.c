@@ -36,6 +36,7 @@ void main(){
   IR_init(&IR_sample_container);
 
   timer_init();
+  solenoid_init();
 
   struct PID_data pid;
   motor_init(&pid);
