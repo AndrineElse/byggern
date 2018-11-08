@@ -20,7 +20,7 @@ Joystick_coords get_calibrated_joystick_coords(Joystick_offset offset);
 int8_t get_joystick_mapping(int16_t raw_value);
 Joystick_offset get_offset_joystick();
 Joystick_dir get_joystick_direction();
-Slider_position get_slider_position()();
+Slider_position get_slider_position();
 uint8_t get_joystick_button();
 Joystick_dir get_current_joystickDir();
 void send_joystick_position_CAN(Joystick_offset offset);

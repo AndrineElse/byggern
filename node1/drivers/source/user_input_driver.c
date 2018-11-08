@@ -75,7 +75,7 @@ Joystick_dir get_joystick_direction(Joystick_coords coords){
 }
 
 
-Slider_position get_slider_position()(){
+Slider_position get_slider_position(){
 
   Slider_position position;
   uint8_t rawLeft = ADC_read_channel(3);

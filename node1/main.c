@@ -8,8 +8,9 @@
 #include "tests/include/joystick_testing.h"
 #include "drivers/include/ADC_driver.h"
 #include "drivers/include/OLED_driver.h"
-#include "game/include/game_menu.h"
 #include "drivers/include/user_input_driver.h"
+#include "game/include/game_menu.h"
+
 #include "drivers/include/SPI_driver.h"
 #include "drivers/include/MCP2515_driver.h"
 #include "drivers/include/MCP2515.h"
@@ -42,7 +43,7 @@ void main(){
 
   struct Node main_menu_node;
   game_menu_init(&main_menu_node);
-  game_menu_loop(&main_menu_node,offset);
+  game_menu_loop(&main_menu_node, offset);
   /*
   while(1){
     send_joystick_position_CAN(offset);

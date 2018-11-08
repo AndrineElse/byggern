@@ -1,7 +1,7 @@
 #include <stdint.h>
+#include "../../drivers/include/user_input_driver.h"
 #include "../include/game_menu.h"
 #include "../../drivers/include/OLED_driver.h"
-#include "../../drivers/include/user_input_driver.h"
 #include <util/delay.h>
 
 void game_menu_init(struct Node* main_menu_node,Joystick_offset offset){
