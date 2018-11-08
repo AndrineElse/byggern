@@ -39,8 +39,9 @@ void main(){
   game_test(&IR_sample_container);
   while (1) {
     // servo_test();
+    adc_test();
     
-    _delay_ms(10);
+    _delay_ms(1000);
   }
 
 

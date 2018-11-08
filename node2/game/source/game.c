@@ -4,6 +4,7 @@
 #include <util/delay.h>
 #include "../../drivers/include/IRDriver.h"
 #include "../../drivers/include/timerDriver.h"
+#include "../../drivers/include/motorDriver.h"
 
 #include "../include/game.h"
 
@@ -18,6 +19,8 @@ void game_loop(struct IR_status* IR_sample_container){
     servo_joystick_test();
     set_motor_speed();
     count_game_score(&game, IR_sample_container);
+    printf("Encoder counter: %d\n\r", read_motor_encoder());
+    _delay_ms(10000);
   }
   game.score = time_get_counter() - game.timer;
 }

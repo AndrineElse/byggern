@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
+#include <avr/interrupt.h>
 #include "../include/TWI_Master.h"
 #include "../include/motorDriver.h"
 #include "../include/servoDriver.h"
@@ -9,9 +10,10 @@
 void motor_init(){
   TWI_Master_Initialise();
   //TWCR |= (1 << TWIE);
-  DDRH |= (1 << DDH1)|(1 << DDH4)|(1 << DDH3);
+  DDRH |= (1 << DDH1)|(1 << DDH3)|(1 << DDH4)|(1 << DDH5)|(1 << DDH6);
   PORTH |= (1<<PH4); // Enables motor
   PORTH &= ~(1<<PH3); // Output enable of encoder !OE
+  PORTH |= (1<<PH6);
   //PINH4 = 0xFF; // EN
   //PINH1 = 0xFF;// DIR
 }
@@ -52,12 +54,25 @@ unsigned char motor_contoller(){
 
 }
 
-unsigned char read_motor_encoder(){
-  DDRDO |= 0xFF;
-  PORTH &= ~(1<<PH3); // Output enable of encoder !OE
-  PORTH &= ~(1<<PH5); // SEL
+uint16_t read_motor_encoder(){
+  cli();
+  DDRK = 0x00;
+  printf("PINK: %d\n\r", PINK);
+  PORTH &= ~(1<<PH5); // Output enable of encoder !OE
+  PORTH &= ~(1<<PH3); // SEL high/low set low
   _delay_ms(20);
+  uint16_t encoder_counter = (PINK << 8); // read MSB
+  printf("MSB: %d\n\r", encoder_counter);
+  PORTH |= (1<<PH3); // SEL high/low set high
+  _delay_ms(20);
+  encoder_counter |= PINK; // read LSB
+  printf("LSB: %d\n\r", encoder_counter);
+  PORTH &= ~(1<<PH6); // toggle RST
+  _delay_ms(20);
+  PORTH |= (1<<PH6);
+  PORTH |= (1<<PH5); // Output disable of encoder !OE
+  sei();
 
-  // !OE,
-
+  return encoder_counter;
+  // 2's complement from for negative numbers
 }
