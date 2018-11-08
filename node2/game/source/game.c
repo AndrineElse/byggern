@@ -7,6 +7,7 @@
 #include "../../drivers/include/timerDriver.h"
 #include "../../drivers/include/motorDriver.h"
 #include "../../drivers/include/servoDriver.h"
+#include "../../drivers/include/solenoidDriver.h"
 
 
 #include "../include/game.h"
@@ -21,6 +22,7 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
   while(game.fails < game.lives){
     servo_joystick_test();
     set_motor_speed(pid);
+    solenoid_trigger();
     count_game_score(&game, IR_sample_container);
     //_delay_ms(10000);
   }
