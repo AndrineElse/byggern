@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include "../include/MCP25152.h"
 #include "../include/MCP2515Driver2.h"
 #include "../include/CANDriver2.h"
@@ -12,7 +13,7 @@ void CAN_init(){
 
   mcp2515_bit_modify(MCP_RXB0CTRL, 0x60 , 0xFF);
   // mcp2515_bit_modify(MCP_CANINTE, 0x40 , 0xFF);
-  // enables interrupt on message transfer to RX0. 
+  // enables interrupt on message transfer to RX0.
   mcp2515_bit_modify(MCP_CANINTE, 0x01 , 0xFF);
   // mcp2515_bit_modify(MCP_CANCTRL, 0xE0, MODE_LOOPBACK);
   mcp2515_bit_modify(MCP_CANCTRL, 0xE0, MODE_NORMAL);
@@ -20,6 +21,7 @@ void CAN_init(){
 }
 
 void CAN_interrupt_init(){
+  cli();
   // enables external pin change interrupt 0
   PCICR |= 0x01;
 
@@ -28,6 +30,7 @@ void CAN_interrupt_init(){
 
   // configure PB4 as an input
   //donothing, should be input by default
+  sei();
 }
 
 void send_CAN_msg(struct CAN_msg* msg){
@@ -87,8 +90,9 @@ struct CAN_msg receive_msg(){
 
 //configure for interrupts on pin 4 on port b
 ISR(PCINT0_vect){
-  printf("Interrupt toggle!\n\r");
-  if(PINB & 0x10){
-    printf("int pin is high!");
+  cli();
+  if(!(PINB & (1<<DDB4))){
+    printf("message ready!");
   }
+  sei();
 }

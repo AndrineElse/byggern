@@ -36,8 +36,9 @@ void main(){
   motor_init();
 
   // game loop
-  //game_test(&IR_sample_container);
+  game_test(&IR_sample_container);
   while(1){
+    sei();
     printf("pinb: %d\n\r", PINB);
     printf("PCIFR: %d\n\r",PCIFR);
     _delay_ms(1000);
