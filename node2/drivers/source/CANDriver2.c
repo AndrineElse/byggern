@@ -24,7 +24,10 @@ void CAN_interrupt_init(){
   PCICR |= 0x01;
 
   // sets portb pin 4 (PB4) as a pin change interrupt source
-  PIMSK0 |= 0x10; 
+  PIMSK0 |= 0x10;
+
+  // configure PB4 as an input
+  //donothing, should be input by default
 }
 
 void send_CAN_msg(struct CAN_msg* msg){
