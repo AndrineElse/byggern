@@ -4,8 +4,9 @@
 #include "../../drivers/include/userInputDriver.h"
 #include <util/delay.h>
 
-void menuInit(struct Node* mainMenuNode){
 
+void menuInit(struct Node* mainMenuNode){
+  
   //struct Node mainMenuNode;
   struct Node playGameNode;
   playGameNode.parent = mainMenuNode;
@@ -42,14 +43,16 @@ void menuInit(struct Node* mainMenuNode){
 }
 
 void menuLoop(struct Node* startNode){
-
+  JoystickOffset offset = userInputInit();
   uint8_t selectedOption = 0;
   JoystickDir currentDir;
   struct Node* currentNode = startNode;
   JoystickDir lastDir;
   lastDir = calculateJoystickDirection();
   uint8_t lastButtonValue = 0;
+
   while(1){
+
     //get joystick input
     JoystickOffset joystickOffset;
     joystickOffset = calculateOffsetJoystick();
@@ -86,6 +89,9 @@ void menuLoop(struct Node* startNode){
     _delay_ms(50);
     printNodeUsingBuffer(currentNode, selectedOption);
     OLED_buffer_update_screen();
+    if (currentNode->description == "Game"){
+      send_joystick_position(offset);
+    }
   }
 }
 
