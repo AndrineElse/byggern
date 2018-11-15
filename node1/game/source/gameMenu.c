@@ -147,15 +147,15 @@ struct Node* getEndGameNode(struct Node* startNode){
   playGameNode.description = "Game";
   playGameNode.numOptions = 1;
 
-  endGameNode->parent = (struct Node*)0;
-  endGameNode->description = "All lives lost, game ended!";
-  endGameNode->numOptions = 2;
-  endGameNode->options[0] = "New game";
-  endGameNode->options[1] = "Back to main menu";
+  endGameNode.parent = (struct Node*)0;
+  endGameNode.description = "All lives lost, game ended!";
+  endGameNode.numOptions = 2;
+  endGameNode.options[0] = "New game";
+  endGameNode.options[1] = "Back to main menu";
   endGameNode.optionNodes[0] = &playGameNode;
   endGameNode.optionNodes[1] = startNode;
 
-  return endGameNode;
+  return &endGameNode;
 }
 
 struct Node* getMiddleGameNode(struct Node* startNode){
@@ -166,13 +166,13 @@ struct Node* getMiddleGameNode(struct Node* startNode){
   playGameNode.description = "Game";
   playGameNode.numOptions = 1;
 
-  middleGameNode->parent = (struct Node*)0;
-  middleGameNode->description = "Failed registerd!";
-  middleGameNode->numOptions = 2;
-  middleGameNode->options[0] = "Continue game";
-  middleGameNode->options[1] = "Back to main menu";
+  middleGameNode.parent = (struct Node*)0;
+  middleGameNode.description = "Failed registerd!";
+  middleGameNode.numOptions = 2;
+  middleGameNode.options[0] = "Continue game";
+  middleGameNode.options[1] = "Back to main menu";
   middleGameNode.optionNodes[0] = &playGameNode;
   middleGameNode.optionNodes[1] = startNode;
 
-  return middleGameNode;
+  return &middleGameNode;
 }
