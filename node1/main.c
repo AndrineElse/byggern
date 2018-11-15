@@ -17,6 +17,7 @@
 #include "drivers/include/CANDriver.h"
 #include "tests/include/OLEDTesting.h"
 #include "tests/include/CANTesting.h"
+#include "containers/include/gameStatusContainer.h"
 
 #define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -42,6 +43,7 @@ void main(){
   OLED_clear();
   OLED_init_buffer_mode();
   OLED_buffer_clear();
+  game_status_container_init();
   JoystickOffset offset = userInputInit();
 
   //OLEDTest();

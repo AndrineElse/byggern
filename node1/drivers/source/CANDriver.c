@@ -8,6 +8,7 @@
 #include "../include/MCP2515.h"
 #include "../include/MCP2515Driver.h"
 #include "../include/CANDriver.h"
+#include "../../containers/include/gameStatusContainer.h"
 
 void CAN_init(){
   mcp2515_init();
@@ -114,7 +115,9 @@ void CAN_message_handler() {
       //dosomething
       break;
     //add more cases here
-
+    case 3:
+      game_status_container_update(new_message);
+      break;
     default:
       printf("Message with unmapped ID loaded :(\n\r");
       break;
