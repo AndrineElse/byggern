@@ -23,14 +23,16 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
   game.timer = time_get_counter();
   uint8_t button_flag = 0;
   uint16_t solenoid_timer = 0;
-  while(game.fails < game.lives){
-    servo_update_position(input_container_get_ptr()->joystick.x);
-    set_motor_speed(pid);
-    solenoid_update_status(&button_flag,&solenoid_timer);
-    game_send_update_CAN(&game);
-    count_game_score(&game, IR_sample_container);
-    print_input_container();
-    //_delay_ms(10000);
+  if(input_container_message_received()){
+    while(game.fails < game.lives){
+      servo_update_position(input_container_get_ptr()->joystick.x);
+      set_motor_speed(pid);
+      solenoid_update_status(&button_flag,&solenoid_timer);
+      game_send_update_CAN(&game);
+      count_game_score(&game, IR_sample_container);
+      print_input_container();
+      //_delay_ms(10000);
+    }
   }
   game.score = time_get_counter() - game.timer;
 }

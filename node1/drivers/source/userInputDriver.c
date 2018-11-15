@@ -91,7 +91,7 @@ SliderPosition calculateSliderPosition(){
 //returns value of slider buttons
 // right button = LSB
 // left button second least sign.b.
-// buttons are connected to PD4 and PD5 
+// buttons are connected to PD4 and PD5
 uint8_t getSliderButtons(){
   uint8_t left_button_value = ( PIND & (1<<PD4)) >> PD4;
   uint8_t right_button_value = ( PIND & (1<<PD5)) >> PD5;
