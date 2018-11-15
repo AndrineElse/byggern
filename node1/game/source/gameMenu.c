@@ -44,7 +44,22 @@ void menuInit(){
   mainMenuNode.optionNodes[1] = &highScoresNode;
   mainMenuNode.optionNodes[2] = &optionsNode;
 
+  endGameNode.parent = (struct Node*)0;
+  endGameNode.description = "All lives lost, game over";
+  endGameNode.numOptions = 2;
+  endGameNode.options[0] = "New game";
+  endGameNode.options[1] = "Back to main menu";
+  endGameNode.optionNodes[0] = &playGameNode;
+  endGameNode.optionNodes[1] = &mainMenuNode;
   //mainMenuNode = &mainMenuNode;
+
+  middleGameNode.parent = (struct Node*)0;
+  middleGameNode.description = "Fail registerd";
+  middleGameNode.numOptions = 2;
+  middleGameNode.options[0] = "Continue game";
+  middleGameNode.options[1] = "Back to main menu";
+  middleGameNode.optionNodes[0] = &playGameNode;
+  middleGameNode.optionNodes[1] = &mainMenuNode;
 }
 
 void menuLoop(){
@@ -73,13 +88,13 @@ void menuLoop(){
         printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
         gameFlag = 0;
         numFails = game->fails;
-        currentNode = getMiddleGameNode();
+        currentNode = &middleGameNode;
       }
       else if(game->lives == game->fails){
         printf("GAME OVER\n\r");
         gameFlag = 0;
         numFails = 0;
-        currentNode = getEndGameNode();
+        currentNode = &endGameNode;
       }
     }
     else{
