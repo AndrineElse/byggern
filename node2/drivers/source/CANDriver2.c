@@ -3,19 +3,55 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include "../include/MCP25152.h"
 #include "../include/MCP2515Driver2.h"
 #include "../include/CANDriver2.h"
 
 void CAN_init(){
   mcp2515_init();
-
+  // TODO not sure what this is 
   mcp2515_bit_modify(MCP_RXB0CTRL, 0x60 , 0xFF);
+
+  // TODO not sure what this is 
   // mcp2515_bit_modify(MCP_CANINTE, 0x40 , 0xFF);
+
+  // enables interrupt on message transfer to RX0
   mcp2515_bit_modify(MCP_CANINTE, 0x01 , 0xFF);
-  // mcp2515_bit_modify(MCP_CANCTRL, 0xE0, MODE_LOOPBACK);
+
+  // sets the controller to normal mode
   mcp2515_bit_modify(MCP_CANCTRL, 0xE0, MODE_NORMAL);
 
+}
+
+void CAN_init_interrupt() {
+  cli();
+  // interrupt config for ordinary external interrupt on PD2.
+
+  // enable int2 
+  EIMSK |= 0x04;
+
+  // set int 2 trigger mode
+  // donothing, trigger mode is already low level. 
+
+  // Set PD4 as input
+  // donothing, should be input by default
+
+
+
+  // interrupt config for PinChange interrupt on PB4
+  /* NOT IN USE --------------------------------------------
+  // enables external pin change interrupt 0
+  PCICR |= 0x01;
+
+  // sets portb pin 4 (PB4) as a pin change interrupt source
+  PCMSK0 |= (1 << DDB4);
+
+  // configure PB4 as an input
+  //donothing, should be input by default
+  */ //NOT IN USE END --------------------------------------
+
+  sei();
 }
 
 
@@ -79,4 +115,27 @@ struct CAN_msg receive_msg(){
   mcp2515_bit_modify(MCP_CANINTF,MCP_RX0IF,0);
 
   return msg;
+}
+
+ISR(INT2_vect){
+  cli();
+  printf("INT2 trig!\n\r");
+  CAN_message_handler()
+  sei();
+}
+
+// This function should be called whenever a interrupt 
+// corresponding to a new message being ready.
+// It will load the message, 
+//    look at the id, 
+//    and perform the appropriate action
+void CAN_message_handler(){
+
+  struct CAN_msg new_message = receive_msg();
+  
+  // id of 1 correspond to a new set of user inputs from node 1
+  if (CAN_msg.id == 1) {
+    input_container_update(new_message);
+  }
+  // add more elements here for further message types
 }

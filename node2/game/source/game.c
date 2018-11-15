@@ -9,7 +9,7 @@
 #include "../../drivers/include/servoDriver.h"
 #include "../../drivers/include/solenoidDriver.h"
 #include "../../tests/include/servoTesting.h"
-
+#include "../../containers/include/userInputContainer.h"
 
 #include "../include/game.h"
 
@@ -21,7 +21,7 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
   game.fails = 0;
   game.timer = time_get_counter();
   while(game.fails < game.lives){
-    servo_joystick_test();
+    servo_set_duty_cycle(input_container_get_ptr()->joystick.x);
     set_motor_speed(pid);
     solenoid_trigger();
     count_game_score(&game, IR_sample_container);

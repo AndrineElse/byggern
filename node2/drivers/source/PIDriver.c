@@ -18,7 +18,7 @@ void pid_init(int8_t p_factor, int8_t i_factor, struct PID_data *pid){
 }
 
 int16_t pid_controller(struct PID_data *pid){
-  JoystickCoords coords = get_new_joystick_values();
+  JoystickCoords coords = input_container_get_ptr()->joystick;
   uint16_t actual_encoder_value = -read_motor_encoder();
   int16_t target_value = coords.y;
 
