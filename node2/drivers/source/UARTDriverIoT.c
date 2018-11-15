@@ -18,12 +18,13 @@ void USART_Transmit_STXETX(uint32_t payload, uint8_t firstByte){
   data[2] = (payload >> 16);
   data[3] = (payload >> 8);
   data[4] = payload & 0xFF;
+  printf("data4: %x\n", data[4]);
   // length = number of bytes in payload
   // length |= (len_0 << 8);
 
-  USART_Transmit(0x02); // STX
-	USART_Transmit(0x00); // LEN0
-	USART_Transmit(length); // LEN1
+  USART_Transmit(2); // STX
+	USART_Transmit(0); // LEN0
+	USART_Transmit(5); // LEN1
   for (int i = 0; i < length; i++){
     USART_Transmit(data[i]);
   }
@@ -34,10 +35,9 @@ void USART_Transmit_STXETX(uint32_t payload, uint8_t firstByte){
   sei();
 }
 
-uint8_t USART_Receive_STXETX()
-{
+uint8_t* USART_Receive_STXETX(){
 
-  
+
   //uint8_t data[length];
   // VI henter ut av register, 2, len, len, payload, 3
   cli();
@@ -45,22 +45,28 @@ uint8_t USART_Receive_STXETX()
   uint16_t len;
   // uint8_t payload;
 
-  }
-  if (value == 2) {
+
+  //if (value == 2) {
     // value = USART_Receive();
-    length_0 = USART_Receive();
-    length_1 = USART_Receive();
-    len = length_1; 
-    len |= (length_0 << 8);
-    uint8_t payload[len]
-    for (int i = 0; i < len; i++){
+    uint8_t length_0 = USART_Receive();
+    uint8_t length_1 = USART_Receive();
+    len = length_1;
+    //len |= (length_0 << 8);
+    printf("LEN: %x\n\r", len );
+    uint8_t payload[len];
+    for (uint8_t i = 0; i < len; i++){
       payload[i] = USART_Receive();
     }
+    printf("First byte: %x\n\r", payload[0]);
+    printf("Second byte: %x\n\r", payload[1]);
+    printf("Third byte: %x\n\r", payload[2]);
+    //printf("Fourth byte: %x\n\r", payload[3]);
+    //printf("Fifth byte: %x\n\r", payload[4]);
     value = USART_Receive();
-    if (value == 3) {
+    //if (value == 3) {
       return payload;
-    }
-  }
+    //}
+  //}
   //if (value == 0x02){
     //uint8_t len_0 = USART_Receive();
     //uint8_t len_1 = USART_Receive();
@@ -76,6 +82,6 @@ uint8_t USART_Receive_STXETX()
 
     //uint8_t last = USART_Receive();
     sei();
-    return 0;
+    // return 0;
   //}
 }
