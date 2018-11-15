@@ -1,14 +1,12 @@
+#include <stdio.h>
+#include <float.h>
 #include <avr/io.h>
 #include <util/delay.h>
-#include <stdio.h>
 #include <avr/interrupt.h>
-#include <float.h>
-#include "../../controller/include/PIController.h"
+#include "../../controllers/include/speedController.h"
 #include "../include/TWI_Master.h"
 #include "../include/motorDriver.h"
 #include "../include/servoDriver.h"
-
-
 
 void motor_init() {
 
@@ -23,7 +21,7 @@ void motor_init() {
   //PINH1 = 0xFF;// DIR
 }
 
-void set_motor_power(int16_t power) {
+void motor_set_power(int16_t power) {
 
   unsigned char msgSize = 3;
   unsigned char msg[msgSize];
@@ -38,7 +36,7 @@ void set_motor_power(int16_t power) {
 
 
 unsigned char motor_set_direction_and_return_abs(int16_t signed_power) {
-  uint16_t unsigned_power;  
+  uint16_t unsigned_power;
 
   if (signed_power < 0){
     PORTH &= ~(1<<PH1); //sets dir to down

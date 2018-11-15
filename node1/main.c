@@ -58,15 +58,16 @@ void main(){
     //send_joystick_position(offset);
   }
   */
+  /*
   while(1){
     printf("%d\n\r",timer_get_counter());
     _delay_ms(1000);
-  }
-
+  }*/
+/*
   struct Node mainMenuNode;
   menuInit(&mainMenuNode);
   menuLoop(&mainMenuNode);
-
+*/
   while(1){
     send_joystick_position(offset);
   }

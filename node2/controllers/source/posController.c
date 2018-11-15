@@ -9,14 +9,14 @@
 // Encoder -1207 til 7480-7536 ish = ca 8700
 // Joystick Y -100 to 96 = 196
 
-volatile PID_data pi_container;
+volatile struct PID_data pi_container;
 
 
 void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, uint8_t encoder_factor) {
   //constants
   pi_container.Kp = p_factor;
   pi_container.Ki = i_factor;
-  pi_container.T = sample_time;
+  pi_container.sample_time = sample_time;
   pi_container.encoder_factor = encoder_factor;
 
   //variables
@@ -26,12 +26,12 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, ui
 }
 
 
-// Calculates a new power for the motor, 
-// should be in the range of -300, 300, 
+// Calculates a new power for the motor,
+// should be in the range of -300, 300,
 // motor saturates at -255, 255
 // Params:
 //    reference_value:
-//      value from -100 to 100 
+//      value from -100 to 100
 void pos_controller_calculate_power(int8_t reference_value, int16_t measured_value) {
 
   pi_container.position += measured_value;
@@ -39,7 +39,7 @@ void pos_controller_calculate_power(int8_t reference_value, int16_t measured_val
   pi_container.error_sum += error;
 
   //return kp*e + ki*int(e)
-  pi_container.current_power = (pi_container.Kp)*error + pi_container.T*(pi_container.Ki)*(pi_container.error_sum);
+  pi_container.current_power = (pi_container.Kp)*error + pi_container.sample_time*(pi_container.Ki)*(pi_container.error_sum);
 }
 
 int16_t pos_controller_get_power() {

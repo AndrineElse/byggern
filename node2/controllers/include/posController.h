@@ -8,6 +8,6 @@ struct PID_data {
   int16_t current_power;
 };
 
-void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time);
+void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, uint8_t encoder_factor);
 void pos_controller_calculate_power(int8_t reference_value, int16_t measured_value);
 int16_t pos_controller_get_power();
