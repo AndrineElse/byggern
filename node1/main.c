@@ -2,6 +2,7 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include "drivers/include/UARTdriver.h"
 #include "drivers/include/SRAMDriver.h"
 #include "tests/include/addressTesting.h"
@@ -28,20 +29,21 @@ void main(){
 
   MCUCR = (1<<SRE);
   SFIOR = (1<<XMM2);
+  SREG |= 0x80;
 
   //init
   USART_Init ( MYUBRR );
-  // printf("Her 1");
   SRAM_init ();
   SPI_init();
   mcp2515_init();
   CAN_init();
+  CAN_init_interrupt();
   OLED_init();
   OLED_clear();
   OLED_init_buffer_mode();
-
+  OLED_buffer_clear();
   JoystickOffset offset = userInputInit();
-  PORTB |= 1<<PB0; // set pinB0 as pull-up resistor input
+
   //OLEDTest();
   /*
   while (1) {
@@ -54,11 +56,11 @@ void main(){
     }
     //send_joystick_position(offset);
   }
-*/
-  /*
+  */
+
   struct Node mainMenuNode;
-  //menuInit(&mainMenuNode);
-  //menuLoop(&mainMenuNode);
+  menuInit(&mainMenuNode);
+  menuLoop(&mainMenuNode);
 
   while(1){
     send_joystick_position(offset);
