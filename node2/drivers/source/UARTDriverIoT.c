@@ -28,32 +28,42 @@ void USART_Transmit_STXETX(uint32_t payload, uint8_t firstByte){
     USART_Transmit(data[i]);
   }
 
-  // msg = STX 0x02 + LEN[0] uint8_t + LEN[1] uint8_t + Payload[0..LEN] + ETX 0x03;
+  //msg = STX 0x02 + LEN[0] uint8_t + LEN[1] uint8_t + Payload[0..LEN] + ETX 0x03;
   /* Put data into buffer, sends the data */
   USART_Transmit(0x03); // ETX
   sei();
 }
 
-uint16_t USART_Receive_STXETX()
+uint8_t USART_Receive_STXETX()
 {
-  uint8_t length = 2;
-  uint8_t data[length];
+
+  //uint8_t length = 2;
+  //uint8_t data[length];
   cli();
-  uint8_t first = USART_Receive();
+  uint64_t value = USART_Receive();
+  // if (value == 2)
   //if (value == 0x02){
     //uint8_t len_0 = USART_Receive();
     //uint8_t len_1 = USART_Receive();
     //uint8_t byte = USART_Receive();
-    if (firstByte == 0x13){
-      length = 2;
-      data[0] = UDR0;
-      data[1] = UDR1;
+    //if (firstByte == 0x13){
+      //length = 2;
+    uint8_t length = 7;
+    uint8_t data[length];
 
-    }
+    data[1] = (value >> 48);
+    data[2] = (value >> 40);
+    data[3] = (value >> 32);
+    data[4] = (value >> 24);
+    data[5] = (value >> 16);
+    data[6] = (value >> 8);
+    data[7] = value & 0xFF;
+
+    //}
     // uint8_t payload = USART_Receive();
 
-    uint8_t last = USART_Receive();
+    //uint8_t last = USART_Receive();
     sei();
-    return first;
+    return data;
   //}
 }

@@ -35,7 +35,7 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
     //_delay_ms(10000);
   }
   game.score = time_get_counter() - game.timer;
-  // USART_Transmit_STXETX(game.score, 0x10); // uint16_t
+  USART_Transmit_STXETX(game.score, 0x10); // uint16_t
   // printf("Game score: %d\n\r", game.score);
 }
 
