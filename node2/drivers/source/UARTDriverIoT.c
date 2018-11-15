@@ -37,18 +37,28 @@ void USART_Transmit_STXETX(uint32_t payload, uint8_t firstByte){
 uint8_t USART_Receive_STXETX()
 {
 
-  uint8_t length;
+  
   //uint8_t data[length];
+  // VI henter ut av register, 2, len, len, payload, 3
   cli();
   uint8_t value = USART_Receive();
-  uint8_t payload;
+  uint16_t len;
+  // uint8_t payload;
+
+  }
   if (value == 2) {
     // value = USART_Receive();
-    length = USART_Receive();
-    length = USART_Receive();
-    payload = USART_Receive();
+    length_0 = USART_Receive();
+    length_1 = USART_Receive();
+    len = length_1; 
+    len |= (length_0 << 8);
+    uint8_t payload[len]
+    for (int i = 0; i < len; i++){
+      payload[i] = USART_Receive();
+    }
+    value = USART_Receive();
     if (value == 3) {
-      return value;
+      return payload;
     }
   }
   //if (value == 0x02){
@@ -66,6 +76,6 @@ uint8_t USART_Receive_STXETX()
 
     //uint8_t last = USART_Receive();
     sei();
-    return payload;
+    return 0;
   //}
 }
