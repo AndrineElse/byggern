@@ -1,5 +1,5 @@
 #define F_CPU 5000000 //16 000 000 needs to be changed to atmega2560, to compile on node 2, (5000000)
-
+#include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -9,15 +9,16 @@
 #include "tests/include/joystickTesting.h"
 #include "drivers/include/ADCDriver.h"
 #include "drivers/include/OLEDDriver.h"
+#include "drivers/include/CANDriver.h"
+#include "containers/include/gameStatusContainer.h"
 #include "game/include/gameMenu.h"
 #include "drivers/include/userInputDriver.h"
 #include "drivers/include/SPIDriver.h"
 #include "drivers/include/MCP2515Driver.h"
 #include "drivers/include/MCP2515.h"
-#include "drivers/include/CANDriver.h"
 #include "tests/include/OLEDTesting.h"
 #include "tests/include/CANTesting.h"
-#include "containers/include/gameStatusContainer.h"
+#include "drivers/include/timerDriver.h"
 
 #define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -34,6 +35,7 @@ void main(){
 
   //init
   USART_Init ( MYUBRR );
+  printf("HERE\n");
   SRAM_init ();
   SPI_init();
   mcp2515_init();
@@ -66,39 +68,9 @@ void main(){
     _delay_ms(1000);
   }
   */
-  struct Node mainMenuNode;
-  //struct Node mainMenuNode;
-  struct Node playGameNode;
-  playGameNode.parent = &mainMenuNode;
-  playGameNode.options[0] = "Go back";
-  playGameNode.description = "Game";
-  playGameNode.numOptions = 1;
 
-  struct Node highScoresNode;
-  highScoresNode.parent = &mainMenuNode;
-  highScoresNode.options[0] = "Go back";
-  highScoresNode.description = "highscore";
-  highScoresNode.numOptions = 1;
-
-  struct Node optionsNode;
-  optionsNode.parent = &mainMenuNode;
-  optionsNode.options[0] = "Go back";
-  optionsNode.description = "options";
-  optionsNode.numOptions = 1;
-
-
-  mainMenuNode.parent = (struct Node*)0;
-  mainMenuNode.options[0] = "Play game";
-  mainMenuNode.options[1] = "Highscores";
-  mainMenuNode.options[2] = "Options";
-
-  mainMenuNode.description = "This is the main menu :)";
-  mainMenuNode.numOptions = 3;
-
-  mainMenuNode.optionNodes[0] = &playGameNode;
-  mainMenuNode.optionNodes[1] = &highScoresNode;
-  mainMenuNode.optionNodes[2] = &optionsNode;
-  menuLoop(&mainMenuNode);
+  menuInit();
+  menuLoop();
 
   /*
   while(1){
