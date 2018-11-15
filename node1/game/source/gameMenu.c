@@ -16,36 +16,33 @@ struct Node middleGameNode;
 void menuInit(){
 
   //struct Node mainMenuNode;
-  struct Node playGameNode;
   playGameNode.parent = mainMenuNode;
   playGameNode.options[0] = "Go back";
   playGameNode.description = "Game";
   playGameNode.numOptions = 1;
 
-  struct Node highScoresNode;
   highScoresNode.parent = mainMenuNode;
   highScoresNode.options[0] = "Go back";
   highScoresNode.description = "highscore";
   highScoresNode.numOptions = 1;
 
-  struct Node optionsNode;
   optionsNode.parent = mainMenuNode;
   optionsNode.options[0] = "Go back";
   optionsNode.description = "options";
   optionsNode.numOptions = 1;
 
 
-  mainMenuNode->parent = (struct Node*)0;
-  mainMenuNode->options[0] = "Play game";
-  mainMenuNode->options[1] = "Highscores";
-  mainMenuNode->options[2] = "Options";
+  mainMenuNode.parent = (struct Node*)0;
+  mainMenuNode.options[0] = "Play game";
+  mainMenuNode.options[1] = "Highscores";
+  mainMenuNode.options[2] = "Options";
 
-  mainMenuNode->description = "This is the main menu :)";
-  mainMenuNode->numOptions = 3;
+  mainMenuNode.description = "This is the main menu :)";
+  mainMenuNode.numOptions = 3;
 
-  mainMenuNode->optionNodes[0] = &playGameNode;
-  mainMenuNode->optionNodes[1] = &highScoresNode;
-  mainMenuNode->optionNodes[2] = &optionsNode;
+  mainMenuNode.optionNodes[0] = &playGameNode;
+  mainMenuNode.optionNodes[1] = &highScoresNode;
+  mainMenuNode.optionNodes[2] = &optionsNode;
 
   //mainMenuNode = &mainMenuNode;
 }
@@ -54,7 +51,7 @@ void menuLoop(){
   JoystickOffset offset = userInputInit();
   uint8_t selectedOption = 0;
   JoystickDir currentDir;
-  struct Node* currentNode = startNode;
+  struct Node* currentNode = &mainMenuNode;
   JoystickDir lastDir;
   lastDir = calculateJoystickDirection();
   uint8_t lastButtonValue = 0;
@@ -66,6 +63,7 @@ void menuLoop(){
     if(currentNode->description == "Game"){
         printf("inside game node\n\r");
       if(gameFlag){
+        OLED_clear();
         printf("inside playing game\n\r");
         send_joystick_position(offset);
         printf("joystick pos sent\n\r");
@@ -75,13 +73,13 @@ void menuLoop(){
         printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
         gameFlag = 0;
         numFails = game->fails;
-        currentNode = getMiddleGameNode(startNode);
+        currentNode = getMiddleGameNode();
       }
       else if(game->lives == game->fails){
-        printf("Failed game\n\r");
+        printf("GAME OVER\n\r");
         gameFlag = 0;
         numFails = 0;
-        currentNode = getEndGameNode(startNode);
+        currentNode = getEndGameNode();
       }
     }
     else{
@@ -89,10 +87,8 @@ void menuLoop(){
       printf("inside menu looping\n\r");
       gameFlag = 1;
       //get joystick input
-      JoystickOffset joystickOffset;
-      joystickOffset = calculateOffsetJoystick();
       JoystickCoords joystickCoords;
-      joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
+      joystickCoords = calculateCalibratedJoystickCoords(offset);
       JoystickDir currentDir;
       currentDir = calculateJoystickDirection(joystickCoords);
 
@@ -155,40 +151,26 @@ void printNodeUsingBuffer(struct Node* node, uint8_t selectedOption){
   }
 }
 
-struct Node* getEndGameNode(struct Node* startNode){
-  struct Node endGameNode;
-  struct Node playGameNode;
-  playGameNode.parent = startNode;
-  playGameNode.options[0] = "Go back";
-  playGameNode.description = "Game";
-  playGameNode.numOptions = 1;
-
+struct Node* getEndGameNode(){
   endGameNode.parent = (struct Node*)0;
-  endGameNode.description = "All lives lost, game ended!";
+  endGameNode.description = "All lives lost, game over";
   endGameNode.numOptions = 2;
   endGameNode.options[0] = "New game";
   endGameNode.options[1] = "Back to main menu";
-  endGameNode.optionNodes[0] = &playGameNode;
-  endGameNode.optionNodes[1] = startNode;
+  endGameNode.optionNodes[0] = playGameNode;
+  endGameNode.optionNodes[1] = mainMenuNode;
 
   return &endGameNode;
 }
 
-struct Node* getMiddleGameNode(struct Node* startNode){
-  struct Node middleGameNode;
-  struct Node playGameNode;
-  playGameNode.parent = startNode;
-  playGameNode.options[0] = "Go back";
-  playGameNode.description = "Game";
-  playGameNode.numOptions = 1;
-
+struct Node* getMiddleGameNode(){
   middleGameNode.parent = (struct Node*)0;
-  middleGameNode.description = "Failed registerd!";
+  middleGameNode.description = "Fail registerd";
   middleGameNode.numOptions = 2;
   middleGameNode.options[0] = "Continue game";
   middleGameNode.options[1] = "Back to main menu";
-  middleGameNode.optionNodes[0] = &playGameNode;
-  middleGameNode.optionNodes[1] = startNode;
+  middleGameNode.optionNodes[0] = playGameNode;
+  middleGameNode.optionNodes[1] = mainMenuNode;
 
   return &middleGameNode;
 }
