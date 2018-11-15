@@ -1,5 +1,5 @@
 #define F_CPU 5000000 //16 000 000 needs to be changed to atmega2560, to compile on node 2, (5000000)
-
+#include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -9,15 +9,16 @@
 #include "tests/include/joystickTesting.h"
 #include "drivers/include/ADCDriver.h"
 #include "drivers/include/OLEDDriver.h"
+#include "drivers/include/CANDriver.h"
+#include "containers/include/gameStatusContainer.h"
 #include "game/include/gameMenu.h"
 #include "drivers/include/userInputDriver.h"
 #include "drivers/include/SPIDriver.h"
 #include "drivers/include/MCP2515Driver.h"
 #include "drivers/include/MCP2515.h"
-#include "drivers/include/CANDriver.h"
 #include "tests/include/OLEDTesting.h"
 #include "tests/include/CANTesting.h"
-#include "containers/include/gameStatusContainer.h"
+#include "drivers/include/timerDriver.h"
 
 #define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -27,13 +28,13 @@
 
 
 void main(){
-
   MCUCR = (1<<SRE);
   SFIOR = (1<<XMM2);
   SREG |= 0x80;
 
   //init
   USART_Init ( MYUBRR );
+  printf("HERE\n");
   SRAM_init ();
   SPI_init();
   mcp2515_init();
@@ -66,6 +67,7 @@ void main(){
     _delay_ms(1000);
   }
   */
+
   menuInit();
   menuLoop();
 

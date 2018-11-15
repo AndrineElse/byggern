@@ -1,6 +1,8 @@
 #include <stdint.h>
+#include <stdio.h>
 #include "../../drivers/include/CANDriver.h"
 #include "../../containers/include/gameStatusContainer.h"
+
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
@@ -14,19 +16,21 @@ struct Node endGameNode;
 struct Node middleGameNode;
 
 void menuInit(){
-
   //struct Node mainMenuNode;
-  playGameNode.parent = mainMenuNode;
+  struct Node playGameNode;
+  playGameNode.parent = &mainMenuNode;
   playGameNode.options[0] = "Go back";
   playGameNode.description = "Game";
   playGameNode.numOptions = 1;
 
-  highScoresNode.parent = mainMenuNode;
+  struct Node highScoresNode;
+  highScoresNode.parent = &mainMenuNode;
   highScoresNode.options[0] = "Go back";
   highScoresNode.description = "highscore";
   highScoresNode.numOptions = 1;
 
-  optionsNode.parent = mainMenuNode;
+  struct Node optionsNode;
+  optionsNode.parent = &mainMenuNode;
   optionsNode.options[0] = "Go back";
   optionsNode.description = "options";
   optionsNode.numOptions = 1;
@@ -165,7 +169,7 @@ void printNodeUsingBuffer(struct Node* node, uint8_t selectedOption){
     }
   }
 }
-
+/*
 struct Node* getEndGameNode(){
   endGameNode.parent = (struct Node*)0;
   endGameNode.description = "All lives lost, game over";
@@ -188,4 +192,4 @@ struct Node* getMiddleGameNode(){
   middleGameNode.optionNodes[1] = mainMenuNode;
 
   return &middleGameNode;
-}
+}*/
