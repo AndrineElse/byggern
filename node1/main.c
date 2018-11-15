@@ -37,6 +37,7 @@ void main(){
   mcp2515_init();
   CAN_init();
   OLED_init();
+  OLED_clear();
   OLED_init_buffer_mode();
 
   //JoystickOffset offset = userInputInit();
@@ -59,14 +60,7 @@ void main(){
     printf("mcp Status: %d\n\r", mcp2515_read_status());
   }*/
 
-
-  //char* superfjas = "Dette var mye fjas du. Skriv noe syyyykt!";
-
-  /*for(int i= 0; i<26;i++){
-    OLED_write_char('A'+i);
-  }*/
-  //OLED_print(superfjas);
-  /*
+/*
     while(1){
       JoystickOffset joystickOffset;
       joystickOffset = calculateOffsetJoystick();
