@@ -35,6 +35,7 @@ void main(){
   SPI_init();
   mcp2515_init();
   CAN_init();
+  CAN_init_interrupt();
   OLED_init();
   OLED_clear();
   OLED_init_buffer_mode();
