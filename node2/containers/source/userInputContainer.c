@@ -1,6 +1,6 @@
 #include <stdint.h>
+#include "../../drivers/include/CANDriver2.h"
 #include "../include/userInputContainer.h"
-#include "../../drivers/include/CANDriver.h"
 
 volatile struct Input_status input_container;
 

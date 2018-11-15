@@ -17,6 +17,7 @@
 #include "drivers/include/motorDriver.h"
 #include "drivers/include/servoDriver.h"
 #include "drivers/include/PIDriver.h"
+#include "containers/include/userInputContainer.h"
 
 //#define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -27,8 +28,9 @@ void main(){
 
   //init
   USART_Init ( MYUBRR );
-
+  input_container_init();
   CAN_init();
+  CAN_init_interrupt();
   //timer_init();
   pwm_init();
   adc_init();

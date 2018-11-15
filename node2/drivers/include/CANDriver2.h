@@ -8,3 +8,4 @@ void CAN_init();
 void CAN_init_interrupt();
 void send_CAN_msg(struct CAN_msg* msg);
 struct CAN_msg receive_msg();
+void CAN_message_handler();

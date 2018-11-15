@@ -1,3 +1,5 @@
+#define F_CPU 16000000
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
@@ -6,6 +8,7 @@
 #include "../include/PIDriver.h"
 #include "../include/motorDriver.h"
 #include "../include/servoDriver.h"
+#include "../../containers/include/userInputContainer.h"
 
 // Encoder -1207 til 7480-7536 ish = ca 8700
 // Joystick Y -100 to 96 = 196
@@ -32,7 +35,9 @@ int16_t pid_controller(struct PID_data *pid){
 
   pid->error_sum += error;
   printf("ErrorSum: %d\n\r", pid->error_sum);
+
   int16_t u = (pid->Kp)*error + T*(pid->Ki)*(pid->error_sum);
+
   if (u > 127){
     return 127;
   }

@@ -4,11 +4,11 @@
 #include "../include/servoDriver.h"
 #include "../include/PWMDriver.h"
 
-// sets the duty cycle on the pwm, 
+// sets the duty cycle on the pwm,
 // with pulses according to u:
 //    u=0 -> 0.9ms pulse -> max left angle
 //    u=128 -> 1.5 ms pulse -> center angle
-//    u=255 -> 2.1ms pulse -> max right angle 
+//    u=255 -> 2.1ms pulse -> max right angle
 void servo_set_duty_cycle(uint8_t u){
 
   //maps the uint8 into a uint16 where the min/max
@@ -24,14 +24,13 @@ void servo_set_duty_cycle(uint8_t u){
   sei(); //interrupts safe again
 }
 
-
-//updates servo angle, 
+//updates servo angle,
 //setting should be a number in [-100, 100]
 //  where 0 is the servo being straight.
 void servo_update_position(int8_t setting){
-  //transforms to an uint8, 
-  //  where max/min is 0,255 
+  //transforms to an uint8,
+  //  where max/min is 0,255
   //  and center is 128
-  uint8_t 8_bit_uint_transform = (setting*1.28)+128;
-  servo_set_duty_cycle(8_bit_uint_transform);
+  uint8_t uint8_transform = (setting*1.28)+128;
+  servo_set_duty_cycle(uint8_transform);
 }

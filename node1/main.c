@@ -40,17 +40,17 @@ void main(){
   OLED_clear();
   OLED_init_buffer_mode();
 
-  //JoystickOffset offset = userInputInit();
+  JoystickOffset offset = userInputInit();
   PORTB |= 1<<PB0; // set pinB0 as pull-up resistor input
   //OLEDTest();
   struct Node mainMenuNode;
-  menuInit(&mainMenuNode);
-  menuLoop(&mainMenuNode);
-  /*
+  //menuInit(&mainMenuNode);
+  //menuLoop(&mainMenuNode);
+
   while(1){
-    //send_joystick_position(offset);
+    send_joystick_position(offset);
   }
-*/
+
 
 
 
