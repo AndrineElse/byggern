@@ -1,11 +1,19 @@
 #include <stdint.h>
+#include "../../drivers/include/CANDriver.h"
+#include "../../containers/include/gameStatusContainer.h"
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
 #include <util/delay.h>
 
+struct Node mainMenuNode;
+struct Node playGameNode;
+struct Node highScoresNode;
+struct Node optionsNode;
+struct Node endGameNode;
+struct Node middleGameNode;
 
-void menuInit(struct Node* mainMenuNode){
+void menuInit(){
 
   //struct Node mainMenuNode;
   struct Node playGameNode;
@@ -42,7 +50,7 @@ void menuInit(struct Node* mainMenuNode){
   //mainMenuNode = &mainMenuNode;
 }
 
-void menuLoop(struct Node* startNode){
+void menuLoop(){
   JoystickOffset offset = userInputInit();
   uint8_t selectedOption = 0;
   JoystickDir currentDir;
@@ -52,25 +60,33 @@ void menuLoop(struct Node* startNode){
   uint8_t lastButtonValue = 0;
   uint8_t gameFlag = 1;
   uint8_t numFails= 0;
+  volatile struct Game_status* game;
   while(1){
+    //printf("Current node description: %s\n\r", currentNode->description );
     if(currentNode->description == "Game"){
-
+        printf("inside game node\n\r");
       if(gameFlag){
+        printf("inside playing game\n\r");
         send_joystick_position(offset);
-        Game_status* game = game_status_container_get_ptr();
+        printf("joystick pos sent\n\r");
+        game = game_status_container_get_ptr();
       }
       if (numFails != game->fails){
+        printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
         gameFlag = 0;
         numFails = game->fails;
         currentNode = getMiddleGameNode(startNode);
       }
       else if(game->lives == game->fails){
+        printf("Failed game\n\r");
         gameFlag = 0;
         numFails = 0;
         currentNode = getEndGameNode(startNode);
       }
     }
     else{
+      printf("Option nodes description: %s\n\r", currentNode->optionNodes[0]->description );
+      printf("inside menu looping\n\r");
       gameFlag = 1;
       //get joystick input
       JoystickOffset joystickOffset;
