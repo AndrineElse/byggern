@@ -56,13 +56,6 @@ void main(){
 */
 
   game_loop(&IR_sample_container, &pid);
-  while (1) {
-    // servo_test();
-    adc_test();
-
-    _delay_ms(1000);
-  }
-
 
 
 
