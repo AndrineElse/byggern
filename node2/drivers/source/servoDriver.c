@@ -1,41 +1,36 @@
 #include <avr/io.h>
+#include <stdint.h>
+#include <avr/interrupt.h>
 #include "../include/servoDriver.h"
 #include "../include/PWMDriver.h"
-#include "../include/CANDriver2.h"
-#include <avr/interrupt.h>
-#include <stdint.h>
-#define F_CPU 16000000
-// calculate correct duty cycle/on time which will be provided to your time/counter driver
-// implement safety features which will not let pwm go out of valid range for the servo
 
-
-//
+// sets the duty cycle on the pwm,
+// with pulses according to u:
+//    u=0 -> 0.9ms pulse -> max left angle
+//    u=128 -> 1.5 ms pulse -> center angle
+//    u=255 -> 2.1ms pulse -> max right angle
 void servo_set_duty_cycle(uint8_t u){
+
+  //maps the uint8 into a uint16 where the min/max
+  //  values correspond to 0.9 ms to 2.1 ms pulses
   uint8_t d_0 = 42; //(0.9/20))*1249  // originally 56
   float u_scalar = 0.294; //(((u*1.0)/255)*(1.2/20))*1249;
-
   uint16_t duty_cycle = u*u_scalar + d_0;
-  cli();
+
+  //TODO, add a saturation test here, to ensure only safe pulses
+
+  cli(); //interrupt disable due to 16 bit write action
   OCR1A = duty_cycle;
-  sei();
+  sei(); //interrupts safe again
 }
 
-JoystickCoords get_new_joystick_values(){
-  JoystickCoords coords;
-  struct CAN_msg received_message = receive_msg();
-  if (received_message.id == 1){ //Because joystick messages has id 1
-    int8_t x = received_message.data[0];
-    int8_t y = received_message.data[1];
-    // uint8_t x_transform = (x*1.28)+128;
-    coords.x = x;
-    coords.y = y;
-  }
-  return coords;
-}
-
-void update_servo_position(JoystickCoords coords){
-  uint8_t x_transform = (coords.x*1.28)+128;
-  servo_set_duty_cycle(x_transform);
-  printf("Joystick X: %d\n\r", x_transform);
-  printf("Coords x: %d\n\r", coords.x);
+//updates servo angle,
+//setting should be a number in [-100, 100]
+//  where 0 is the servo being straight.
+void servo_update_position(int8_t setting){
+  //transforms to an uint8,
+  //  where max/min is 0,255
+  //  and center is 128
+  uint8_t uint8_transform = (setting*1.28)+128;
+  servo_set_duty_cycle(uint8_transform);
 }

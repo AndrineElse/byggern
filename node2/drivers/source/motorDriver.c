@@ -26,8 +26,12 @@ void motor_init(struct PID_data *pid){
 }
 
 void set_motor_speed(struct PID_data *pid){
-  DDRD = 0x00;
-  JoystickCoords coords = get_new_joystick_values();
+
+
+  // WHY ON EARTH IS THIS INPUT?
+  // DDRD = 0x00;
+
+
   unsigned char msgSize = 3;
   unsigned char msg[msgSize];
   unsigned char slave_address = 0b01011110;

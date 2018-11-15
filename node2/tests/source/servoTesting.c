@@ -3,6 +3,7 @@
 #include "../../drivers/include/PWMDriver.h"
 #include "../../drivers/include/servoDriver.h"
 #include "../../drivers/include/CANDriver2.h"
+#include "../../containers/include/userInputContainer.h"
 
 void servo_test(){
   /*
@@ -18,5 +19,5 @@ void servo_test(){
 }
 
 void servo_joystick_test(){
-  update_servo_position(get_new_joystick_values());
+  servo_update_position(input_container_get_ptr()->joystick.x);
 }

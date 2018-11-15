@@ -80,7 +80,7 @@ void send_CAN_msg(struct CAN_msg* msg){
 
 
 struct CAN_msg receive_msg(){
-  printf("CANINTF %02x\n", mcp2515_read(MCP_CANINTF));
+  //printf("CANINTF %02x\n", mcp2515_read(MCP_CANINTF));
   struct CAN_msg msg;
   uint8_t lowerID;
   uint8_t upperID;

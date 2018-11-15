@@ -40,17 +40,30 @@ void main(){
   OLED_clear();
   OLED_init_buffer_mode();
 
-  //JoystickOffset offset = userInputInit();
+  JoystickOffset offset = userInputInit();
   PORTB |= 1<<PB0; // set pinB0 as pull-up resistor input
   //OLEDTest();
-  struct Node mainMenuNode;
-  menuInit(&mainMenuNode);
-  menuLoop(&mainMenuNode);
   /*
-  while(1){
+  while (1) {
+
+    struct CAN_msg received_message = receive_msg();
+    printf("Data [0]: %d , ID = %d\n\r", received_message.data[0], received_message.id);
+    if (received_message.id == 3){ //Because joystick messages has id 1
+      printf("HER\n");
+      printf("Data [1]\n\r", received_message.data[0]);
+    }
     //send_joystick_position(offset);
   }
 */
+  /*
+  struct Node mainMenuNode;
+  //menuInit(&mainMenuNode);
+  //menuLoop(&mainMenuNode);
+
+  while(1){
+    send_joystick_position(offset);
+  }
+
 
 
 
