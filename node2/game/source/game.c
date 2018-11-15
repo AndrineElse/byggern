@@ -27,7 +27,7 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
     servo_update_position(input_container_get_ptr()->joystick.x);
     set_motor_speed(pid);
     solenoid_update_status(&button_flag,&solenoid_timer);
-
+    game_send_update_CAN(&game);
     count_game_score(&game, IR_sample_container);
     //_delay_ms(10000);
   }
@@ -52,16 +52,16 @@ void count_game_score(struct Game_status* game,struct IR_status* IR_sample_conta
 /*
 MAPPING
 id = 2 = IR-Status
-data[0] = game.lives
-data[1] = game.fails
-data[3] = game.timer
-data[4] = game.score
+data[0] = game.fails
+data[1] = game.timer
+data[2] = game.lives
+data[3] = game.score
 */
 
 void game_send_update_CAN(struct Game_status* game){
   struct CAN_msg msg;
   msg.id = 2;
-  uint8_t array[8] = {game->lives,game->fails,game->timer,game->score,0,0,0};
+  uint8_t array[8] = {game->fails,game->timer,game->lives,game->score,0,0,0};
 
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
