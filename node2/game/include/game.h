@@ -2,7 +2,7 @@ struct Game_status {
   uint8_t fails;
   uint16_t timer;
   uint8_t lives;
-  uint16_t score;
+  uint32_t score;
 };
 
 void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid);

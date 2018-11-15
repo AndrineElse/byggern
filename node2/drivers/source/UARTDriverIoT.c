@@ -34,15 +34,20 @@ unsigned char USART_Receive( void )
   return UDR0;
 }
 
-// void USART_Transmit_STXETX( uint8_t payload[8], uint8_t len_0, uint8_t len_1 )
-void USART_Transmit_STXETX( uint16_t payload )
+// Send 0x10 Score Position
+// 0x12
+void USART_Transmit_STXETX( uint32_t payload, uint8_t firstByte )
 {
+  uint8_t length = 5;
   uint8_t data[length];
-  data[0] = payload & 0xFF;
-  data[1] = (payload >> 8);
+  data[0] = firstByte;
+  data[1] = (payload >> 24);
+  data[2] = (payload >> 16);
+  data[3] = (payload >> 8);
+  data[4] = payload & 0xFF;
   // length = number of bytes in payload
   // length |= (len_0 << 8);
-  uint8_t length = 2;
+  
   USART_Transmit(0x02); // STX
 	USART_Transmit(0x00); // LEN0
 	USART_Transmit(length); // LEN1
@@ -53,4 +58,16 @@ void USART_Transmit_STXETX( uint16_t payload )
   // msg = STX 0x02 + LEN[0] uint8_t + LEN[1] uint8_t + Payload[0..LEN] + ETX 0x03;
   /* Put data into buffer, sends the data */
   USART_Transmit(0x03); // ETX
+}
+
+uint16_t USART_Receive_STXETX( void )
+{
+  uint8_t value = USART_Receive( void );
+  if (value == 0x02){
+    uint8_t len_0 = USART_Receive( void );
+    uint8_t len_1 = USART_Receive( void );
+    uint16_t payload = USART_Receive( void );
+  }
+
+  return payload;
 }
