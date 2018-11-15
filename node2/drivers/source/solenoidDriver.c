@@ -14,8 +14,9 @@ void solenoid_init(){
 }
 
 uint8_t button_pressed(){
-  struct CAN_msg msg = receive_msg();
-  uint8_t pressed = msg.data[2];
+  //struct CAN_msg msg = receive_msg();
+  //uint8_t pressed = msg.data[2];
+  uint8_t pressed = input_container_get_ptr()->joystickButton;
   printf("Button: %d\n", pressed);
   return pressed;
 }
