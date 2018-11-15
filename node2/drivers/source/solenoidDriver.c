@@ -6,6 +6,7 @@
 #include "../include/solenoidDriver.h"
 #include "../include/CANDriver2.h"
 #include "../include/timerDriver.h"
+#include "../../containers/include/userInputContainer.h"
 
 // data[2] = button (LSB = button), 7 unused bits here
 

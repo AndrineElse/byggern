@@ -2,6 +2,7 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include "drivers/include/UARTdriver.h"
 #include "drivers/include/SRAMDriver.h"
 #include "tests/include/addressTesting.h"
@@ -28,6 +29,7 @@ void main(){
 
   MCUCR = (1<<SRE);
   SFIOR = (1<<XMM2);
+  SREG |= 0x80;
 
   //init
   USART_Init ( MYUBRR );
@@ -39,6 +41,7 @@ void main(){
   OLED_init();
   OLED_clear();
   OLED_init_buffer_mode();
+  OLED_buffer_clear();
   JoystickOffset offset = userInputInit();
 
   //OLEDTest();
@@ -53,11 +56,11 @@ void main(){
     }
     //send_joystick_position(offset);
   }
-*/
-  /*
+  */
+
   struct Node mainMenuNode;
-  //menuInit(&mainMenuNode);
-  //menuLoop(&mainMenuNode);
+  menuInit(&mainMenuNode);
+  menuLoop(&mainMenuNode);
 
   while(1){
     send_joystick_position(offset);
