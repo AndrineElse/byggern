@@ -52,12 +52,15 @@ void main(){
   while(1){
     //printf("Port D : %d \n\r",(PIND));
     send_CAN_msg(&msg);
-  }
+    _delay_ms(20000);
+  }*/
 
-*/
+
+
   while(1){
     USART_Receive();
   }
+
   game_loop(&IR_sample_container, &pid);
 
 
