@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <util/delay.h>
-#include "../../drivers/include/PIDriver.h"
+#include "../../controllers/include/speedController.h"
 #include "../../drivers/include/IRDriver.h"
 #include "../../drivers/include/timerDriver.h"
 #include "../../drivers/include/motorDriver.h"
@@ -16,19 +16,23 @@
 
 // void game_init(){}
 
-void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
+void game_loop(struct IR_status* IR_sample_container){
+
   struct Game_status game;
   game.lives = 3;
   game.fails = 0;
   game.timer = time_get_counter();
+
   uint8_t button_flag = 0;
   uint16_t solenoid_timer = 0;
-  while(game.fails < game.lives){
-    servo_update_position(input_container_get_ptr()->joystick.x);
-    set_motor_speed(pid);
-    solenoid_update_status(&button_flag,&solenoid_timer);
 
+  while(game.fails < game.lives){
+
+    servo_update_position(input_container_get_ptr()->joystick.x);
+    motor_set_power(speed_controller_get_power());
+    solenoid_update_status(&button_flag, &solenoid_timer);
     count_game_score(&game, IR_sample_container);
+    
     //_delay_ms(10000);
   }
   game.score = time_get_counter() - game.timer;
