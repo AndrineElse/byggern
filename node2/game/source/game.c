@@ -8,6 +8,7 @@
 #include "../../drivers/include/motorDriver.h"
 #include "../../drivers/include/servoDriver.h"
 #include "../../drivers/include/solenoidDriver.h"
+#include "../../drivers/include/UARTDriverIoT.h"
 #include "../../tests/include/servoTesting.h"
 
 
@@ -25,9 +26,11 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
     set_motor_speed(pid);
     solenoid_trigger();
     count_game_score(&game, IR_sample_container);
+    
     //_delay_ms(10000);
   }
   game.score = time_get_counter() - game.timer;
+  USART_Transmit_STXETX(game.score); // uint16_t
 }
 
 

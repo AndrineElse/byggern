@@ -1,0 +1,1 @@
+void USART_Transmit_STXETX( uint16_t payload );
