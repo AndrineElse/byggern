@@ -31,7 +31,6 @@ void main(){
 
   //init
   USART_Init ( MYUBRR );
-  // printf("Her 1");
   SRAM_init ();
   SPI_init();
   mcp2515_init();
@@ -39,9 +38,8 @@ void main(){
   OLED_init();
   OLED_clear();
   OLED_init_buffer_mode();
-
   JoystickOffset offset = userInputInit();
-  PORTB |= 1<<PB0; // set pinB0 as pull-up resistor input
+
   //OLEDTest();
   /*
   while (1) {
@@ -57,15 +55,8 @@ void main(){
 */
   /*
   struct Node mainMenuNode;
-<<<<<<< HEAD
   //menuInit(&mainMenuNode);
   //menuLoop(&mainMenuNode);
-=======
-  menuInit(&mainMenuNode);
-  menuLoop(&mainMenuNode);
-
-  */
->>>>>>> e0fd1596940630f9166bd3794541dbe0d5aa26e7
 
   while(1){
     send_joystick_position(offset);

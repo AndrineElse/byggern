@@ -8,6 +8,7 @@
 #include "../include/CANDriver.h"
 
 JoystickOffset userInputInit(){
+  PORTB |= 1<<PB0; // set pinB0 as pull-up resistor input
   JoystickOffset offset = calculateOffsetJoystick();
   return offset;
 }
@@ -85,6 +86,16 @@ SliderPosition calculateSliderPosition(){
   position.right = rawRight;
 
   return position;
+}
+
+//returns value of slider buttons
+// right button = LSB
+// left button second least sign.b.
+// buttons are connected to PD4 and PD5 
+uint8_t getSliderButtons(){
+  uint8_t left_button_value = ( PIND & (1<<PD4)) >> PD4;
+  uint8_t right_button_value = ( PIND & (1<<PD5)) >> PD5;
+  return left_button_value + (right_button_value << 1);
 }
 
 uint8_t joystickButton(){
