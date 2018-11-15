@@ -43,6 +43,7 @@ void main(){
   OLED_init_buffer_mode();
   OLED_buffer_clear();
   JoystickOffset offset = userInputInit();
+  timer_init();
 
   //OLEDTest();
   /*
@@ -57,6 +58,10 @@ void main(){
     //send_joystick_position(offset);
   }
   */
+  while(1){
+    printf("%d\n\r",timer_get_counter());
+    _delay_ms(1000);
+  }
 
   struct Node mainMenuNode;
   menuInit(&mainMenuNode);

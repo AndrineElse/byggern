@@ -3,7 +3,7 @@
 #include <avr/interrupt.h>
 #include "../include/timerDriver.h"
 
-volatile uint16_t tenthsOfSecondCounter;
+volatile uint16_t tenths_of_second_counter;
 
 void timer_init() {
   // we want:
@@ -12,7 +12,7 @@ void timer_init() {
   // * an interrupt that increments a number for each match compare
 
   // using prescaler of 256
-  // TOP has to be 0x3D0 for the frequency to be 10Hz
+  // TOP has to be 0x7A2 for the frequency to be 10Hz
   cli();
   // Set WGM to 0100 (CTC mode with OCRA containing top)
   // WGM 2:1 = 0b01,
@@ -21,8 +21,8 @@ void timer_init() {
   //WGM 1:0 = 0b00, all compare channels disabled
   TCCR3A |= 0x00;
 
-  // Set OCR3A to contain 0xC34
-  OCR3A = 0xCD0;
+  // Set OCR3A to contain 0x7A2
+  OCR3A = 0x7A2;
 
   // Set OCIE3A to high, which enables the interrupt call when
   // a compare matches on OCR3A. This interrupt activates by setting
@@ -34,7 +34,7 @@ void timer_init() {
 }
 
 ISR(TIMER3_COMPA_vect) {
-	printf("time int!");
+	//printf("time int!");
 	tenths_of_second_counter++;
 }
 
