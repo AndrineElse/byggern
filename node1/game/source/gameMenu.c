@@ -6,7 +6,7 @@
 
 
 void menuInit(struct Node* mainMenuNode){
-  
+
   //struct Node mainMenuNode;
   struct Node playGameNode;
   playGameNode.parent = mainMenuNode;
@@ -89,9 +89,9 @@ void menuLoop(struct Node* startNode){
     _delay_ms(50);
     printNodeUsingBuffer(currentNode, selectedOption);
     OLED_buffer_update_screen();
-    if (currentNode->description == "Game"){
+    /*if (currentNode->description == "Game"){
       send_joystick_position(offset);
-    }
+    }*/
   }
 }
 

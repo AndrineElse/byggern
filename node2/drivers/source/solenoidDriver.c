@@ -5,6 +5,7 @@
 #include <avr/interrupt.h>
 #include "../include/solenoidDriver.h"
 #include "../include/CANDriver2.h"
+#include "../include/timerDriver.h"
 
 // data[2] = button (LSB = button), 7 unused bits here
 
@@ -21,14 +22,25 @@ uint8_t button_pressed(){
 }
 
 void solenoid_trigger(){
-  if (button_pressed() == 1){
+  if (button_pressed()){
     PINF |= (1<<PF1);
-    _delay_ms(500);
-    PINF &= ~(1<<PF1);
-    _delay_ms(50);
+  }
+  // solenoid at ADC1 = PF1
+}
+
+void solenoid_update_status(uint8_t* button_flag, uint16_t* timer){
+  if(*button_flag == 0){
+    if(button_pressed()){
+      uint16_t start_time = *timer;
+      *button_flag = 1;
+      solenoid_trigger();
+      while((*timer - start_time)<50){
+        printf("Counter: %d\n\r", time_get_counter() );
+      }
+      PINF &= ~(1<<PF1);
+      *timer = 0;
+      *button_flag=0;
+    }
   }
 
-
-
-  // solenoid at ADC1 = PF1
 }

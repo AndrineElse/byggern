@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <avr/interrupt.h>
 #include "drivers/include/UARTDriver2.h"
+#include "drivers/include/CANDriver2.h"
 #include "drivers/include/SPIDriver2.h"
 #include "tests/include/CANTesting2.h"
 #include "drivers/include/PWMDriver.h"
@@ -37,9 +38,21 @@ void main(){
 
   timer_init();
   solenoid_init();
-
   struct PID_data pid;
   motor_init(&pid);
+  /*
+  struct CAN_msg msg;
+  msg.data[0] = 50;
+  msg.id = 3;
+  msg.length = 1;
+
+  while(1){
+    //printf("Port D : %d \n\r",(PIND));
+    send_CAN_msg(&msg);
+  }
+
+*/
+
   game_loop(&IR_sample_container, &pid);
   while (1) {
     // servo_test();
