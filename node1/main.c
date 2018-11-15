@@ -43,9 +43,29 @@ void main(){
   JoystickOffset offset = userInputInit();
   PORTB |= 1<<PB0; // set pinB0 as pull-up resistor input
   //OLEDTest();
+  /*
+  while (1) {
+
+    struct CAN_msg received_message = receive_msg();
+    printf("Data [0]: %d , ID = %d\n\r", received_message.data[0], received_message.id);
+    if (received_message.id == 3){ //Because joystick messages has id 1
+      printf("HER\n");
+      printf("Data [1]\n\r", received_message.data[0]);
+    }
+    //send_joystick_position(offset);
+  }
+*/
+  /*
   struct Node mainMenuNode;
+<<<<<<< HEAD
   //menuInit(&mainMenuNode);
   //menuLoop(&mainMenuNode);
+=======
+  menuInit(&mainMenuNode);
+  menuLoop(&mainMenuNode);
+
+  */
+>>>>>>> e0fd1596940630f9166bd3794541dbe0d5aa26e7
 
   while(1){
     send_joystick_position(offset);
