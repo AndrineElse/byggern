@@ -89,10 +89,26 @@ void menuLoop(struct Node* startNode){
     _delay_ms(50);
     printNodeUsingBuffer(currentNode, selectedOption);
     OLED_buffer_update_screen();
-    /*if (currentNode->description == "Game"){
-    
-      send_joystick_position(offset);
-    }*/
+    /*
+    while (1)
+      if (currentNode.disc != "game")
+          game menu things...
+      elseif (currentNode.disc == "game")
+          send_joystick_position(offset);
+          Game_status* game = game_status_container_get_ptr()
+          numFails= game->fails;
+          if (numFails!=game->fails){
+
+          }
+          else if(game->fails == game->){
+            Node end_game;
+            (initialize options, make sure that new game, is the same as game node above)
+            current_node = end_game
+
+          }
+
+    */
+
   }
 }
 
