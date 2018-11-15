@@ -41,3 +41,9 @@ void solenoid_update_status(uint8_t* button_flag, uint16_t* timer){
     }
   }
 }
+
+void solenoid_fire(uint8_t* button_flag, uint16_t* timer){
+  *timer = time_get_counter();
+  *button_flag = 1;
+  PORTF |= (1<<PF1);
+}
