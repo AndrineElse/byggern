@@ -57,15 +57,8 @@ void main(){
 */
   /*
   struct Node mainMenuNode;
-<<<<<<< HEAD
   //menuInit(&mainMenuNode);
   //menuLoop(&mainMenuNode);
-=======
-  menuInit(&mainMenuNode);
-  menuLoop(&mainMenuNode);
-
-  */
->>>>>>> e0fd1596940630f9166bd3794541dbe0d5aa26e7
 
   while(1){
     send_joystick_position(offset);
