@@ -18,6 +18,7 @@
 #include "drivers/include/motorDriver.h"
 #include "drivers/include/servoDriver.h"
 #include "drivers/include/PIDriver.h"
+#include "drivers/include/UARTDriverIoT.h"
 #include "containers/include/userInputContainer.h"
 
 //#define FOSC 1843200// Clock Speed
@@ -54,7 +55,9 @@ void main(){
   }
 
 */
-
+  while(1){
+    printf("USART Receive: %d\n\r", USART_Receive_STXETX(0x13));
+  }
   game_loop(&IR_sample_container, &pid);
 
 

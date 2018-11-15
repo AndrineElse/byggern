@@ -24,6 +24,7 @@ int16_t pid_controller(struct PID_data *pid){
   JoystickCoords coords = input_container_get_ptr()->joystick;
   uint16_t actual_encoder_value = -read_motor_encoder();
   int16_t target_value = coords.y;
+  printf("Target: %d\n\r", target_value);
 
   pid->position += actual_encoder_value;
   int16_t error = target_value - pid->position/40;

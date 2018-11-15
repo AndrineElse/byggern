@@ -9,9 +9,10 @@
 #include "../../drivers/include/CANDriver2.h"
 #include "../../drivers/include/servoDriver.h"
 #include "../../drivers/include/solenoidDriver.h"
-#include "../../drivers/include/UARTDriverIoT.h"
+
 #include "../../tests/include/servoTesting.h"
 #include "../../containers/include/userInputContainer.h"
+#include "../../drivers/include/UARTDriverIoT.h"
 
 #include "../include/game.h"
 
@@ -30,11 +31,12 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
     solenoid_update_status(&button_flag,&solenoid_timer);
 
     count_game_score(&game, IR_sample_container);
-    
+
     //_delay_ms(10000);
   }
   game.score = time_get_counter() - game.timer;
   USART_Transmit_STXETX(game.score, 0x10); // uint16_t
+  printf("Game score: %d\n\r", game.score);
 }
 
 
