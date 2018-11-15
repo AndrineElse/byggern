@@ -24,7 +24,7 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
   uint8_t button_flag = 0;
   uint16_t solenoid_timer = 0;
   while(game.fails < game.lives){
-    servo_set_duty_cycle(input_container_get_ptr()->joystick.x);
+    servo_update_position(input_container_get_ptr()->joystick.x);
     set_motor_speed(pid);
     solenoid_update_status(&button_flag,&solenoid_timer);
 

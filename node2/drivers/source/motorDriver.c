@@ -27,9 +27,9 @@ void motor_init(struct PID_data *pid){
 
 void set_motor_speed(struct PID_data *pid){
 
-  
+
   // WHY ON EARTH IS THIS INPUT?
-  //DDRD = 0x00;
+  // DDRD = 0x00;
 
 
   unsigned char msgSize = 3;
@@ -40,7 +40,7 @@ void set_motor_speed(struct PID_data *pid){
   msg[0] = slave_address;
   //msg[1] = (unsigned char)coords.y;
   msg[1] = 0;
-  printf("Power: %d\n\r", power);
+  //printf("Power: %d\n\r", power);
   msg[2] = motor_vertical(power);
   TWI_Start_Transceiver_With_Data(msg, msgSize);
 }
