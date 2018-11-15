@@ -6,6 +6,7 @@
 #include "../include/solenoidDriver.h"
 #include "../include/CANDriver2.h"
 #include "../include/timerDriver.h"
+#include "../../containers/include/userInputContainer.h"
 
 // data[2] = button (LSB = button), 7 unused bits here
 
@@ -32,16 +33,17 @@ void solenoid_trigger(){
 void solenoid_update_status(uint8_t* button_flag, uint16_t* timer){
   if(*button_flag == 0){
     if(button_pressed()){
-      uint16_t start_time = *timer;
+      timer = time_get_counter();
       *button_flag = 1;
-      solenoid_trigger();
-      while((*timer - start_time)<50){
-        printf("Counter: %d\n\r", time_get_counter() );
-      }
-      PINF &= ~(1<<PF1);
-      *timer = 0;
-      *button_flag=0;
+      PINF |= (1<<PF1);
     }
   }
-
+  else{
+      printf("HERE\n\r");
+      if((time_get_counter()-*timer)>30){
+        PINF &= ~(1<<PF1);
+        *timer = 0;
+        *button_flag=0;
+      }
+  }
 }

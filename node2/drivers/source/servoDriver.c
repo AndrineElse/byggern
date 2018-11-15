@@ -13,7 +13,7 @@ void servo_set_duty_cycle(uint8_t u){
 
   //maps the uint8 into a uint16 where the min/max
   //  values correspond to 0.9 ms to 2.1 ms pulses
-  uint8_t d_0 = 42; //(0.9/20))*1249  // originally 56
+  uint8_t d_0 = 56; //(0.9/20))*1249  // originally 43
   float u_scalar = 0.294; //(((u*1.0)/255)*(1.2/20))*1249;
   uint16_t duty_cycle = u*u_scalar + d_0;
 
