@@ -1,6 +1,8 @@
 #include <stdint.h>
-#include "../../containers/include/gameStatusContainer.h"
+#include <stdio.h>
 #include "../../drivers/include/CANDriver.h"
+#include "../../containers/include/gameStatusContainer.h"
+
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
@@ -14,7 +16,6 @@ struct Node endGameNode;
 struct Node middleGameNode;
 
 void menuInit(){
-
   //struct Node mainMenuNode;
   struct Node playGameNode;
   playGameNode.parent = &mainMenuNode;
