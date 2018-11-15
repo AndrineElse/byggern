@@ -90,7 +90,7 @@ void menuLoop(struct Node* startNode){
     printNodeUsingBuffer(currentNode, selectedOption);
     OLED_buffer_update_screen();
     /*if (currentNode->description == "Game"){
-      
+    
       send_joystick_position(offset);
     }*/
   }
