@@ -11,7 +11,7 @@
 
 //
 void servo_set_duty_cycle(uint8_t u){
-  uint8_t d_0 = 56; //(0.9/20))*1249
+  uint8_t d_0 = 42; //(0.9/20))*1249  // originally 56
   float u_scalar = 0.294; //(((u*1.0)/255)*(1.2/20))*1249;
 
   uint16_t duty_cycle = u*u_scalar + d_0;
@@ -36,4 +36,6 @@ JoystickCoords get_new_joystick_values(){
 void update_servo_position(JoystickCoords coords){
   uint8_t x_transform = (coords.x*1.28)+128;
   servo_set_duty_cycle(x_transform);
+  printf("Joystick X: %d\n\r", x_transform);
+  printf("Coords x: %d\n\r", coords.x);
 }

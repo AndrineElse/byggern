@@ -23,9 +23,11 @@ uint8_t button_pressed(){
 void solenoid_trigger(){
   if (button_pressed() == 1){
     PINF |= (1<<PF1);
-    _delay_ms(3000);
+    _delay_ms(500);
     PINF &= ~(1<<PF1);
+    _delay_ms(50);
   }
+
 
 
   // solenoid at ADC1 = PF1

@@ -20,8 +20,8 @@ void motor_init(struct PID_data *pid){
   //PINH4 = 0xFF; // EN
   //PINH1 = 0xFF;// DIR
 
-  int8_t p_factor = 2;
-  int8_t i_factor = 2;
+  int8_t p_factor = 1;
+  int8_t i_factor = 1;
   pid_init(p_factor, i_factor, pid);
 }
 
