@@ -34,21 +34,20 @@ void USART_Transmit_STXETX(uint32_t payload, uint8_t firstByte){
   sei();
 }
 
-uint16_t USART_Receive_STXETX( uint8_t firstByte )
+uint16_t USART_Receive_STXETX()
 {
   uint8_t length = 2;
   uint8_t data[length];
   cli();
   uint8_t first = USART_Receive();
   //if (value == 0x02){
-    uint8_t len_0 = USART_Receive();
-    uint8_t len_1 = USART_Receive();
-    uint8_t byte = USART_Receive();
+    //uint8_t len_0 = USART_Receive();
+    //uint8_t len_1 = USART_Receive();
+    //uint8_t byte = USART_Receive();
     if (firstByte == 0x13){
       length = 2;
-      data[0] = USART_Receive();
-      data[1] = USART_Receive();
-
+      data[0] = UDR0;
+      data[1] = UDR1;
 
     }
     // uint8_t payload = USART_Receive();

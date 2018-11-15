@@ -56,7 +56,7 @@ void main(){
 
 */
   while(1){
-    printf("USART Receive: %d\n\r", USART_Receive_STXETX(0x13));
+    USART_Receive();
   }
   game_loop(&IR_sample_container, &pid);
 
