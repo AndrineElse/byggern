@@ -115,7 +115,7 @@ void CAN_message_handler() {
       //dosomething
       break;
     //add more cases here
-    case 3:
+    case 2:
       game_status_container_update(new_message);
       break;
     default:
