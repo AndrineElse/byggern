@@ -58,7 +58,7 @@ void main(){
 
 
   while(1){
-    printf("Receive: %d\n\r", USART_Receive());
+    // printf("Receive: %d\n\r", USART_Receive());
     printf("STXETX: %d\n\r", USART_Receive_STXETX());
     //_delay_ms(100);
   }
