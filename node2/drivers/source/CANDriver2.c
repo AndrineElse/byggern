@@ -122,6 +122,7 @@ struct CAN_msg receive_msg(){
 
 ISR(INT2_vect) {
   cli();
+  printf("Inside ISR\n\r");
   CAN_message_handler();
   sei();
 }

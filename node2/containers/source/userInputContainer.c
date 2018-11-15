@@ -30,3 +30,8 @@ void input_container_update(struct CAN_msg new_input_message){
 volatile struct Input_status* input_container_get_ptr() {
   return &input_container;
 }
+
+void print_input_container(){
+  printf("Input container X : %d\n\r",input_container.joystick.x );
+  printf("Input container X : %d\n\r",input_container.joystick.y );
+}

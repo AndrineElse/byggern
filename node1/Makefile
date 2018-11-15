@@ -2,7 +2,7 @@
 SOURCE_FILES := main.c drivers/source/UARTdriver.c drivers/source/SRAMDriver.c tests/source/addressTesting.c \
 tests/source/joystickTesting.c drivers/source/ADCDriver.c drivers/source/OLEDDriver.c game/source/gameMenu.c \
 drivers/source/userInputDriver.c drivers/source/SPIDriver.c drivers/source/MCP2515Driver.c drivers/source/CANDriver.c tests/source/CANTesting.c \
-tests/source/OLEDTesting.c containers/gameStatusContainer.c drivers/source/timerDriver.c
+tests/source/OLEDTesting.c containers/source/gameStatusContainer.c drivers/source/timerDriver.c
 
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used

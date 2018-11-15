@@ -60,19 +60,51 @@ void main(){
     //send_joystick_position(offset);
   }
   */
+  /*
   while(1){
     printf("%d\n\r",timer_get_counter());
     _delay_ms(1000);
   }
-
+  */
   struct Node mainMenuNode;
-  menuInit(&mainMenuNode);
+  //struct Node mainMenuNode;
+  struct Node playGameNode;
+  playGameNode.parent = &mainMenuNode;
+  playGameNode.options[0] = "Go back";
+  playGameNode.description = "Game";
+  playGameNode.numOptions = 1;
+
+  struct Node highScoresNode;
+  highScoresNode.parent = &mainMenuNode;
+  highScoresNode.options[0] = "Go back";
+  highScoresNode.description = "highscore";
+  highScoresNode.numOptions = 1;
+
+  struct Node optionsNode;
+  optionsNode.parent = &mainMenuNode;
+  optionsNode.options[0] = "Go back";
+  optionsNode.description = "options";
+  optionsNode.numOptions = 1;
+
+
+  mainMenuNode.parent = (struct Node*)0;
+  mainMenuNode.options[0] = "Play game";
+  mainMenuNode.options[1] = "Highscores";
+  mainMenuNode.options[2] = "Options";
+
+  mainMenuNode.description = "This is the main menu :)";
+  mainMenuNode.numOptions = 3;
+
+  mainMenuNode.optionNodes[0] = &playGameNode;
+  mainMenuNode.optionNodes[1] = &highScoresNode;
+  mainMenuNode.optionNodes[2] = &optionsNode;
   menuLoop(&mainMenuNode);
 
+  /*
   while(1){
     send_joystick_position(offset);
   }
-
+*/
 
 
 

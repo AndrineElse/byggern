@@ -1,6 +1,6 @@
 #include <stdint.h>
-#include "../../drivers/include/CANDriver2.h"
-#include "../include/userInputContainer.h"
+#include "../../drivers/include/CANDriver.h"
+#include "../include/gameStatusContainer.h"
 
 volatile struct Game_status game_status_container;
 

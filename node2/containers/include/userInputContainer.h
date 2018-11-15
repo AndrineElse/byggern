@@ -15,3 +15,4 @@ struct Input_status {
 void input_container_init();
 volatile struct Input_status* input_container_get_ptr();
 void input_container_update(struct CAN_msg new_input_message);
+void print_input_container();
