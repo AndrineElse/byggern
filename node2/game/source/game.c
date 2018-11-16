@@ -24,9 +24,9 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
   uint8_t button_flag = 0;
   uint16_t solenoid_timer = 0;
   while(game.fails < game.lives){
-    
-    servo_update_position(input_container_get_ptr()->joystick.x);
 
+    servo_update_position(input_container_get_ptr()->joystick.x);
+    game_send_update_CAN(&game);
     set_motor_speed(pid);
     solenoid_update_status(&button_flag,&solenoid_timer);
 
@@ -63,7 +63,7 @@ data[4] = game.score
 void game_send_update_CAN(struct Game_status* game){
   struct CAN_msg msg;
   msg.id = 2;
-  uint8_t array[8] = {game->lives,game->fails,game->timer,game->score,0,0,0};
+  uint8_t array[8] = {game->fails,game->timer,game->lives,game->score,0,0,0};
 
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];

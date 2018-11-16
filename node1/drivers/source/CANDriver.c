@@ -113,6 +113,9 @@ void CAN_message_handler() {
     case 1:
       //dosomething
       break;
+    case 2:
+      printf("Recieved a game status message, num fails = %d \n", new_message.data[1]);
+    break;
     //add more cases here
 
     default:
