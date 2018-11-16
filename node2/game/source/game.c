@@ -28,6 +28,8 @@ void game_loop(struct IR_status* IR_sample_container){
   uint16_t solenoid_timer = 0;
   uint16_t update_CAN_timer=0;
   uint8_t update_CAN_flag=0;
+  uint8_t fail_registerd_flag =0;
+  uint16_t fail_timer=0;
   while(game.fails < game.lives){
 
     printf("game start: %d\n\r", (game_data_container_get_ptr()->gameStart));
@@ -35,7 +37,7 @@ void game_loop(struct IR_status* IR_sample_container){
       servo_update_position(input_container_get_ptr()->joystick.x);
       motor_set_power(pos_controller_get_power());
       solenoid_update_status(&button_flag,&solenoid_timer);
-      count_game_score(&game, IR_sample_container);
+      count_game_score(&game, IR_sample_container,&fail_timer,&fail_registerd_flag);
       //_delay_ms(1000);
       game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
     }
@@ -47,17 +49,29 @@ void game_loop(struct IR_status* IR_sample_container){
 
 
 
-void count_game_score(struct Game_status* game,struct IR_status* IR_sample_container){
+void count_game_score(struct Game_status* game,struct IR_status* IR_sample_container, uint16_t* timer, uint8_t*
+flag){
   // uint8_t last_IR_value = adc_read();
   // uint8_t count = 0;
   // while(count < game->lives){
-    if (IR_poll_failure(IR_sample_container)){
-      //printf("Fail registered:\n\r");
-      game->fails++;
-      //uint16_t pause =
-      _delay_ms(2000);  //need timer like in PWM
+    if(*flag ==0){
+      if (IR_poll_failure(IR_sample_container)){
+        //printf("Fail registered:\n\r");
+        game->fails++;
+        //uint16_t pause =
+         //need timer like in PWM
+         *timer = time_get_counter();
+         *flag = 1;
+      }
+      else{
+        if((time_get_counter() - *timer) > 10){
+          *timer = 0;
+          *flag = 0;
+        }
+      }
     }
-    printf("Num fails: %d\n\r", game->fails);
+
+    //printf("Num fails: %d\n\r", game->fails);
   // }
 }
 

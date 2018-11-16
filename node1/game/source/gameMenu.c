@@ -92,11 +92,12 @@ void menuLoop(){
   gameData.calibrateEncoder = 0;
   //volatile struct Game_status* game;
   while(1){
+    game_send_data_CAN();
     //printf("Current node description: %s\n\r", currentNode->description );
     if(currentNode->description == "Game"){
         // printf("inside game node\n\r");
       if(gameFlag){
-        game_send_data_CAN();
+
         OLED_clear();
         send_joystick_position(offset);
         gameData.gameStart = 1;
