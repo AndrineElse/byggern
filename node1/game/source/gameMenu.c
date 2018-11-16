@@ -1,8 +1,11 @@
+//System frequency used by util/delay, 16MHz for node 2, 5MHz for node 1
+#define F_CPU 5000000
+
 #include <stdint.h>
+#include <util/delay.h>
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
-#include <util/delay.h>
 
 
 void menuInit(struct Node* mainMenuNode){

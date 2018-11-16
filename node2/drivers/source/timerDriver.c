@@ -2,9 +2,11 @@
 #include <avr/interrupt.h>
 #include <stdint.h>
 #include "../include/timerDriver.h"
+#include "../include/CANDriver2.h"
 #include "../../controllers/include/posController.h"
 #include "../../containers/include/userInputContainer.h"
 #include "../include/motorDriver.h"
+#include "../include/IRDriver.h"
 
 volatile uint16_t tenths_of_second_counter;
 

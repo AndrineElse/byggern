@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <util/delay.h>
 #include "../include/ADCDriver2.h"
 
 void adc_init(){

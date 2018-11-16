@@ -1,11 +1,14 @@
+//system clock frequency, used by util/delay, 16MHz for node 2, 5MHz for node 1
+#define F_CPU 16000000
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
+#include "../include/SPIDriver2.h"
 #include "../include/MCP25152.h"
 #include "../include/MCP2515Driver2.h"
-#include "../include/SPIDriver2.h"
 
 void mcp2515_reset(){
   PORTB &= ~(1<<DDB7);

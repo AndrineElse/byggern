@@ -10,4 +10,4 @@ void menuLoop(struct Node* startNode);
 void printNode(struct Node* node, uint8_t selectedOption);
 void menuInit(struct Node* mainMenuNode);
 void printNodeUsingBuffer(struct Node* node, uint8_t selectedOption);
-void game_send_update_CAN(struct Game_status* game);
+// void game_send_update_CAN(struct Game_status* game);

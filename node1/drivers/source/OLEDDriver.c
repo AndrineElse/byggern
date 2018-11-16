@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
@@ -65,7 +66,7 @@ void OLED_pos(uint8_t row, uint8_t column){
   OLED_write_command(0xb0 + row); //rown (page select)
   OLED_write_command(column & 0xf);
   OLED_write_command((column >> 4) + 0x10);
-  pos();
+  sei();
 }
 
 void OLED_write_data(char c){

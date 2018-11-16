@@ -14,6 +14,7 @@
 #include "drivers/include/SPIDriver2.h"
 #include "drivers/include/PWMDriver.h"
 #include "drivers/include/ADCDriver2.h"
+#include "drivers/include/solenoidDriver.h"
 
 //game
 #include "game/include/game.h"
@@ -64,8 +65,8 @@ void main(){
     send_CAN_msg(&msg);
     _delay_ms(20000);
   }*/
-
-  game_loop(&IR_sample_container);
+  //printf("main\n\r");
+  game_loop();
 
 
 

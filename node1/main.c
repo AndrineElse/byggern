@@ -67,7 +67,7 @@ void main(){
   menuLoop(&mainMenuNode);
   */
   while(1){
-    send_joystick_position(offset);
+    //send_joystick_position(offset);
   }
 
 

@@ -16,7 +16,7 @@
 
 #include "../include/game.h"
 
-void game_loop(struct IR_status* IR_sample_container){
+void game_loop(){
 
   struct Game_status game;
   game.lives = 3;
@@ -27,20 +27,22 @@ void game_loop(struct IR_status* IR_sample_container){
   uint16_t solenoid_timer = 0;
 
   while(game.fails < game.lives){
-    
+
     servo_update_position(input_container_get_ptr()->joystick.x);
     motor_set_power(pos_controller_get_power());
     solenoid_update_status(&button_flag, &solenoid_timer);
-    count_game_score(&game, IR_sample_container);
+    count_game_score(&game);
+    printf("IR: %d\n\r",IR_get_mean_value());
   }
 
   game.score = time_get_counter() - game.timer;
 }
 
 
-void count_game_score(struct Game_status* game, struct IR_status* IR_sample_container){
-  if (IR_poll_failure(IR_sample_container)){
+void count_game_score(struct Game_status* game){
+  if (IR_check_obstruction()){
     game->fails++;
+    printf("a");
     _delay_ms(2000);  //need timer like in PWM
   }
 }

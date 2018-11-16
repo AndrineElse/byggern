@@ -1,5 +1,4 @@
 #include <avr/io.h>
-#include <util/delay.h>
 #include <stdio.h>
 #include <float.h>
 #include <avr/interrupt.h>
