@@ -6,6 +6,7 @@
 
 void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
   printf("TRANSMIT:\n\r" );
+  // lag flere funksjoner, burde funke ellers, sjekk hva den får
   // cli();
   USART_Transmit(0x02); // STX
 	USART_Transmit(0x00); // LEN0
