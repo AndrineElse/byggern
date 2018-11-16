@@ -97,9 +97,11 @@ SliderPosition calculateSliderPosition(){
 // left button second least sign.b.
 // buttons are connected to PD4 and PD5
 uint8_t getSliderButtons(){
-  uint8_t left_button_value = ( PIND & (1<<PD4)) >> PD4;
-  uint8_t right_button_value = ( PIND & (1<<PD5)) >> PD5;
-  return left_button_value + (right_button_value << 1);
+  //uint8_t left_button_value = ( PIND & (1<<PD4)) >> PD4;
+  //uint8_t right_button_value = ( PIND & (1<<PD5)) >> PD5;
+  uint8_t left_button_value = ( PIND & 0x10) >> 3;
+  uint8_t right_button_value = ( PIND & 0x20) >> 5;
+  return left_button_value + (right_button_value);
 }
 
 uint8_t joystickButton(){
@@ -144,10 +146,13 @@ void send_joystick_position(JoystickOffset offset){
 
 
 void joystick_set_max_values(){
-  char oprions[4];
-  options = {"Set max right (x)", "Set min left (x)","Set max up (y)", "Set min down(y)" };
+  char* options[4]= {"Set max right (x)", "Set min left (x)","Set max up (y)", "Set min down(y)" };
+  /*
+  [20];
+  options = {"Set max right (x)", "Set min left (x)","Set max up (y)", "Set min down(y)" };*/
   for (uint8_t i = 0; i < 4; i++) {
-    OLED_buffer_print_line(&options[i], 1, 0);
+    OLED_buffer_print_line(options[i], 1, 0);
+    OLED_buffer_update_screen();
     while (!getSliderButtons()) {
       uint8_t rawX = readChannel(2);
       uint8_t rawY = readChannel(1);
@@ -165,10 +170,11 @@ void joystick_set_max_values(){
           min_coords.x = rawX;
           break;
       }
+      printf("Max x: %d, Max y: %d, min x: %d, min y: %d \n\r", max_coords.x, max_coords.y,min_coords.x,min_coords.y);
     }
     OLED_buffer_clear();
   }
-  printf("Max x: %d, Max y: %d, min x: %d, min y: %d", max_coords.x, max_coords.y,min_coords.x,min_coords.y)
+  printf("Max x: %d, Max y: %d, min x: %d, min y: %d", max_coords.x, max_coords.y,min_coords.x,min_coords.y);
 }
 /*
 JoystickCoords joystick_calibration(JoystickCoords joystickMax){
