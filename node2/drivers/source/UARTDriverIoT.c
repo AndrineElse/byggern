@@ -101,8 +101,9 @@ uint8_t* USART_Receive_STXETX(){
   uint8_t id_byte = USART_Receive();
   printf("id: %x\n\r", id_byte );
   // uint8_t payload[len];
-    switch(id_byte){
-    case 0x11:  // Request new game
+    //switch(id_byte){
+    //case 0x11:  // Request new game
+    if(id_byte == 0x11){
     //dosomething
       //uint8_t payload[1];
       len = 1;
@@ -112,44 +113,47 @@ uint8_t* USART_Receive_STXETX(){
 
       return payload_11;
       // return 0x11;
-      break;
 
-    case 0x13:  // Request position
+    }
+    if(id_byte == 0x13){
+    //case 0x13:  // Request position
     //dosomething
       //uint8_t payload[2];
       len = 2;
       uint8_t payload_13[len];
-      payload[0] = USART_Receive();
-      payload[1] = USART_Receive();
+      payload_13[0] = USART_Receive();
+      payload_13[1] = USART_Receive();
       printf("First byte: %x\n\r", payload_13[0]);
       printf("Second byte: %x\n\r", payload_13[1]);
 
       return payload_13;
       // return payload
-      break;
+      //break;
+    }
 
-    case 0x15:  // Fire
+    if(id_byte == 0x15){
+    //case 0x15:  // Fire
     //dosomething
       //uint8_t payload[1];
       len = 1;
       uint8_t payload_15[len];
-      payload[0] = 0x15;
+      payload_15[0] = 0x15;
       printf("First byte: %x\n\r", payload_15[0]);
 
       return payload_15;
       // return 0x15;
-      break;
+      //break;
     //add more cases here
 
-    default:
+    /*default:
       printf("Wrong id byte\n\r");
-      break;
+      //break;*/
     }
     /*
     for (uint8_t i = 0; i < len; i++){
       payload[i] = USART_Receive();
     }*/
-  printf("First byte: %x\n\r", payload[0]);
+  /*printf("First byte: %x\n\r", payload[0]);
   printf("Second byte: %x\n\r", payload[1]);
   printf("Third byte: %x\n\r", payload[2]);
   //printf("Fourth byte: %x\n\r", payload[3]);
