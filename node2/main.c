@@ -1,24 +1,37 @@
-#define F_CPU 16000000 //16 000 000 needs to be changed to atmega2560, to compile on node 2, (5000000)
+//system clock frequency, used by util/delay, 16MHz for node 2, 5MHz for node 1
+#define F_CPU 16000000
 
+//system libraries
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <avr/interrupt.h>
+
+//drivers
 #include "drivers/include/UARTDriver2.h"
 #include "drivers/include/CANDriver2.h"
 #include "drivers/include/SPIDriver2.h"
-#include "tests/include/CANTesting2.h"
 #include "drivers/include/PWMDriver.h"
-#include "tests/include/servoTesting.h"
 #include "drivers/include/ADCDriver2.h"
-#include "tests/include/ADCTesting.h"
+
+//game
 #include "game/include/game.h"
+
+//more drivers
 #include "drivers/include/IRDriver.h"
 #include "drivers/include/motorDriver.h"
 #include "drivers/include/servoDriver.h"
-#include "drivers/include/PIDriver.h"
+#include "drivers/include/timerDriver.h"
+
+//controller
+#include "controllers/include/posController.h"
+
+//container
 #include "containers/include/userInputContainer.h"
+
+//tests
+//include eventual tests here
 
 //#define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -26,22 +39,21 @@
 
 void main(){
 
-
   //init
   USART_Init ( MYUBRR );
   input_container_init();
   CAN_init();
   CAN_init_interrupt();
-  //timer_init();
   pwm_init();
   adc_init();
   struct IR_status IR_sample_container;
   IR_init(&IR_sample_container);
-
-  timer_init();
+  timer_hundred_ms_init();
+  timer_twenty_ms_init();
   solenoid_init();
-  struct PID_data pid;
-  motor_init(&pid);
+  motor_init();
+  pos_controller_init(3,3,0.02,10000); //params: kp, ki, sample_time, encoder_max
+
   /*
   struct CAN_msg msg;
   msg.data[0] = 50;
@@ -54,9 +66,7 @@ void main(){
     _delay_ms(20000);
   }*/
 
-
-
-  game_loop(&IR_sample_container, &pid);
+  game_loop(&IR_sample_container);
 
 
 
