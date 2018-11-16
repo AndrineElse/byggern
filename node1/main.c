@@ -46,13 +46,12 @@ void main(){
   OLED_init_buffer_mode();
   OLED_buffer_clear();
   game_status_container_init();
-  JoystickOffset offset = userInputInit();
   timer_init();
 
 
   menuInit();
   menuLoop();
-  
+
   //OLEDTest();
   /*
   while (1) {

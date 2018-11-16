@@ -23,7 +23,7 @@ void CAN_init(){
 
 void CAN_init_interrupt() {
   //enable int1 (PD3) to trigger on new can message ready
-
+  printf("Inside CAN_init_interrupt\n");
   //  enable int1 flag
   GICR |= 0x80;
 
