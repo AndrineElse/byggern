@@ -41,8 +41,7 @@ void main(){
   timer_ten_ms_init();
   solenoid_init();
   motor_init();
-  speed_controller_init(0.6, 40); //params: kp, sample_time
-  //pos_controller_init(1,2,0.02,40);
+  pos_controller_init(1,2,0.02,10000); //params: kp, ki, sample_time, encoder_max
 
   /*
   struct CAN_msg msg;
@@ -55,13 +54,13 @@ void main(){
     send_CAN_msg(&msg);
     _delay_ms(20000);
   }*/
-
+  /*
   while(1){
     _delay_ms(1000);
     printf("%d\n\r",get_twenty_ms_counter());
-  }
+  }*/
 
-  //game_loop(&IR_sample_container);
+  game_loop(&IR_sample_container);
 
 
 

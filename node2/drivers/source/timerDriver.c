@@ -39,11 +39,7 @@ void timer_hundred_ms_init(){
 }
 
 ISR(TIMER3_COMPA_vect) {
-
   tenths_of_second_counter++;
-  /*cli();
-  printf("2");
-  sei();*/
 }
 
 uint16_t time_get_counter(){

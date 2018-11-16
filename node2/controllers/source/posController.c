@@ -13,12 +13,13 @@
 volatile struct PID_data pi_container;
 
 
-void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, uint8_t encoder_factor) {
+void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, uint8_t encoder_max) {
   //constants
   pi_container.Kp = p_factor;
   pi_container.Ki = i_factor;
   pi_container.sample_time = sample_time;
-  pi_container.encoder_factor = encoder_factor;
+  pi_container.encoder_max = encoder_max;
+  pi_container.encoder_scale = encoder_max/255;
 
   //variables
   pi_container.position = -4000;
@@ -33,16 +34,23 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, ui
 // motor saturates at -255, 255
 // Params:
 //    reference_value:
-//      value from -100 to 100
-void pos_controller_calculate_power(int8_t reference_value, int16_t measured_value) {
-  measured_value = (measured_value > 200 || measured_value < -200 ? pi_container.encoder_value: measured_value);
-  pi_container.position += measured_value;
-  int16_t error = reference_value - (int16_t)(pi_container.position/((int8_t)pi_container.encoder_factor));
+//      value from 0 to 255, 
+//        0 being left wall, 
+//        255 being right wall
+//    reference_value:
+//      value from 0 to 11000 ish
+//      should probably be saturated from 0 to 100000
+void pos_controller_calculate_power(uint8_t reference_value, int16_t measured_value) {
+  
+  uint16_t scaled_reference = reference_value*pi_container.encoder_scale;
+
+  int16_t error = scaled_reference - measured_value;
+
   pi_container.error_sum += (error < 50 ? error : 0);
 
   //return kp*e + T*ki*int(e)
   pi_container.current_power = pi_container.Kp*error + (int16_t)(pi_container.sample_time*(pi_container.Ki*pi_container.error_sum));
-  pi_container.encoder_value = measured_value;
+
   //printf("r: %d\n\r", reference_value);
   //printf("p: %d\n\r", pi_container.position);
   //printf("x: %d\n\r", measured_value);
