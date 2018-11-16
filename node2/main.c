@@ -54,11 +54,6 @@ void main(){
     send_CAN_msg(&msg);
     _delay_ms(20000);
   }*/
-  /*
-  while(1){
-    _delay_ms(1000);
-    printf("%d\n\r",get_twenty_ms_counter());
-  }*/
 
   game_loop(&IR_sample_container);
 

@@ -60,7 +60,7 @@ void pos_controller_calculate_power(uint8_t reference_value, int16_t measured_va
 }
 
 int16_t pos_controller_get_power() {
-  printf("u: %d\n\r", pi_container.current_power);
+  printf("m: %d\n\r", pi_container.encoder_value);
   //return pi_container.current_power;
   return 0;
 }

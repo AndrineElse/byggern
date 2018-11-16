@@ -69,6 +69,8 @@ uint16_t read_motor_encoder() {
   PORTH |= (1<<PH3); // SEL high/low set high
   _delay_us(20);
   encoder_counter |= PINK; // read LSB
+
+  //insert encoder reset toggle here, if wanting speed measures
   PORTH |= (1<<PH5); // Output disable of encoder !OE
   sei();
 
