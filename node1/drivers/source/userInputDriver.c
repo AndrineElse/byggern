@@ -7,6 +7,7 @@
 #include "../include/userInputDriver.h"
 #include "../include/CANDriver.h"
 #include "../include/OLEDDriver.h"
+#include "../include/timerDriver.h"
 //volatile ??
 volatile JoystickCoords max_coords;
 volatile JoystickCoords min_coords;
@@ -145,7 +146,7 @@ void send_joystick_position(JoystickOffset offset){
 }
 
 
-void joystick_set_max_values(){
+void joystick_set_max_min_values(){
   char* options[4]= {"Set max right (x)", "Set min left (x)","Set max up (y)", "Set min down(y)" };
   /*
   [20];
@@ -153,7 +154,10 @@ void joystick_set_max_values(){
   for (uint8_t i = 0; i < 4; i++) {
     OLED_buffer_print_line(options[i], 1, 0);
     OLED_buffer_update_screen();
-    while (!getSliderButtons()) {
+    while ((!getSliderButtons())) {
+      if(getSliderButtons() == 1){
+        _delay_ms(1000);
+      }
       uint8_t rawX = readChannel(2);
       uint8_t rawY = readChannel(1);
       switch (i) {
