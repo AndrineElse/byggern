@@ -27,6 +27,7 @@ void game_loop(struct IR_status* IR_sample_container){
   uint16_t solenoid_timer = 0;
 
   while(game.fails < game.lives){
+    
     servo_update_position(input_container_get_ptr()->joystick.x);
     motor_set_power(pos_controller_get_power());
     solenoid_update_status(&button_flag, &solenoid_timer);
