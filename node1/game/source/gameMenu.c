@@ -100,17 +100,9 @@ void menuLoop(struct Node* startNode){
 
     if (currentNode == levelsNode){
       if(!lastButtonValue && joystickButton()){
-        // currentNode = currentNode->levelsNode[selectedOption];
-        struct CAN_msg msg;
-        msg.id = 3;
-        uint8_t array[8] = {selectedOption,0,0,0,0,0,0,0};
-        for (int j = 0; j < 8; j++){
-          msg.data[j] = array[j];
-        }
-        msg.length = 1;
-        send_CAN_msg(&msg);
+        game_level_select(selectedOption);s
       };
-        game_level_select(selectedOption);
+        
         selectedOption = 0;
         OLED_buffer_clear();
       }
@@ -156,3 +148,15 @@ void printNodeUsingBuffer(struct Node* node, uint8_t selectedOption){
     }
   }
 }
+
+void game_level_select(uint8_t selected_option){
+  struct CAN_msg msg;
+  msg.id = 4;
+  uint8_t array[8] = {selectedOption,0,0,0,0,0,0,0};
+  for (int j = 0; j < 8; j++){
+    msg.data[j] = array[j];
+  }
+  msg.length = 1;
+  send_CAN_msg(&msg);
+}
+

@@ -30,6 +30,8 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, ui
   pi_container.last_encoder_value = 0;
 }
 
+void pos_controller_update()
+
 
 // Calculates a new power for the motor,
 // should be in the range of -300, 300,

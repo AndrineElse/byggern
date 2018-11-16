@@ -67,16 +67,16 @@ void game_send_update_CAN(struct Game_status* game){
 }
 
 
-void game_level_select(struct CAN_msg new_input_message){
+void game_select_controller(struct CAN_msg new_input_message){
   uint8_t level = new_input_message.data[0]; // 0 = easy, 1 = medium, 2 = hard
   switch(level){
     case 0:   // easy
-      pid_update(1,1);
+      pos_controller_update(3,3)
     case 1:   // medium
-      pid_update(2,2);
+      pos_controller_update(1,1)
     case 2:   // hard
-      pid_update(1,1);
+      pos_controller_update(1,1)
     default:
-      pid_update(1,1);
+      pos_controller_update(3,3)
   }
 }
