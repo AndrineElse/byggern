@@ -1,8 +1,12 @@
+//System frequency used by util/delay, 16MHz for node 2, 5MHz for node 1
+#define F_CPU 5000000
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include "../include/ADCDriver.h"
 #include "../include/userInputDriver.h"
 #include "../include/CANDriver.h"
@@ -127,23 +131,35 @@ JoystickDir getCurrentJoystickDir(){
 // data[2] = button (LSB = button), 7 unused bits here
 
 
-void send_joystick_position(JoystickOffset offset){
-  //sends joystick position from node 1 to node 2
-  struct CAN_msg msg;
-  struct JoystickCoords coords;
-  coords = calculateCalibratedJoystickCoords(offset);
-  msg.id = 1;
-  uint8_t array[8] = {coords.x,coords.y,joystickButton(),0,0,0,0,0};
-
-  for (int j = 0; j < 8; j++){
-    msg.data[j] = array[j];
-
+void send_joystick_position(JoystickOffset offset, uint16_t *timer, uint8_t *flag){
+  if (*flag == 0){
+    *timer = timer_get_counter();
+    *flag = 1;
   }
-  msg.length = 3;
-  send_CAN_msg(&msg);
-  //rintf("CoordsX: %d, CoordsY: %d, Button: %d\n\r", coords.x, coords.y, joystickButton());
+  else{
+    if((timer_get_counter() - *timer) > 10){
+      struct CAN_msg msg;
+      struct JoystickCoords coords;
+      coords = calculateCalibratedJoystickCoords(offset);
+      msg.id = 1;
+      uint8_t array[8] = {coords.x,coords.y,joystickButton(),0,0,0,0,0};
 
+      for (int j = 0; j < 8; j++){
+        msg.data[j] = array[j];
+
+      }
+      msg.length = 3;
+      cli();
+      send_CAN_msg(&msg);
+      sei();
+      *flag = 0;
+      *timer = 0;
+    }
+  }
 }
+  //sends joystick position from node 1 to node 2
+
+  //rintf("CoordsX: %d, CoordsY: %d, Button: %d\n\r", coords.x, coords.y, joystickButton());
 
 
 void joystick_set_max_min_values(){

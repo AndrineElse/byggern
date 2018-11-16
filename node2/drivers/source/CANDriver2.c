@@ -133,6 +133,7 @@ ISR(INT2_vect) {
 //    look at the id,
 //    and perform the appropriate action
 void CAN_message_handler(){
+
   struct CAN_msg new_message = receive_msg();
   switch(new_message.id){
     case 1:

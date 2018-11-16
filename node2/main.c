@@ -14,6 +14,7 @@
 #include "drivers/include/SPIDriver2.h"
 #include "drivers/include/PWMDriver.h"
 #include "drivers/include/ADCDriver2.h"
+#include "drivers/include/solenoidDriver.h"
 
 //game
 #include "game/include/game.h"
@@ -31,8 +32,6 @@
 #include "containers/include/userInputContainer.h"
 #include "containers/include/gameDataContainer.h"
 
-//container
-#include "containers/include/userInputContainer.h"
 
 
 //tests
@@ -52,14 +51,13 @@ void main(){
   CAN_init_interrupt();
   pwm_init();
   adc_init();
-  struct IR_status IR_sample_container;
-  IR_init(&IR_sample_container);
+  IR_init(5); //param: amount of samples to average for reading
   timer_hundred_ms_init();
   timer_twenty_ms_init();
   solenoid_init();
   motor_init();
   pos_controller_init(3,3,0.02,10000); //params: kp, ki, sample_time, encoder_max
-
+  
   /*
   struct CAN_msg msg;
   msg.data[0] = 50;
@@ -71,8 +69,8 @@ void main(){
     send_CAN_msg(&msg);
     _delay_ms(20000);
   }*/
-
-  game_loop(&IR_sample_container);
+  //printf("main\n\r");
+  game_loop();
 
 
 

@@ -2,9 +2,11 @@
 #include <avr/interrupt.h>
 #include <stdint.h>
 #include "../include/timerDriver.h"
+#include "../include/CANDriver2.h"
 #include "../../controllers/include/posController.h"
 #include "../../containers/include/userInputContainer.h"
 #include "../include/motorDriver.h"
+#include "../include/IRDriver.h"
 
 volatile uint16_t tenths_of_second_counter;
 
@@ -75,4 +77,5 @@ ISR(TIMER0_COMPA_vect) {
 
   int16_t pos_measured = -1*read_motor_encoder();
   pos_controller_calculate_power(pos_reference, pos_measured);
+  IR_get_new_sample();
 }

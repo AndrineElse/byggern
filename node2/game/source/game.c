@@ -18,7 +18,8 @@
 
 #include "../include/game.h"
 
-void game_loop(struct IR_status* IR_sample_container){
+void game_loop(){
+
   struct Game_status game;
   game.lives = 3;
   game.fails = 0;
@@ -32,12 +33,12 @@ void game_loop(struct IR_status* IR_sample_container){
   uint16_t fail_timer=0;
   while(game.fails < game.lives){
 
-    printf("game start: %d\n\r", (game_data_container_get_ptr()->gameStart));
+
     if(game_data_container_get_ptr()->gameStart){
       servo_update_position(input_container_get_ptr()->joystick.x);
       motor_set_power(pos_controller_get_power());
       solenoid_update_status(&button_flag,&solenoid_timer);
-      count_game_score(&game, IR_sample_container,&fail_timer,&fail_registerd_flag);
+      count_game_score(&game,&fail_timer,&fail_registerd_flag);
       //_delay_ms(1000);
       game.score = time_get_counter() - game.timer;
       game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
@@ -51,13 +52,12 @@ void game_loop(struct IR_status* IR_sample_container){
 
 
 
-void count_game_score(struct Game_status* game,struct IR_status* IR_sample_container, uint16_t* timer, uint8_t*
-flag){
+void count_game_score(struct Game_status* game, uint16_t* timer, uint8_t* flag){
   // uint8_t last_IR_value = adc_read();
   // uint8_t count = 0;
   // while(count < game->lives){
     if(*flag ==0){
-      if (IR_poll_failure(IR_sample_container)){
+      if (IR_check_obstruction()){
         //printf("Fail registered:\n\r");
         game->fails++;
         //uint16_t pause =

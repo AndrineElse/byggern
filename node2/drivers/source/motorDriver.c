@@ -20,12 +20,12 @@ void motor_init() {
   PORTH &= ~(1<<PH6);
   _delay_ms(10);
   PORTH |= (1<<PH6);
+  motor_set_power(0);
   //PINH4 = 0xFF; // EN
   //PINH1 = 0xFF;// DIR
 }
 
 void motor_set_power(int16_t power) {
-
   unsigned char msgSize = 3;
   unsigned char msg[msgSize];
   unsigned char slave_address = 0b01011110;

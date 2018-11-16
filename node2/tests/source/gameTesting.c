@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <util/delay.h>
 #include "../../drivers/include/IRDriver.h"
 #include "../../game/include/game.h"
 #include "../include/gameTesting.h"

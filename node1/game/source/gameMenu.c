@@ -87,18 +87,21 @@ void menuLoop(){
   uint8_t gameFlag = 1;
   uint8_t numFails = 0;
 
+  uint8_t send_joystick_flag = 0;
+  uint16_t joystick_timer = 0;
+
   gameData.gameStart = 0;
   gameData.pause = 0;
   gameData.calibrateEncoder = 0;
   //volatile struct Game_status* game;
   while(1){
-    game_send_data_CAN();
     //printf("Current node description: %s\n\r", currentNode->description );
     if(currentNode->description == "Game"){
         // printf("inside game node\n\r");
       if(gameFlag){
         OLED_clear();
-        send_joystick_position(offset);
+        send_joystick_position(offset,&joystick_timer,&send_joystick_flag);
+        _delay_ms(10);
         gameData.gameStart = 1;
 
       }
