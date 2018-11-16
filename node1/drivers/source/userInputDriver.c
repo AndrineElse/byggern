@@ -8,8 +8,8 @@
 #include "../include/CANDriver.h"
 #include "../include/OLEDDriver.h"
 //volatile ??
-JoystickCoords max_coords;
-JoystickCoords min_coords;
+volatile JoystickCoords max_coords;
+volatile JoystickCoords min_coords;
 
 JoystickOffset userInputInit(){
   PORTB |= 1<<PB0; // set pinB0 as pull-up resistor input
@@ -143,11 +143,11 @@ void send_joystick_position(JoystickOffset offset){
 }
 
 
-JoystickCoords joystick_get_max_values(){
-  char* oprions[4];
+void joystick_set_max_values(){
+  char oprions[4];
   options = {"Set max right (x)", "Set min left (x)","Set max up (y)", "Set min down(y)" };
   for (uint8_t i = 0; i < 4; i++) {
-    OLED_buffer_print_line(options[i], 1, 0);
+    OLED_buffer_print_line(&options[i], 1, 0);
     while (!getSliderButtons()) {
       uint8_t rawX = readChannel(2);
       uint8_t rawY = readChannel(1);

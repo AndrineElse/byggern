@@ -42,7 +42,7 @@ void main(){
   OLED_clear();
   OLED_init_buffer_mode();
   OLED_buffer_clear();
-  joystick_get_max_values();
+  joystick_set_max_values();
   JoystickOffset offset = userInputInit();
   timer_init();
 
