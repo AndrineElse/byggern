@@ -34,7 +34,6 @@ void main(){
 
   //init
   USART_Init ( MYUBRR );
-  printf("HERE\n");
   SRAM_init ();
   SPI_init();
   mcp2515_init();

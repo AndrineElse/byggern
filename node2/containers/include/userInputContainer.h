@@ -10,9 +10,11 @@ struct Input_status {
   uint8_t right_slider; // not in use
   uint8_t right_button; // not in use
   uint8_t left_button; // not in use
+  uint8_t game_flag;
 };
 
 void input_container_init();
 volatile struct Input_status* input_container_get_ptr();
 void input_container_update(struct CAN_msg new_input_message);
 void print_input_container();
+uint8_t input_container_message_received();
