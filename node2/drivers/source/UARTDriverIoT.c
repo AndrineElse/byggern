@@ -88,8 +88,10 @@ uint8_t* USART_Receive_STXETX(){
   //uint8_t data[length];
   // VI henter ut av register, 2, len, len, payload, 3
   cli();
-  uint8_t value = USART_Receive();
-  printf("value: %x\n\r", value);
+  //uint8_t value = USART_Receive();
+  //printf("value: %x\n\r", value);
+  while(USART_Receive() != 0x02){
+  };
   uint8_t len;
 
   uint8_t length_0 = USART_Receive();
@@ -149,6 +151,12 @@ uint8_t* USART_Receive_STXETX(){
       printf("Wrong id byte\n\r");
       //break;*/
     }
+  value = USART_Receive();
+  printf("end value: %x\n\r", value);
+  //value = USART_Receive();
+  sei();
+  //if (value == 3) {
+  return 0;
     /*
     for (uint8_t i = 0; i < len; i++){
       payload[i] = USART_Receive();
@@ -162,12 +170,7 @@ uint8_t* USART_Receive_STXETX(){
   /*if (USART_Receive() == 3){
     return payload;
   }*/
-  value = USART_Receive();
-  printf("end value: %x\n\r", value);
-  //value = USART_Receive();
-  sei();
-  //if (value == 3) {
-  return 0;
+  
     //}
   //}
   //if (value == 0x02){
