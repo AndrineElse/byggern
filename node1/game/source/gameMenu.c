@@ -48,7 +48,10 @@ void menuInit(){
 
   highScoresNode.parent = &mainMenuNode;
   highScoresNode.options[0] = "Go back";
-  highScoresNode.description = "Highscore";
+  highScoresNode.options[1] = "Go back";
+  highScoresNode.options[2] = "Go back";
+  highScoresNode.options[3] = "Go back";
+  highScoresNode.description = "Highscores: TOP 3";
   highScoresNode.numOptions = 1;
   highScoresNode.optionNodes[0] = &mainMenuNode;
 
@@ -181,6 +184,14 @@ void menuLoop(){
         selectedOption = 0;
         OLED_buffer_clear();
       }
+
+      if (currentNode == usernameNode){
+        if(!lastButtonValue && joystickButton()){
+          game_username_select(selectedOption);
+        };
+        selectedOption = 0;
+        OLED_buffer_clear();
+      }
     }
 
       lastButtonValue = joystickButton();
@@ -229,6 +240,10 @@ void game_level_select(uint8_t selected_option){
     msg.data[j] = array[j];
   }
   msg.length = 1;
+}
+
+void game_username_select(uint8_t selectedOption){
+  
 }
 /*
   MAPPING
