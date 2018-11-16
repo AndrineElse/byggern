@@ -1,3 +1,10 @@
-node1/build
+node1/build/drivers
+node1/build/controllers
+node1/build/tests
+node1/build/game
+node1/build/main.hex
+node1/build/main.o
+node1/build/a.out
 node2/build
+
 .vscode
