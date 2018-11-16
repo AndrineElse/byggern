@@ -8,6 +8,6 @@ struct PID_data {
   int16_t current_power;
 };
 
-void speed_controller_init(int8_t p_factor, int8_t i_factor, float sample_time);
+void speed_controller_init(float p_factor, float i_factor, float sample_time);
 void speed_controller_calculate_power(int8_t reference_value, int16_t measured_value);
 int16_t speed_controller_get_power();

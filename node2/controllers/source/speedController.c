@@ -53,6 +53,6 @@ void speed_controller_calculate_power(int8_t reference_value, int16_t measured_v
 
 int16_t speed_controller_get_power() {
   //return pi_container.current_power;
-  return 0;
-  //return 10;
+  //return 0;
+  return 30;
 }
