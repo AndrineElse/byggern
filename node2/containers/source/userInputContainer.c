@@ -16,6 +16,7 @@ void input_container_init() {
 }
 
 void input_container_update(struct CAN_msg new_input_message){
+  
   input_container.joystick.x = new_input_message.data[0];
   input_container.joystick.y = new_input_message.data[1];
   input_container.joystickButton = (new_input_message.data[2] & 0x1);
