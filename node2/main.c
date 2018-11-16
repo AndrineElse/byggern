@@ -26,10 +26,17 @@
 
 //controller
 #include "controllers/include/posController.h"
+<<<<<<< HEAD
 
 //container
 #include "containers/include/userInputContainer.h"
 #include "containers/include/gameDataContainer.h"
+=======
+
+//container
+#include "containers/include/userInputContainer.h"
+
+>>>>>>> 8b77c92e8be8125685641066469e29e181456bc1
 //tests
 //include eventual tests here
 
