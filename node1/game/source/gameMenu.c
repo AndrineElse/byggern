@@ -2,6 +2,7 @@
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
+#include "../../drivers/include/CANDriver.h"
 #include <util/delay.h>
 
 
@@ -17,14 +18,24 @@ void menuInit(struct Node* mainMenuNode){
   struct Node highScoresNode;
   highScoresNode.parent = mainMenuNode;
   highScoresNode.options[0] = "Go back";
-  highScoresNode.description = "highscore";
+  highScoresNode.description = "Highscore";
   highScoresNode.numOptions = 1;
 
   struct Node optionsNode;
   optionsNode.parent = mainMenuNode;
-  optionsNode.options[0] = "Go back";
-  optionsNode.description = "options";
-  optionsNode.numOptions = 1;
+  optionsNode.options[0] = "Select level";
+  optionsNode.options[1] = "Go back";
+  optionsNode.description = "Options";
+  optionsNode.numOptions = 2;
+
+  struct Node levelsNode;
+  optionsNode.parent = optionsNode;
+  optionsNode.options[0] = "Easy";
+  optionsNode.options[1] = "Medium";
+  optionsNode.options[2] = "Hard";
+  optionsNode.options[3] = "Go back";
+  optionsNode.description = "Level";
+  optionsNode.numOptions = 4;
 
 
   mainMenuNode->parent = (struct Node*)0;
@@ -38,6 +49,8 @@ void menuInit(struct Node* mainMenuNode){
   mainMenuNode->optionNodes[0] = &playGameNode;
   mainMenuNode->optionNodes[1] = &highScoresNode;
   mainMenuNode->optionNodes[2] = &optionsNode;
+
+  optionsNode->optionNodes[0] = &levelsNode;
 
   //mainMenuNode = &mainMenuNode;
 }
@@ -83,6 +96,25 @@ void menuLoop(struct Node* startNode){
       currentNode = currentNode->optionNodes[selectedOption];
       selectedOption = 0;
       OLED_buffer_clear();
+    }
+
+    if (currentNode == levelsNode){
+      if(!lastButtonValue && joystickButton()){
+        // currentNode = currentNode->levelsNode[selectedOption];
+        struct CAN_msg msg;
+        msg.id = 3;
+        uint8_t array[8] = {selectedOption,0,0,0,0,0,0,0};
+        for (int j = 0; j < 8; j++){
+          msg.data[j] = array[j];
+        }
+        msg.length = 1;
+        send_CAN_msg(&msg);
+      };
+        game_level_select(selectedOption);
+        selectedOption = 0;
+        OLED_buffer_clear();
+      }
+
     }
 
     lastButtonValue = joystickButton();

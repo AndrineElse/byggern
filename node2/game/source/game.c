@@ -23,6 +23,7 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
   game.timer = time_get_counter();
   uint8_t button_flag = 0;
   uint16_t solenoid_timer = 0;
+  // pid_update here when merged
   while(game.fails < game.lives){
     
     servo_update_position(input_container_get_ptr()->joystick.x);
@@ -71,4 +72,19 @@ void game_send_update_CAN(struct Game_status* game){
   }
   msg.length = 4;
   send_CAN_msg(&msg);
+}
+
+
+void game_level_select(struct CAN_msg new_input_message){
+  uint8_t level = new_input_message.data[0]; // 0 = easy, 1 = medium, 2 = hard
+  switch(level){
+    case 0:   // easy
+      pid_update(1,1);
+    case 1:   // medium
+      pid_update(2,2);
+    case 2:   // hard
+      pid_update(1,1);
+    default:
+      pid_update(1,1);
+  }
 }

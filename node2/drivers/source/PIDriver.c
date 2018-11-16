@@ -15,9 +15,19 @@
 
 void pid_init(int8_t p_factor, int8_t i_factor, struct PID_data *pid){
   pid->error_sum = 0;
-  pid->Kp = p_factor;
-  pid->Ki = i_factor;
+  // pid->Kp = p_factor;
+  // pid->Ki = i_factor;
+  pid->Kp = pid_update()[0];
+  pid->Ki = pid_update()[1];
+
   pid->position = 0;
+}
+
+uint8_t* pid_update(int8_t p_factor, int8_t i_factor){
+  uint8_t factors[2] = {p_factor, i_factor};
+  return factors;
+  //pid->Kp = p_factor;
+  //pid->Ki = i_factor;
 }
 
 int16_t pid_controller(struct PID_data *pid){

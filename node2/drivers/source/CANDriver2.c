@@ -139,5 +139,8 @@ void CAN_message_handler(){
   if (new_message.id == 1) {
     input_container_update(new_message);
   }
+  if (new_message.id == 3) {
+    game_level_select(new_message);
+  }
   // add more elements here for further message types
 }

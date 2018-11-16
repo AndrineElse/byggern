@@ -7,3 +7,4 @@ struct Game_status {
 
 void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid);
 void count_game_score(struct Game_status* game,struct IR_status* IR_sample_container);
+void game_level_select(uint8_t level);
