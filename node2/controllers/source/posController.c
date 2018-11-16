@@ -6,6 +6,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include "../../drivers/include/CANDriver2.h"
 #include "../include/posController.h"
 #include "../../containers/include/userInputContainer.h"
 
@@ -56,6 +57,6 @@ void pos_controller_calculate_power(uint8_t reference_value, int16_t measured_va
 }
 
 int16_t pos_controller_get_power() {
-  //return pi_container.current_power;
-  return 0;
+  return pi_container.current_power;
+  //return 0;
 }

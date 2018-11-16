@@ -1,5 +1,5 @@
 //system clock frequency, used by util/delay, 16MHz for node 2, 5MHz for node 1
-#define F_CPU 16000000 
+#define F_CPU 16000000
 
 //system libraries
 #include <avr/io.h>
@@ -52,7 +52,7 @@ void main(){
   timer_twenty_ms_init();
   solenoid_init();
   motor_init();
-  pos_controller_init(1,1,0.02,10000); //params: kp, ki, sample_time, encoder_max
+  pos_controller_init(3,3,0.02,10000); //params: kp, ki, sample_time, encoder_max
 
   /*
   struct CAN_msg msg;
