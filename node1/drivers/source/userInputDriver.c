@@ -202,42 +202,19 @@ void joystick_set_max_min_values(){
   }
   printf("Max x: %d, Max y: %d, min x: %d, min y: %d , centerX: %d , centerY: %d \n\r", maxX, maxY,minX,minY, centerX,centerY);
 }
-  /*
-  [20];
-  options = {"Set max right (x)", "Set min left (x)","Set max up (y)", "Set min down(y)" };
-  for (uint8_t i = 0; i < 4; i++) {
-    OLED_buffer_print_line(options[i], 1, 0);
-    OLED_buffer_update_screen();
-    while ((!getSliderButtons())) {
 
-      uint8_t rawX = readChannel(2);
-      uint8_t rawY = readChannel(1);
-      switch (i) {
-        case 1:
-          max_coords.x = rawX;
-          break;
-        case 2:
-          min_coords.x = rawX;
-          break;
-        case 3:
-          min_coords.x = rawX;
-          break;
-        case 4:
-          min_coords.x = rawX;
-          break;
-      }
-      if(getSliderButtons() == 1){
-        _delay_ms(1000);
-      }
-      printf("Max x: %d, Max y: %d, min x: %d, min y: %d \n\r", max_coords.x, max_coords.y,min_coords.x,min_coords.y);
-    }
-    OLED_buffer_clear();
-  }
+JoystickOffset calculateOffsetJoystickFromCalibration() {
+  //optimization option: send address once, sample multiple times.
+  //performance option: more samples, median of samples..
 
+  //Sample a couple of times, do average, set as offset value
+
+
+
+
+JoystickOffset finalOffset;
+  finalOffset.x = totX/3;
+  finalOffset.y = totY/3;
+
+  return finalOffset;
 }
-
-JoystickCoords joystick_calibration(JoystickCoords joystickMax){
-
-
-}
-*/
