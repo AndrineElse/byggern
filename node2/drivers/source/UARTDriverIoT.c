@@ -11,14 +11,16 @@
 // 0x12
 void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
   cli();
+  uint8_t length = 5;
+  uint8_t payload[length];
   switch(id_byte){
     case 0x10:  // Score message
     //dosomething
-      uint8_t length = 5;
-      uint8_t payload[length];
+      length = 5;
+      // payload[length];
       payload[0] = 0x10;
-      payload[1] = 0
-      payload[2] = 0
+      payload[1] = 0;
+      payload[2] = 0;
       payload[3] = (pay>>8)&0xFF;
       payload[4] = pay & 0xFF;
       // return 0x11;
@@ -26,8 +28,8 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
 
     case 0x12:  // Position
     //dosomething
-      uint8_t length = 3;
-      uint8_t payload[length];
+      length = 3;
+      //uint8_t payload[length];
       payload[0] = 0x12;
       payload[1] = (pay>>8)&0xFF;
       payload[2] = pay & 0xFF;
@@ -36,8 +38,8 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
 
     case 0x14:  // Lives
     //dosomething
-      uint8_t length = 5;
-      uint8_t payload[length];
+      length = 5;
+      //uint8_t payload[length];
       payload[0] = 0x14;
       payload[1] = 0;
       payload[2] = 0;
@@ -87,30 +89,26 @@ uint8_t* USART_Receive_STXETX(){
   cli();
   uint8_t value = USART_Receive();
   uint16_t len;
-  // uint8_t payload;
 
-
-  //if (value == 2) {
-    // value = USART_Receive();
     uint8_t length_0 = USART_Receive();
     uint8_t length_1 = USART_Receive();
     len = length_1;
     //len |= (length_0 << 1);
     printf("LEN: %x\n\r", len );
-    
-    uint8_t id_byte = = USART_Receive();
-    
+
+    uint8_t id_byte = USART_Receive();
+    uint8_t payload[2];
     switch(id_byte){
     case 0x11:  // Request new game
     //dosomething
-      uint8_t payload[1];
+      //uint8_t payload[1];
       payload[0] = 0x11;
       // return 0x11;
       break;
 
     case 0x13:  // Request position
     //dosomething
-      uint8_t payload[2];
+      //uint8_t payload[2];
       payload[0] = USART_Receive();
       payload[1] = USART_Receive();
       // return payload
@@ -118,7 +116,7 @@ uint8_t* USART_Receive_STXETX(){
 
     case 0x15:  // Fire
     //dosomething
-      uint8_t payload[1];
+      //uint8_t payload[1];
       payload[0] = 0x15;
       // return 0x15;
       break;
@@ -137,11 +135,14 @@ uint8_t* USART_Receive_STXETX(){
     printf("Third byte: %x\n\r", payload[2]);
     //printf("Fourth byte: %x\n\r", payload[3]);
     //printf("Fifth byte: %x\n\r", payload[4]);
-    while(USART_Receive() != 3){}
+    // while(USART_Receive() != 3){}
+    if (USART_Receive() == 3){
+      return payload;
+    }
     //value = USART_Receive();
     sei();
     //if (value == 3) {
-    return payload;
+    return 0;
     //}
   //}
   //if (value == 0x02){

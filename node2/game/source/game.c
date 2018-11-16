@@ -9,7 +9,7 @@
 #include "../../drivers/include/CANDriver2.h"
 #include "../../drivers/include/servoDriver.h"
 #include "../../drivers/include/solenoidDriver.h"
-#include "drivers/include/UARTDriverIoT.h"
+#include "../../drivers/include/UARTDriverIoT.h"
 
 #include "../../tests/include/servoTesting.h"
 #include "../../containers/include/userInputContainer.h"
@@ -29,7 +29,7 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
   uint8_t* msg = USART_Receive_STXETX();
   while(game.fails < game.lives){
     USART_Transmit_STXETX(game.lives, 0x14);
-    
+
     servo_update_position(input_container_get_ptr()->joystick.x);
     set_motor_speed(pid);
     solenoid_update_status(&button_flag,&solenoid_timer);
