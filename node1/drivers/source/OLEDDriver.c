@@ -55,6 +55,7 @@ void OLED_init(){
   OLED_write_command(0xa4);        //out  follows  RAM  content
   OLED_write_command(0xa6);        //set  normal  display
   OLED_write_command(0xaf);        //  display  on
+  
 
 }
 
@@ -201,4 +202,9 @@ void OLED_buffer_clear(){
   }
 }
 
+void OLED_buffer_fill(){
+  for(uint16_t i = 0; i < 1024; i++ ) {
+    OLED_update_buffer_single_byte(i, 0xFF);
+  }
+}
 //drawingfunctions
