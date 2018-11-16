@@ -59,8 +59,8 @@ MAPPING
 id = 2 = IR-Status
 data[0] = game.timer
 data[1] = game.fails
-data[3] = game.lives
-data[4] = game.score
+data[2] = game.lives
+data[3] = game.score
 */
 
 void game_send_update_CAN(struct Game_status* game, uint16_t* timer, uint8_t* flag){
@@ -69,7 +69,7 @@ void game_send_update_CAN(struct Game_status* game, uint16_t* timer, uint8_t* fl
     *flag = 1;
   }
   else{
-    if((time_get_counter() - *timer) > 1000){
+    if((time_get_counter() - *timer) > 10){
       struct CAN_msg msg;
       msg.id = 2;
       uint8_t array[8] = {game->timer,game->fails,game->lives,game->score,0,0,0};

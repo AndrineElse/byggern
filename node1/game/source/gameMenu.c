@@ -1,58 +1,65 @@
 #include <stdint.h>
+#include <stdio.h>
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
 #include <util/delay.h>
 
+volatile struct Node mainMenuNode;
+volatile struct Node playGameNode;
+volatile struct Node highScoresNode;
+volatile struct Node optionsNode;
+volatile struct Node middleGameNode;
+volatile struct Node endGameNode;
 
-void menuInit(struct Node* mainMenuNode){
+void menuInit(){
 
-  //struct Node mainMenuNode;
-  struct Node playGameNode;
-  playGameNode.parent = mainMenuNode;
+  printf("Inside init\n\r");
+  playGameNode.parent = &mainMenuNode;
   playGameNode.options[0] = "Go back";
   playGameNode.description = "Game";
   playGameNode.numOptions = 1;
 
-  struct Node highScoresNode;
-  highScoresNode.parent = mainMenuNode;
+
+  highScoresNode.parent = &mainMenuNode;
   highScoresNode.options[0] = "Go back";
   highScoresNode.description = "highscore";
   highScoresNode.numOptions = 1;
 
-  struct Node optionsNode;
-  optionsNode.parent = mainMenuNode;
+
+  optionsNode.parent = &mainMenuNode;
   optionsNode.options[0] = "Go back";
   optionsNode.description = "options";
   optionsNode.numOptions = 1;
 
 
-  mainMenuNode->parent = (struct Node*)0;
-  mainMenuNode->options[0] = "Play game";
-  mainMenuNode->options[1] = "Highscores";
-  mainMenuNode->options[2] = "Options";
+  mainMenuNode.parent = (struct Node*)0;
+  mainMenuNode.options[0] = "Play game";
+  mainMenuNode.options[1] = "Highscores";
+  mainMenuNode.options[2] = "Options";
 
-  mainMenuNode->description = "This is the main menu :)";
-  mainMenuNode->numOptions = 3;
+  mainMenuNode.description = "This is the main menu :)";
+  mainMenuNode.numOptions = 3;
 
-  mainMenuNode->optionNodes[0] = &playGameNode;
-  mainMenuNode->optionNodes[1] = &highScoresNode;
-  mainMenuNode->optionNodes[2] = &optionsNode;
+  mainMenuNode.optionNodes[0] = &playGameNode;
+  mainMenuNode.optionNodes[1] = &highScoresNode;
+  mainMenuNode.optionNodes[2] = &optionsNode;
 
   //mainMenuNode = &mainMenuNode;
 }
 
-void menuLoop(struct Node* startNode){
+void menuLoop(){
+  printf("Inside menu function\n\r");
   JoystickOffset offset = userInputInit();
   uint8_t selectedOption = 0;
   JoystickDir currentDir;
-  struct Node* currentNode = startNode;
+  struct Node* currentNode = &mainMenuNode;
   JoystickDir lastDir;
   lastDir = calculateJoystickDirection();
   uint8_t lastButtonValue = 0;
 
   while(1){
-
+    printf("Inside menu loop\n\r");
     //get joystick input
     JoystickOffset joystickOffset;
     joystickOffset = calculateOffsetJoystick();
@@ -95,7 +102,7 @@ void menuLoop(struct Node* startNode){
   }
 }
 
-void printNode(struct Node* node, uint8_t selectedOption){
+void printNode(volatile struct Node* node, uint8_t selectedOption){
   OLED_clear();
   OLED_pos(0,0);
   OLED_print (node->description);
@@ -111,7 +118,7 @@ void printNode(struct Node* node, uint8_t selectedOption){
   _delay_ms(500);
 }
 
-void printNodeUsingBuffer(struct Node* node, uint8_t selectedOption){
+void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
 
   OLED_buffer_print_line (node->description,0,0);
 

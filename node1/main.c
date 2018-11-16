@@ -17,6 +17,7 @@
 #include "drivers/include/CANDriver.h"
 #include "tests/include/OLEDTesting.h"
 #include "tests/include/CANTesting.h"
+#include "containers/include/gameStatusContainer.h"
 
 #define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -49,7 +50,11 @@ void main(){
 
 
   JoystickOffset offset = userInputInit();
+  game_status_container_init();
   timer_init();
+
+  menuInit();
+  menuLoop();
 
   //OLEDTest();
   /*
@@ -70,11 +75,12 @@ void main(){
   menuInit(&mainMenuNode);
   menuLoop(&mainMenuNode);
 */
+/*
   while(1){
     send_joystick_position(offset);
   }
 
-
+*/
 
 
   // SPI_SlaveInit();
