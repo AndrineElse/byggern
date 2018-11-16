@@ -65,7 +65,8 @@ void main(){
     if(msg[0] == 0x11) {
       printf("STXETX: %d\n\r", msg[0]);
       printf("Inside if\n\r" );
-      game_loop(&IR_sample_container, &pid, msg);
+      USART_Transmit_STXETX(0x03, 0x14);
+      //game_loop(&IR_sample_container, &pid, msg);
     }
     //_delay_ms(100);
   }
