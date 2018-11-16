@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <stdio.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include "../include/UARTDriver2.h"
 
 void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
@@ -10,7 +11,9 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
 	USART_Transmit(0x00); // LEN0
 
   uint8_t length;
-    if(id_byte == 0x10){ // Score message
+  switch(id_byte){
+    case 0x10:
+    //if(id_byte == 0x10){ // Score message
 
       length = 5;
       USART_Transmit(length); // LEN1
@@ -24,9 +27,10 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
         USART_Transmit(payload_10[i]);
       }
       USART_Transmit(0x03); // ETX
-    }
-
-    else if(id_byte == 0x12){ //Position
+      break;
+    
+    case 0x12:
+    //else if(id_byte == 0x12){ //Position
       length = 0x03;
       USART_Transmit(length); // LEN1
       //uint8_t payload[length];
@@ -38,9 +42,10 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
         USART_Transmit(payload_12[i]);
       }
       USART_Transmit(0x03); // ETX
-    }
-
-    else if(id_byte == 0x14){ //Lives
+      break;
+    
+    case 0x14:
+    // else if(id_byte == 0x14){ //Lives
       length = 5;
       USART_Transmit(length); // LEN1
 
@@ -52,50 +57,13 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
       payload_14[4] = pay & 0xFF;
       for (int i = 0; i < length; i++){
         USART_Transmit(payload_14[i]);
-      }/*
-      USART_Transmit(payload_14[0]);
-      USART_Transmit(payload_14[1]);
-      USART_Transmit(payload_14[2]);
-      USART_Transmit(payload_14[3]);
-      USART_Transmit(payload_14[4]);*/
+      }
       USART_Transmit(0x03); // ETX
-      /*
-      printf("Payload: %x\n\r", payload_14[0]);
-      printf("Payload: %x\n\r", payload_14[1]);
-      printf("Payload: %x\n\r", payload_14[2]);
-      printf("Payload: %x\n\r", payload_14[3]);
-      printf("Payload: %x\n\r", payload_14[4]);*/
-      // return 0x15;
-      //break;
-    //add more cases here
-  }
-
-    /*default:
-      printf("Wrong id byte\n\r");
       break;
-    }*/
-  /*
-  uint8_t length = 5;
-  uint8_t data[length];
-  data[0] = firstByte;
-  data[1] = (payload >> 24);
-  data[2] = (payload >> 16);
-  data[3] = (payload >> 8);
-  data[4] = payload & 0xFF;
-  printf("data4: %x\n", data[4]);*/
-  // length = number of bytes in payload
-  // length |= (len_0 << 8);
-
-  //USART_Transmit(2); // STX
-	//USART_Transmit(0); // LEN0
-	//USART_Transmit(length); // LEN1
-  /*for (int i = 0; i < length; i++){
-    USART_Transmit(payload[i]);
-  }*/
-
-  //msg = STX 0x02 + LEN[0] uint8_t + LEN[1] uint8_t + Payload[0..LEN] + ETX 0x03;
-  /* Put data into buffer, sends the data */
+  }
   sei();
+  _delay_ms(10);
+
 }
 
 

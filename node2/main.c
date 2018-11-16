@@ -55,20 +55,6 @@ void main(){
   motor_init();
   pos_controller_init(3,3,0.02,10000); //params: kp, ki, sample_time, encoder_max
 
-  /*
-  struct CAN_msg msg;
-  msg.data[0] = 50;
-  msg.id = 3;
-  msg.length = 1;
-
-  while(1){
-    //printf("Port D : %d \n\r",(PIND));
-    send_CAN_msg(&msg);
-    _delay_ms(20000);
-  }*/
-
-
-
   while(1){
     //printf("Receive: %d\n\r", USART_Receive());
     printf("MAIN\n\r");
