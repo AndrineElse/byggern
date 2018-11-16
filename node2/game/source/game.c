@@ -20,9 +20,13 @@
 
 void game_loop(struct IR_status* IR_sample_container){
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 8b77c92e8be8125685641066469e29e181456bc1
+=======
+
+>>>>>>> d3a4115db2114990bedeec242a5d8623911633b6
   struct Game_status game;
   game.lives = 3;
   game.fails = 0;
