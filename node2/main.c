@@ -60,10 +60,12 @@ void main(){
   while(1){
     //printf("Receive: %d\n\r", USART_Receive());
     printf("MAIN\n\r");
-    uint8_t* msg = USART_Receive_STXETX();
-    printf("STXETX: %d\n\r", msg);
-    if (msg[0] == 0x11) {
-      game_loop(&IR_sample_container, &pid, &msg);
+    uint8_t* msg;
+    msg = USART_Receive_STXETX();
+    if(msg[0] == 0x11) {
+      printf("STXETX: %d\n\r", msg[0]);
+      printf("Inside if\n\r" );
+      game_loop(&IR_sample_container, &pid, msg);
     }
     //_delay_ms(100);
   }

@@ -29,6 +29,7 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid, uint
   //uint8_t* msg = USART_Receive_STXETX();
   while(game.fails < game.lives){
     USART_Transmit_STXETX(game.lives, 0x14);
+    printf("Lives: %d\n\r", game.lives);
 
     servo_update_position(input_container_get_ptr()->joystick.x);
     set_motor_speed(pid);
