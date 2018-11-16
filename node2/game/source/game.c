@@ -24,6 +24,8 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
   game.timer = time_get_counter();
   uint8_t button_flag = 0;
   uint16_t solenoid_timer = 0;
+  uint16_t update_CAN_timer=0;
+  uint8_t update_CAN_flag=0;
   while(game.fails < game.lives){
 
     servo_update_position(input_container_get_ptr()->joystick.x);
@@ -31,7 +33,7 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
     solenoid_update_status(&button_flag,&solenoid_timer);
     count_game_score(&game, IR_sample_container);
     _delay_ms(1000);
-    game_send_update_CAN(&game);
+    game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
 
   }
   game.score = time_get_counter() - game.timer;
@@ -61,18 +63,27 @@ data[3] = game.lives
 data[4] = game.score
 */
 
-void game_send_update_CAN(struct Game_status* game){
-  struct CAN_msg msg;
-  msg.id = 2;
-  uint8_t array[8] = {game->timer,game->fails,game->lives,game->score,0,0,0};
-
-  for (int j = 0; j < 8; j++){
-    msg.data[j] = array[j];
-
+void game_send_update_CAN(struct Game_status* game, uint16_t* timer, uint8_t* flag){
+  if(*flag ==0){
+    *timer = time_get_counter();
+    *flag = 1;
   }
-  msg.length = 4;
-  printf("Sending msg over CAN to node 1: num fails: %d \n\r", msg.data[1]);
-  cli();
-  send_CAN_msg(&msg);
-  sei();
+  else{
+    if((time_get_counter() - *timer) > 1000){
+      struct CAN_msg msg;
+      msg.id = 2;
+      uint8_t array[8] = {game->timer,game->fails,game->lives,game->score,0,0,0};
+
+      for (int j = 0; j < 8; j++){
+        msg.data[j] = array[j];
+
+      }
+      msg.length = 4;
+      cli();
+      send_CAN_msg(&msg);
+      sei();
+      *flag = 0;
+      *timer = 0;
+    }
+  }
 }
