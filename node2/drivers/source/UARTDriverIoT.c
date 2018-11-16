@@ -19,7 +19,7 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
       payload[0] = 0x10;
       payload[1] = 0
       payload[2] = 0
-      payload[3] = pay;
+      payload[3] = (pay>>8)&0xFF;
       payload[4] = pay & 0xFF;
       // return 0x11;
       break;
@@ -29,7 +29,7 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
       uint8_t length = 3;
       uint8_t payload[length];
       payload[0] = 0x12;
-      payload[1] = pay;
+      payload[1] = (pay>>8)&0xFF;
       payload[2] = pay & 0xFF;
       // return payload
       break;
