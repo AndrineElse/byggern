@@ -39,7 +39,7 @@ void main(){
   timer_init();
   solenoid_init();
   motor_init();
-  speed_controller_init(1, 1, 0.1); //params: kp, ki, sample_time
+  speed_controller_init(0.5, 1, 0.1); //params: kp, ki, sample_time
   /*
   struct CAN_msg msg;
   msg.data[0] = 50;

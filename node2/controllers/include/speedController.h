@@ -1,7 +1,7 @@
 struct PID_data {
   int32_t error_sum;
-  int8_t Kp;
-  int8_t Ki;
+  float Kp;
+  float Ki;
   int16_t position;
   float sample_time;
   uint8_t encoder_factor;

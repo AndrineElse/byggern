@@ -35,7 +35,7 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, ui
 void pos_controller_calculate_power(int8_t reference_value, int16_t measured_value) {
 
   pi_container.position += measured_value;
-  int16_t error = reference_value - ((int8_t)pi_container.position/40.0);
+  int16_t error = reference_value - ((int16_t)pi_container.position/40.0);
   pi_container.error_sum += error;
 
   //return kp*e + ki*int(e)
