@@ -17,6 +17,7 @@ struct Node highScoresNode;
 
 struct Node optionsNode;
 struct Node levelsNode;
+struct Node usernameNode;
 
 struct Node middleGameNode;
 
@@ -27,8 +28,19 @@ struct GameData gameData;
 void menuInit(){
 
   //printf("Inside init\n\r");
+  mainMenuNode.parent = (struct Node*)0;
+  mainMenuNode.options[0] = "Play game";
+  mainMenuNode.options[1] = "Highscores";
+  mainMenuNode.options[2] = "Options";
+  mainMenuNode.description = "This is the main menu :)";
+  mainMenuNode.numOptions = 3;
 
-  playGameNode.parent = &mainMenuNode;
+  mainMenuNode.optionNodes[0] = &usernameNode;
+  mainMenuNode.optionNodes[1] = &highScoresNode;
+  mainMenuNode.optionNodes[2] = &optionsNode;
+
+
+  playGameNode.parent = &usernameNode;
   playGameNode.options[0] = "Go back";
   playGameNode.description = "Game";
   playGameNode.numOptions = 1;
@@ -49,17 +61,13 @@ void menuInit(){
   optionsNode.optionNodes[0] = &levelsNode;
   optionsNode.optionNodes[1] = &mainMenuNode;
 
-
-  mainMenuNode.parent = (struct Node*)0;
-  mainMenuNode.options[0] = "Play game";
-  mainMenuNode.options[1] = "Highscores";
-  mainMenuNode.options[2] = "Options";
-  mainMenuNode.description = "This is the main menu :)";
-  mainMenuNode.numOptions = 3;
-
-  mainMenuNode.optionNodes[0] = &playGameNode;
-  mainMenuNode.optionNodes[1] = &highScoresNode;
-  mainMenuNode.optionNodes[2] = &optionsNode;
+  middleGameNode.parent = (struct Node*)0;
+  middleGameNode.description = "Fail registerd";
+  middleGameNode.numOptions = 2;
+  middleGameNode.options[0] = "Continue game";
+  middleGameNode.options[1] = "Back to main menu";
+  middleGameNode.optionNodes[0] = &playGameNode;
+  middleGameNode.optionNodes[1] = &mainMenuNode;
 
   endGameNode.parent = (struct Node*)0;
   endGameNode.description = "All lives lost, game over";
@@ -80,17 +88,18 @@ void menuInit(){
   levelsNode.optionNodes[1] = &optionsNode;
   levelsNode.optionNodes[2] = &optionsNode;
   levelsNode.optionNodes[3] = &optionsNode;
-  //mainMenuNode = &mainMenuNode;
-
-  middleGameNode.parent = (struct Node*)0;
-  middleGameNode.description = "Fail registerd";
-  middleGameNode.numOptions = 2;
-  middleGameNode.options[0] = "Continue game";
-  middleGameNode.options[1] = "Back to main menu";
-  middleGameNode.optionNodes[0] = &playGameNode;
-  middleGameNode.optionNodes[1] = &mainMenuNode;
-
-  //mainMenuNode = &mainMenuNode;
+  
+  usernameNode.parent = &mainMenuNode;
+  usernameNode.options[0] = "Kolbjørn"
+  usernameNode.options[1] = "Magne"
+  usernameNode.options[2] = "Andrine"
+  usernameNode.options[3] = "Thea"
+  usernameNode.description = "Who's playing?";
+  usernameNode.numOptions = 4;
+  usernameNode.optionNodes[0] = &playGameNode;
+  usernameNode.optionNodes[1] = &playGameNode;
+  usernameNode.optionNodes[2] = &playGameNode;
+  usernameNode.optionNodes[3] = &playGameNode;
 }
 
 void menuLoop(){
@@ -164,6 +173,15 @@ void menuLoop(){
         selectedOption = 0;
         OLED_buffer_clear();
       }
+
+      if (currentNode == levelsNode){
+        if(!lastButtonValue && joystickButton()){
+          game_level_select(selectedOption);
+        };
+        selectedOption = 0;
+        OLED_buffer_clear();
+      }
+    }
 
       lastButtonValue = joystickButton();
       _delay_ms(50);
