@@ -8,6 +8,8 @@
 #include "../../drivers/include/userInputDriver.h"
 #include <util/delay.h>
 
+
+
 struct Node mainMenuNode;
 struct Node playGameNode;
 struct Node highScoresNode;
@@ -16,6 +18,7 @@ struct Node endGameNode;
 struct Node middleGameNode;
 
 void menuInit(){
+  printf("Inside menu init\n\r");
   //struct Node mainMenuNode;
   struct Node playGameNode;
   playGameNode.parent = &mainMenuNode;

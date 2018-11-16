@@ -104,6 +104,7 @@ struct CAN_msg receive_msg(){
 
 ISR(INT1_vect){
   cli();
+  printf("Inside ISR node 1\n\r");
   CAN_message_handler();
   sei();
 }
@@ -116,6 +117,7 @@ void CAN_message_handler() {
       break;
     //add more cases here
     case 2:
+      printf("Message id 2 received!!\n\r");
       game_status_container_update(new_message);
       break;
     default:

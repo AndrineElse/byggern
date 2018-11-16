@@ -17,7 +17,6 @@ void input_container_init() {
 }
 
 void input_container_update(struct CAN_msg new_input_message){
-  
   input_container.joystick.x = new_input_message.data[0];
   input_container.joystick.y = new_input_message.data[1];
   input_container.joystickButton = (new_input_message.data[2] & 0x1);
@@ -43,6 +42,7 @@ void print_input_container(){
 }
 
 uint8_t input_container_message_received(){
+  printf("Inside input container message recieved\n\r");
   if(input_container.game_flag!=0){
     return 1;
   }

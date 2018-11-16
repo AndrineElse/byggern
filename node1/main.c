@@ -35,7 +35,7 @@ void main(){
 
   //init
   USART_Init ( MYUBRR );
-  printf("HERE\n");
+  printf("Inside main node 1\n");
   SRAM_init ();
   SPI_init();
   mcp2515_init();
@@ -49,6 +49,10 @@ void main(){
   JoystickOffset offset = userInputInit();
   timer_init();
 
+
+  menuInit();
+  menuLoop();
+  
   //OLEDTest();
   /*
   while (1) {
@@ -69,8 +73,7 @@ void main(){
   }
   */
 
-  menuInit();
-  menuLoop();
+
 
   /*
   while(1){
