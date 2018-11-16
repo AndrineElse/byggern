@@ -8,7 +8,7 @@
 
 volatile uint16_t tenths_of_second_counter;
 
-void timer_init(){
+void timer_hundred_ms_init(){
   // we want:
   // * CTC mode,
   // * 10hz,
@@ -50,4 +50,35 @@ ISR(TIMER3_COMPA_vect) {
 
 uint16_t time_get_counter(){
   return tenths_of_second_counter;
+}
+
+void timer_ten_ms_init(){
+  // we want:
+  // * CTC mode,
+  // * 100hz,
+  // * an interrupt that increments a number for each match compare
+
+  // using prescaler of 256
+  cli();
+  // Set WGM to 0b10 (CTC mode with OCR0 containing top)
+  // COM0A 0b00
+  // COM0B = 0b00
+  TCCR0A = 0x02;
+  // CS 
+  TCCR0B = 0x04;
+
+  // Set OCR3A to contain 0xC2 (count to 194 in dec)
+  OCR0A = 0xC2;
+
+  // Set OCIE0A to high, which enables the interrupt call when
+  // a compare matches on OCR0A. This interrupt activates by setting
+  // the corresponding flag OCF0A in TIFR0.
+  // This flag clears automatically when the interrupt handler is called.
+  TIMSK0 |= 0x02;
+  sei();
+  tenths_of_second_counter = 0;
+}
+
+ISR(TIMER0_COMPA_vect) {
+  pos_controller_calculate_power(input_container_get_ptr()->joystick.y,-1*read_motor_encoder());
 }

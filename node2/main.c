@@ -37,11 +37,12 @@ void main(){
   adc_init();
   struct IR_status IR_sample_container;
   IR_init(&IR_sample_container);
-  timer_init();
+  timer_hundred_ms_init();
+  timer_ten_ms_init();
   solenoid_init();
   motor_init();
-  //speed_controller_init(0.6, 1, 0.1); //params: kp, ki, sample_time
-  pos_controller_init(1,1,0.1,40);
+  //speed_controller_init(0.6, 1, 0.01); //params: kp, ki, sample_time
+  pos_controller_init(1,1,0.01,40);
   /*
   struct CAN_msg msg;
   msg.data[0] = 50;

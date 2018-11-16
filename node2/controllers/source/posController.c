@@ -40,13 +40,14 @@ void pos_controller_calculate_power(int8_t reference_value, int16_t measured_val
 
   //return kp*e + T*ki*int(e)
   pi_container.current_power = pi_container.Kp*error + (pi_container.sample_time*pi_container.Ki*pi_container.error_sum);
-  printf("r: %d\n\r", reference_value);
-  printf("x: %d\n\r", reference_value);
-  printf("e: %d\n\r", error);
-  printf("u: %d\n\r", pi_container.current_power);
+  //printf("r: %d\n\r", reference_value);
+  //printf("p: %d\n\r", pi_container.position);
+  //printf("x: %d\n\r", measured_value);
+  //printf("e: %d\n\r", error);
+  //printf("u: %d\n\r", pi_container.current_power);
 }
 
 int16_t pos_controller_get_power() {
-  return pi_container.current_power;
-  //return 0;
+  //return pi_container.current_power;
+  return 0;
 }
