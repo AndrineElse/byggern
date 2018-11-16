@@ -1,9 +1,11 @@
+#define F_CPU 16000000
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
-#include "../../drivers/include/PIDriver.h"
+#include "../../controllers/include/posController.h"
 #include "../../drivers/include/IRDriver.h"
 #include "../../drivers/include/timerDriver.h"
 #include "../../drivers/include/motorDriver.h"
@@ -12,32 +14,36 @@
 #include "../../drivers/include/solenoidDriver.h"
 #include "../../tests/include/servoTesting.h"
 #include "../../containers/include/userInputContainer.h"
+#include "../../containers/include/gameDataContainer.h"
 
 #include "../include/game.h"
 
-// void game_init(){}
-
-void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
+void game_loop(struct IR_status* IR_sample_container){
   struct Game_status game;
   game.lives = 3;
   game.fails = 0;
   game.timer = time_get_counter();
+
   uint8_t button_flag = 0;
   uint16_t solenoid_timer = 0;
   uint16_t update_CAN_timer=0;
   uint8_t update_CAN_flag=0;
   while(game.fails < game.lives){
-
-    servo_update_position(input_container_get_ptr()->joystick.x);
-    set_motor_speed(pid);
-    solenoid_update_status(&button_flag,&solenoid_timer);
-    count_game_score(&game, IR_sample_container);
-    _delay_ms(1000);
-    game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
-
+    printf("game start: %d\n\r", (game_data_container_get_ptr()->gameStart));
+    if(game_data_container_get_ptr()->gameStart){
+      servo_update_position(input_container_get_ptr()->joystick.x);
+      motor_set_power(pos_controller_get_power());
+      solenoid_update_status(&button_flag,&solenoid_timer);
+      count_game_score(&game, IR_sample_container);
+      //_delay_ms(1000);
+      game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
+    }
   }
+
   game.score = time_get_counter() - game.timer;
 }
+
+
 
 
 void count_game_score(struct Game_status* game,struct IR_status* IR_sample_container){

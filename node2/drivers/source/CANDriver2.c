@@ -10,6 +10,7 @@
 #include "../include/MCP2515Driver2.h"
 #include "../include/CANDriver2.h"
 #include "../../containers/include/userInputContainer.h"
+#include "../../containers/include/gameDataContainer.h"
 
 void CAN_init(){
   mcp2515_init();
@@ -132,12 +133,19 @@ ISR(INT2_vect) {
 //    look at the id,
 //    and perform the appropriate action
 void CAN_message_handler(){
-
   struct CAN_msg new_message = receive_msg();
+  switch(new_message.id){
+    case 1:
+      input_container_update(new_message);
+      break;
+    case 3:
+      game_data_container_update(new_message);
+      //printf("Recieved a game status message, num fails = %d \n", new_message.data[1]);
+    break;
+    //add more cases here
 
-  // id of 1 corresponds to a new set of user inputs from node 1
-  if (new_message.id == 1) {
-    input_container_update(new_message);
+    default:
+      printf("Message with unmapped ID loaded :(\n\r");
+      break;
   }
-  // add more elements here for further message types
 }

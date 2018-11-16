@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <avr/interrupt.h>
+#include "../../drivers/include/CANDriver.h"
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
@@ -19,6 +20,7 @@ struct Node middleGameNode;
 
 struct Node endGameNode;
 
+struct GameData gameData;
 
 void menuInit(){
 
@@ -74,66 +76,6 @@ void menuInit(){
   //mainMenuNode = &mainMenuNode;
 }
 
-/*void menuLoop(){
-  //printf("inside menu loop\n\r");
-
-
-
-  //printf("Inside menu function\n\r");
-  JoystickOffset offset = userInputInit();
-  uint8_t selectedOption = 0;
-  JoystickDir currentDir;
-  volatile struct Node* currentNode = &mainMenuNode;
-  JoystickDir lastDir;
-  lastDir = calculateJoystickDirection();
-  uint8_t lastButtonValue = 0;
-  JoystickOffset joystickOffset;
-  joystickOffset = calculateOffsetJoystick();
-  JoystickCoords joystickCoords;
-  printf("b");
-  while(1){
-      printf("a");
-    //printf("Inside menu loop\n\r");
-    //get joystick input
-
-    joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
-    JoystickDir currentDir;
-    currentDir = calculateJoystickDirection(joystickCoords);
-
-    //find selected option
-
-    if (currentDir != lastDir){
-      if (currentDir == UP){
-        if (selectedOption > 0){
-          selectedOption = selectedOption -1;
-        }
-      }
-      else if (currentDir == DOWN){
-        if (selectedOption < (currentNode->numOptions-1)){
-          selectedOption = selectedOption +1;
-        }
-      }
-      //evt modulo numOptions her istedet
-      lastDir = currentDir;
-    }
-
-    //NB, this requires selectedoptions to be < length(options)
-    if (!lastButtonValue && joystickButton()) {
-      currentNode = currentNode->optionNodes[selectedOption];
-      selectedOption = 0;
-      OLED_buffer_clear();
-    }
-
-    lastButtonValue = joystickButton();
-    _delay_ms(50);
-    cli();
-    printNodeUsingBuffer(currentNode, selectedOption);
-    OLED_buffer_update_screen();
-    sei();
-  }
-
-}*/
-
 void menuLoop(){
   JoystickOffset offset = userInputInit();
   uint8_t selectedOption = 0;
@@ -144,26 +86,32 @@ void menuLoop(){
   uint8_t lastButtonValue = 0;
   uint8_t gameFlag = 1;
   uint8_t numFails = 0;
+
+  gameData.gameStart = 0;
+  gameData.pause = 0;
+  gameData.calibrateEncoder = 0;
   //volatile struct Game_status* game;
   while(1){
     //printf("Current node description: %s\n\r", currentNode->description );
     if(currentNode->description == "Game"){
         // printf("inside game node\n\r");
       if(gameFlag){
+        game_send_data_CAN();
         OLED_clear();
-        //printf("inside playing game\n\r");
         send_joystick_position(offset);
-        //printf("joystick pos sent\n\r");
-        //game = game_status_container_get_ptr();
+        gameData.gameStart = 1;
+
       }
       if (numFails != game_status_container_get_ptr()->fails){
         //printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
+        gameData.gameStart = 0; //maybe pause? , set gameStart to initialize the game, and pause just pauses it???
         gameFlag = 0;
         numFails = game_status_container_get_ptr()->fails;
         currentNode = &middleGameNode;
       }
       else if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
         //printf("GAME OVER\n\r");
+        gameData.gameStart = 0;
         gameFlag = 0;
         numFails = 0;
         currentNode = &endGameNode;
@@ -236,4 +184,27 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
       OLED_buffer_print_line(node->options[i],i+1,0);
     }
   }
+}
+
+
+/*
+  MAPPING
+  id = 3
+  data[0] = gameStart
+  data[1] = pause
+  data[2] = calibrateEncoder
+  length = 3
+*/
+
+void game_send_data_CAN(){
+  // send can msg
+  struct CAN_msg msg;
+  msg.id = 3;
+  uint8_t array[8] = {gameData.gameStart,gameData.pause,gameData.calibrateEncoder,0,0,0,0,0};
+  for (int j = 0; j < 8; j++){
+    msg.data[j] = array[j];
+
+  }
+  msg.length = 3;
+  send_CAN_msg(&msg);
 }
