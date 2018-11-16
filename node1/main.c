@@ -51,10 +51,6 @@ void main(){
   OLED_init_buffer_mode();
   OLED_buffer_clear();
 
-  OLED_buffer_fill();
-  OLED_buffer_update_screen();
-  _delay_ms(1000);
-
   //joystick_set_max_min_values();
   //printf("Sreg: %d\n\r", SREG);
   //sei();
