@@ -1,5 +1,6 @@
 #define F_CPU 5000000 //16 000 000 needs to be changed to atmega2560, to compile on node 2, (5000000)
 #include <stdio.h>
+#include <stdint.h>
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>

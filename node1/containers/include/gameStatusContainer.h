@@ -5,6 +5,11 @@ struct Game_status {
   uint16_t score;
 };
 
+struct Final_score {
+  uint8_t name;
+  uint16_t score;
+};
+
 void game_status_container_init();
 volatile struct Game_status* game_status_container_get_ptr();
 void game_status_container_update(struct CAN_msg new_game_message);
