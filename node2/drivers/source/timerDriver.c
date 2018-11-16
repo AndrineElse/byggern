@@ -40,11 +40,12 @@ ISR(TIMER3_COMPA_vect) {
 
   tenths_of_second_counter++;
 
-  //TODO, check some flag here to ensure: 
-  // * encoder reading and 
-  // * regulator calculation 
+  //TODO, check some flag here to ensure:
+  // * encoder reading and
+  // * regulator calculation
   //only happens while game is running
-  speed_controller_calculate_power(input_container_get_ptr()->joystick.y,-1*read_motor_encoder());
+  //speed_controller_calculate_power(input_container_get_ptr()->joystick.y,-1*read_motor_encoder());
+  pos_controller_calculate_power(input_container_get_ptr()->joystick.y,-1*read_motor_encoder());
 }
 
 uint16_t time_get_counter(){

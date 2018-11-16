@@ -17,7 +17,8 @@
 #include "drivers/include/IRDriver.h"
 #include "drivers/include/motorDriver.h"
 #include "drivers/include/servoDriver.h"
-#include "controllers/include/speedController.h"
+//#include "controllers/include/speedController.h"
+#include "controllers/include/posController.h"
 #include "containers/include/userInputContainer.h"
 
 //#define FOSC 1843200// Clock Speed
@@ -39,7 +40,8 @@ void main(){
   timer_init();
   solenoid_init();
   motor_init();
-  speed_controller_init(0.5, 1, 0.1); //params: kp, ki, sample_time
+  //speed_controller_init(0.6, 1, 0.1); //params: kp, ki, sample_time
+  pos_controller_init(1,1,0.1,40);
   /*
   struct CAN_msg msg;
   msg.data[0] = 50;

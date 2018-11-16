@@ -20,7 +20,7 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, ui
   pi_container.encoder_factor = encoder_factor;
 
   //variables
-  pi_container.position = 0;
+  pi_container.position = -4000;
   pi_container.error_sum = 0;
   pi_container.current_power = 0;
 }
@@ -35,13 +35,18 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, ui
 void pos_controller_calculate_power(int8_t reference_value, int16_t measured_value) {
 
   pi_container.position += measured_value;
-  int16_t error = reference_value - ((int16_t)pi_container.position/40.0);
-  pi_container.error_sum += error;
+  int16_t error = reference_value - (int16_t)(pi_container.position/pi_container.encoder_factor);
+  pi_container.error_sum += (error < 20 ? error : 0);
 
-  //return kp*e + ki*int(e)
-  pi_container.current_power = (pi_container.Kp)*error + pi_container.sample_time*(pi_container.Ki)*(pi_container.error_sum);
+  //return kp*e + T*ki*int(e)
+  pi_container.current_power = pi_container.Kp*error + (pi_container.sample_time*pi_container.Ki*pi_container.error_sum);
+  printf("r: %d\n\r", reference_value);
+  printf("x: %d\n\r", reference_value);
+  printf("e: %d\n\r", error);
+  printf("u: %d\n\r", pi_container.current_power);
 }
 
 int16_t pos_controller_get_power() {
   return pi_container.current_power;
+  //return 0;
 }

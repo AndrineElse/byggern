@@ -42,17 +42,17 @@ void speed_controller_calculate_power(int8_t reference_value, int16_t measured_v
   //TODO, Ki is probably way too big as an int.
 
   int16_t error = reference_value - measured_value;
-  pi_container.error_sum += error;
+  //pi_container.error_sum += error;
 
   //returns kp*e + T*ki*int(e)
   //pi_container.current_power = (pi_container.Kp)*error + pi_container.sample_time*(pi_container.Ki)*(pi_container.error_sum);
-  pi_container.current_power = (int16_t)pi_container.Kp*error;
+  pi_container.current_power = (int16_t)(pi_container.Kp*error);
   printf("error: %d\n\r", error);
   printf("power: %d\n\r", pi_container.current_power);
 }
 
 int16_t speed_controller_get_power() {
-  //return pi_container.current_power;
+  return pi_container.current_power;
   //return 0;
-  return 30;
+  //return 50;
 }
