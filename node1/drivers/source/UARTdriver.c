@@ -19,6 +19,7 @@ void USART_Init( unsigned int ubrr )
    */
   UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);
   fdevopen(USART_Transmit, USART_Receive);
+  printf("HERE!!!!\n");
 }
 
 
