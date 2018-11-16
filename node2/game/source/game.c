@@ -26,6 +26,7 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid, uint
   game.timer = time_get_counter();
   uint8_t button_flag = 0;
   uint16_t solenoid_timer = 0;
+  USART_Transmit_STXETX(game.lives-game.fails, 0x14);
   //uint8_t* msg = USART_Receive_STXETX();
   while(game.fails < game.lives){
     USART_Transmit_STXETX(game.lives-game.fails, 0x14);
@@ -35,9 +36,9 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid, uint
     set_motor_speed(pid);
     solenoid_update_status(&button_flag,&solenoid_timer);
     // if (msg[0] == 0x15){
-      if (msg[0] == 0x15){
+      /*if (msg[0] == 0x15){
           solenoid_fire(&button_flag,&solenoid_timer);
-    }
+    }*/
     count_game_score(&game, IR_sample_container);
 
     //_delay_ms(10000);
