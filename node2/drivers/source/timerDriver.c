@@ -40,8 +40,9 @@ void timer_hundred_ms_init(){
 ISR(TIMER3_COMPA_vect) {
 
   tenths_of_second_counter++;
-
+  /*cli();
   printf("2");
+  sei();*/
 }
 
 uint16_t time_get_counter(){
@@ -56,7 +57,8 @@ void timer_ten_ms_init(){
   TCCR0B = 0x05; //prescaler 1024, use for 50hz
   //TCCR0B = 0x04; //prescaler 256, use for 100hz
 
-  OCR0A = 0x61; //use for 50hz
+  OCR0A = 0xC2; //use for 50hz
+  // old OCR0A = 0x61; //use for 50hz
   //OCR0A = 0xC2; //use for 100hz
 
   // Set OCIE0A to high, which enables the interrupt call when
@@ -70,5 +72,7 @@ void timer_ten_ms_init(){
 
 ISR(TIMER0_COMPA_vect) {
   pos_controller_calculate_power(input_container_get_ptr()->joystick.y,-1*read_motor_encoder());
+  /*cli();
   printf("1");
+  sei();*/
 }

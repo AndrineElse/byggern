@@ -13,7 +13,7 @@
 volatile struct PID_data pi_container;
 
 
-void pos_controller_init(float p_factor, int8_t i_factor, float sample_time, uint8_t encoder_factor) {
+void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, uint8_t encoder_factor) {
   //constants
   pi_container.Kp = p_factor;
   pi_container.Ki = i_factor;
@@ -35,13 +35,13 @@ void pos_controller_init(float p_factor, int8_t i_factor, float sample_time, uin
 //    reference_value:
 //      value from -100 to 100
 void pos_controller_calculate_power(int8_t reference_value, int16_t measured_value) {
-
+  measured_value = (measured_value > 200 || measured_value < -200 ? pi_container.encoder_value: measured_value);
   pi_container.position += measured_value;
   int16_t error = reference_value - (int16_t)(pi_container.position/((int8_t)pi_container.encoder_factor));
-  pi_container.error_sum += (error < 20 ? error : 0);
+  pi_container.error_sum += (error < 50 ? error : 0);
 
   //return kp*e + T*ki*int(e)
-  pi_container.current_power = pi_container.Kp*error; //+ (pi_container.sample_time*pi_container.Ki*pi_container.error_sum);
+  pi_container.current_power = pi_container.Kp*error + (int16_t)(pi_container.sample_time*(pi_container.Ki*pi_container.error_sum));
   pi_container.encoder_value = measured_value;
   //printf("r: %d\n\r", reference_value);
   //printf("p: %d\n\r", pi_container.position);
@@ -52,7 +52,7 @@ void pos_controller_calculate_power(int8_t reference_value, int16_t measured_val
 }
 
 int16_t pos_controller_get_power() {
-  printf("m: %d\n\r", pi_container.encoder_value);
+  printf("u: %d\n\r", pi_container.current_power);
   //return pi_container.current_power;
   return 0;
 }
