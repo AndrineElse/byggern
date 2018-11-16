@@ -11,19 +11,20 @@
 
 volatile struct PID_data pi_container;
 
-void speed_controller_init(float p_factor, float i_factor, float sample_time) {
+void speed_controller_init(float p_factor, uint8_t encoder_factor){
   //constants
   pi_container.Kp = p_factor;
-  pi_container.sample_time = sample_time;
+  pi_container.encoder_factor = encoder_factor;
 
   //variables
-  pi_container.error_sum = 0;
   pi_container.current_power = 0;
+  pi_container.last_encoder_value = 0;
 
   //not in use
-  pi_container.encoder_factor = 0;
   pi_container.position = 0;
-  pi_container.Ki = i_factor;
+  pi_container.Ki = 0;
+  pi_container.error_sum = 0;  
+  pi_container.sample_time = 0;
 }
 
 
@@ -39,20 +40,19 @@ void speed_controller_init(float p_factor, float i_factor, float sample_time) {
 //      conceivable values from -400 to 400
 void speed_controller_calculate_power(int8_t reference_value, int16_t measured_value) {
 
-  //TODO, Ki is probably way too big as an int.
+  measured_value = (measured_value > 200 || measured_value < 200 ? pi_container.last_encoder_value : measured_value);
 
   int16_t error = reference_value - measured_value;
   //pi_container.error_sum += error;
 
   //returns kp*e + T*ki*int(e)
-  //pi_container.current_power = (pi_container.Kp)*error + pi_container.sample_time*(pi_container.Ki)*(pi_container.error_sum);
   pi_container.current_power = (int16_t)(pi_container.Kp*error);
-  printf("error: %d\n\r", error);
-  printf("power: %d\n\r", pi_container.current_power);
+  //printf("error: %d\n\r", error);
+  //printf("power: %d\n\r", pi_container.current_power);
 }
 
 int16_t speed_controller_get_power() {
+  printf("u: %d",pi_container.current_power);
   return pi_container.current_power;
-  //return 0;
-  //return 50;
+  return 0;
 }

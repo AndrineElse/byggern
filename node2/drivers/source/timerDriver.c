@@ -8,6 +8,7 @@
 #include "../include/motorDriver.h"
 
 volatile uint16_t tenths_of_second_counter;
+volatile uint16_t twenty_ms_counter;
 
 void timer_hundred_ms_init(){
   // we want:
@@ -68,11 +69,14 @@ void timer_ten_ms_init(){
   TIMSK0 |= 0x02;
 
   sei();
+  twenty_ms_counter = 0;
 }
 
 ISR(TIMER0_COMPA_vect) {
-  pos_controller_calculate_power(input_container_get_ptr()->joystick.y,-1*read_motor_encoder());
-  /*cli();
-  printf("1");
-  sei();*/
+  twenty_ms_counter++;
+  //pos_controller_calculate_power(input_container_get_ptr()->joystick.y,-1*read_motor_encoder());
+}
+
+uint16_t get_twenty_ms_counter() {
+  return twenty_ms_counter;
 }
