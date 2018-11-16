@@ -6,7 +6,7 @@
 
 void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
   printf("TRANSMIT:\n\r" );
-  cli();
+  // cli();
   USART_Transmit(0x02); // STX
 	USART_Transmit(0x00); // LEN0
 
@@ -61,7 +61,7 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
       USART_Transmit(0x03); // ETX
       break;
   }
-  sei();
+  // sei();
   _delay_ms(10);
 
 }
