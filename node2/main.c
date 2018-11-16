@@ -17,6 +17,7 @@
 #include "drivers/include/IRDriver.h"
 #include "drivers/include/motorDriver.h"
 #include "drivers/include/servoDriver.h"
+#include "drivers/include/timerDriver.h"
 //#include "controllers/include/speedController.h"
 #include "controllers/include/posController.h"
 #include "containers/include/userInputContainer.h"
@@ -26,7 +27,6 @@
 #define MYUBRR F_CPU/16/BAUD-1
 
 void main(){
-
 
   //init
   USART_Init ( MYUBRR );
@@ -38,10 +38,10 @@ void main(){
   struct IR_status IR_sample_container;
   IR_init(&IR_sample_container);
   timer_hundred_ms_init();
-  timer_ten_ms_init();
+  timer_twenty_ms_init();
   solenoid_init();
   motor_init();
-  pos_controller_init(1,2,0.02,10000); //params: kp, ki, sample_time, encoder_max
+  pos_controller_init(1,1,0.02,10000); //params: kp, ki, sample_time, encoder_max
 
   /*
   struct CAN_msg msg;
@@ -54,7 +54,6 @@ void main(){
     send_CAN_msg(&msg);
     _delay_ms(20000);
   }*/
-
   game_loop(&IR_sample_container);
 
 

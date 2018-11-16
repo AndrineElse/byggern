@@ -39,6 +39,7 @@ void timer_hundred_ms_init(){
 
 ISR(TIMER3_COMPA_vect) {
   tenths_of_second_counter++;
+  //printf("B");
 }
 
 uint16_t time_get_counter(){
@@ -53,9 +54,11 @@ void timer_twenty_ms_init(){
   TCCR0B = 0x05; //prescaler 1024, use for 50hz
   //TCCR0B = 0x04; //prescaler 256, use for 100hz
 
-  OCR0A = 0x9B; //use for 50hz 
+  //OCR0A = 0x9B; //use for 50hz
   //16MHz/(2*50Hz*1024) = 156 = (ocr+1)
   // => ocr = 155 = 0x9B
+
+  OCR0A = 0x9B; //use for 50hz
 
   // Set OCIE0A to high, which enables the interrupt call when
   // a compare matches on OCR0A. This interrupt activates by setting
@@ -68,7 +71,8 @@ void timer_twenty_ms_init(){
 
 ISR(TIMER0_COMPA_vect) {
   twenty_ms_counter++;
-  pos_controller_calculate_power(input_container_get_ptr()->joystick.y,-1*read_motor_encoder());
+  pos_controller_calculate_power(input_container_get_ptr()->joystick.y + 100,-1*read_motor_encoder());
+  //printf("A");
 }
 
 uint16_t get_twenty_ms_counter() {

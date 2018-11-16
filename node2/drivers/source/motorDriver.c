@@ -1,3 +1,5 @@
+#define F_CPU 16000000
+
 #include <stdio.h>
 #include <float.h>
 #include <avr/io.h>
@@ -15,6 +17,8 @@ void motor_init() {
   DDRH |= (1 << DDH1)|(1 << DDH3)|(1 << DDH4)|(1 << DDH5)|(1 << DDH6);
   PORTH |= (1<<PH4); // Enables motor
   PORTH &= ~(1<<PH3); // Output enable of encoder !OE
+  PORTH &= ~(1<<PH6);
+  _delay_ms(10);
   PORTH |= (1<<PH6);
   //PINH4 = 0xFF; // EN
   //PINH1 = 0xFF;// DIR
@@ -60,7 +64,6 @@ unsigned char motor_set_direction_and_return_abs(int16_t signed_power) {
 
 uint16_t read_motor_encoder() {
   cli();
-
   PORTH &= ~(1<<PH5); // Output enable of encoder !OE
   PORTH &= ~(1<<PH3); // SEL high/low set low
   _delay_us(20);
