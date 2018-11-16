@@ -27,19 +27,19 @@ void menuInit(){
   playGameNode.options[0] = "Go back";
   playGameNode.description = "Game";
   playGameNode.numOptions = 1;
-
+  playGameNode.optionNodes[0] = &mainMenuNode;
 
   highScoresNode.parent = &mainMenuNode;
   highScoresNode.options[0] = "Go back";
   highScoresNode.description = "highscore";
   highScoresNode.numOptions = 1;
-
+  highScoresNode.optionNodes[0] = &mainMenuNode;
 
   optionsNode.parent = &mainMenuNode;
   optionsNode.options[0] = "Go back";
   optionsNode.description = "options";
   optionsNode.numOptions = 1;
-
+  optionsNode.optionNodes[0] = &mainMenuNode;
 
   mainMenuNode.parent = (struct Node*)0;
   mainMenuNode.options[0] = "Play game";
@@ -52,6 +52,23 @@ void menuInit(){
   mainMenuNode.optionNodes[0] = &playGameNode;
   mainMenuNode.optionNodes[1] = &highScoresNode;
   mainMenuNode.optionNodes[2] = &optionsNode;
+
+  endGameNode.parent = (struct Node*)0;
+  endGameNode.description = "All lives lost, game over";
+  endGameNode.numOptions = 2;
+  endGameNode.options[0] = "New game";
+  endGameNode.options[1] = "Back to main menu";
+  endGameNode.optionNodes[0] = &playGameNode;
+  endGameNode.optionNodes[1] = &mainMenuNode;
+  //mainMenuNode = &mainMenuNode;
+
+  middleGameNode.parent = (struct Node*)0;
+  middleGameNode.description = "Fail registerd";
+  middleGameNode.numOptions = 2;
+  middleGameNode.options[0] = "Continue game";
+  middleGameNode.options[1] = "Back to main menu";
+  middleGameNode.optionNodes[0] = &playGameNode;
+  middleGameNode.optionNodes[1] = &mainMenuNode;
 
   //mainMenuNode = &mainMenuNode;
 }

@@ -175,11 +175,11 @@ void joystick_set_max_min_values(){
       if(getSliderButtons() == 1){
         _delay_ms(1000);
       }
-      printf("Max x: %d, Max y: %d, min x: %d, min y: %d \n\r", max_coords.x, max_coords.y,min_coords.x,min_coords.y);
+      //printf("Max x: %d, Max y: %d, min x: %d, min y: %d \n\r", max_coords.x, max_coords.y,min_coords.x,min_coords.y);
     }
     OLED_buffer_clear();
   }
-  printf("Max x: %d, Max y: %d, min x: %d, min y: %d", max_coords.x, max_coords.y,min_coords.x,min_coords.y);
+  //printf("Max x: %d, Max y: %d, min x: %d, min y: %d", max_coords.x, max_coords.y,min_coords.x,min_coords.y);
 }
 /*
 JoystickCoords joystick_calibration(JoystickCoords joystickMax){
