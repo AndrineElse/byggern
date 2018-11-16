@@ -70,5 +70,6 @@ void game_send_update_CAN(struct Game_status* game){
 
   }
   msg.length = 4;
+  printf("Sending msg over CAN to node 1: \n\r");
   send_CAN_msg(&msg);
 }
