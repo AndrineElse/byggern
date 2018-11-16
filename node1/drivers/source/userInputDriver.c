@@ -155,9 +155,7 @@ void joystick_set_max_min_values(){
     OLED_buffer_print_line(options[i], 1, 0);
     OLED_buffer_update_screen();
     while ((!getSliderButtons())) {
-      if(getSliderButtons() == 1){
-        _delay_ms(1000);
-      }
+
       uint8_t rawX = readChannel(2);
       uint8_t rawY = readChannel(1);
       switch (i) {
@@ -173,6 +171,9 @@ void joystick_set_max_min_values(){
         case 4:
           min_coords.x = rawX;
           break;
+      }
+      if(getSliderButtons() == 1){
+        _delay_ms(1000);
       }
       printf("Max x: %d, Max y: %d, min x: %d, min y: %d \n\r", max_coords.x, max_coords.y,min_coords.x,min_coords.y);
     }
