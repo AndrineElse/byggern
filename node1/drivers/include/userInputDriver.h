@@ -4,8 +4,8 @@ struct JoystickCoords {
 } typedef JoystickCoords;
 
 struct SliderPosition{
-  int16_t left;
-  int16_t right;
+  uint8_t left;
+  uint8_t right;
 } typedef SliderPosition;
 
 struct JoystickOffset {

@@ -1,3 +1,5 @@
+#define F_CPU 5000000
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -9,8 +11,16 @@
 #include "../include/OLEDDriver.h"
 #include "../include/timerDriver.h"
 //volatile ??
+/*
 volatile JoystickCoords max_coords;
 volatile JoystickCoords min_coords;
+*/
+uint8_t maxX;
+uint8_t maxY;
+uint8_t minX;
+uint8_t minY;
+uint8_t centerX;
+uint8_t centerY;
 
 JoystickOffset userInputInit(){
   PORTB |= 1<<PB0; // set pinB0 as pull-up resistor input
@@ -147,12 +157,12 @@ void send_joystick_position(JoystickOffset offset){
 
 
 void joystick_set_max_min_values(){
-  char* options[4]= {"Set max right (x)", "Set min left (x)","Set max up (y)", "Set min down(y)" };
+  char* options[5]= {"Set max right (x)", "Set min left (x)","Set max up (y)", "Set min down(y)", "Set center" };
   uint8_t i = 0;
   uint8_t flag = 0;
 
   while(1){
-    if(i == 4){
+    if(i == 5){
       break;
     }
     OLED_buffer_print_line(options[i], 1, 0);
@@ -160,21 +170,29 @@ void joystick_set_max_min_values(){
     if(flag == 0){
       uint8_t rawX = readChannel(2);
       uint8_t rawY = readChannel(1);
+      printf("X = %d\n\r",maxX);
       switch (i) {
+
         case 0:
-          max_coords.x = rawX;
+
+          maxX= rawX;
+
           break;
         case 1:
-          min_coords.x = rawX;
+          minX = rawX;
           break;
         case 2:
-          min_coords.y = rawY;
+          minY = rawY;
           break;
         case 3:
-          min_coords.y = rawY;
+          maxY = rawY;
+          break;
+        case 4:
+          centerX = rawX;
+          centerY = rawY;
           break;
       }
-      if(getSliderButtons() == 1){
+      if(getSliderButtons() == 1){ //right slider button
         flag = 1;
         _delay_ms(1000);
         flag = 0;
@@ -182,7 +200,7 @@ void joystick_set_max_min_values(){
       }
     }
   }
-  printf("Max x: %d, Max y: %d, min x: %d, min y: %d", max_coords.x, max_coords.y,min_coords.x,min_coords.y);
+  printf("Max x: %d, Max y: %d, min x: %d, min y: %d , centerX: %d , centerY: %d \n\r", maxX, maxY,minX,minY, centerX,centerY);
 }
   /*
   [20];
