@@ -9,6 +9,7 @@
 
 volatile uint16_t tenths_of_second_counter;
 volatile uint16_t twenty_ms_counter;
+volatile uint8_t twenty_ms_toggle_flag;
 
 void timer_hundred_ms_init(){
   // we want:
@@ -58,9 +59,9 @@ void timer_ten_ms_init(){
   TCCR0B = 0x05; //prescaler 1024, use for 50hz
   //TCCR0B = 0x04; //prescaler 256, use for 100hz
 
-  OCR0A = 0xC2; //use for 50hz
-  // old OCR0A = 0x61; //use for 50hz
-  //OCR0A = 0xC2; //use for 100hz
+  //OCR0A = 0xC2; //use for 50hz
+  //OCR0A = 0x13; //use for 50hz
+  OCR0A = 0x9A; //use for 100hz
 
   // Set OCIE0A to high, which enables the interrupt call when
   // a compare matches on OCR0A. This interrupt activates by setting
@@ -70,11 +71,17 @@ void timer_ten_ms_init(){
 
   sei();
   twenty_ms_counter = 0;
+  twenty_ms_toggle_flag = 0;
 }
 
 ISR(TIMER0_COMPA_vect) {
-  twenty_ms_counter++;
-  //pos_controller_calculate_power(input_container_get_ptr()->joystick.y,-1*read_motor_encoder());
+  //twenty_ms_counter++;
+  if(twenty_ms_toggle_flag){
+    pos_controller_calculate_power(input_container_get_ptr()->joystick.y,-1*read_motor_encoder());
+    twenty_ms_toggle_flag = 0;
+  } else {
+    twenty_ms_toggle_flag = 1;
+  }
 }
 
 uint16_t get_twenty_ms_counter() {
