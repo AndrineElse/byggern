@@ -26,9 +26,7 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
       USART_Transmit(0x03); // ETX
     }
 
-    //case 0x12:  // Position
-    else if(id_byte == 0x12){
-    //dosomething
+    else if(id_byte == 0x12){ //Position
       length = 0x03;
       USART_Transmit(length); // LEN1
       //uint8_t payload[length];
@@ -45,9 +43,7 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
       //break;
     }
 
-    //case 0x14:  // Lives
-    else if(id_byte == 0x14){
-    //dosomething
+    else if(id_byte == 0x14){ //Lives
       length = 0x05;
       USART_Transmit(length); // LEN1
       //uint8_t payload[length];
@@ -55,7 +51,7 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
       payload_14[0] = 0x14;
       payload_14[1] = 0x00;
       payload_14[2] = 0x00;
-      payload_14[3] = 0x00;
+      payload_14[3] = (pay>>8)&0xFF;
       payload_14[4] = pay & 0xFF;
       for (int i = 0; i < length; i++){
         USART_Transmit(payload_14[i]);
