@@ -52,6 +52,10 @@ fuse:
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)
+	mkdir -p $(BUILD_DIR)/drivers/source
+	mkdir -p $(BUILD_DIR)/tests/source
+	mkdir -p $(BUILD_DIR)/game/source
+	mkdir -p $(BUILD_DIR)/containers/source
 
 .PHONY: erase
 erase:
