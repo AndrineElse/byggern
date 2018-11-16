@@ -19,6 +19,7 @@
 #include "tests/include/OLEDTesting.h"
 #include "tests/include/CANTesting.h"
 #include "drivers/include/timerDriver.h"
+#include "containers/include/gameStatusContainer.h"
 
 #define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -31,21 +32,39 @@ void main(){
 
   MCUCR = (1<<SRE);
   SFIOR = (1<<XMM2);
-  SREG |= 0x80;
-
+  //SREG |= 0x80;
+  sei();
   //init
   USART_Init ( MYUBRR );
+
+
   SRAM_init ();
   SPI_init();
   mcp2515_init();
   CAN_init();
+
+
+
   CAN_init_interrupt();
+
+
   OLED_init();
   OLED_clear();
   OLED_init_buffer_mode();
   OLED_buffer_clear();
+
+  //joystick_set_max_min_values();
+  //printf("Sreg: %d\n\r", SREG);
+  //sei();
+  //printf("Sreg: %d\n\r", SREG);
   JoystickOffset offset = userInputInit();
+  game_status_container_init();
   timer_init();
+
+
+
+  menuInit();
+  menuLoop();
 
   //OLEDTest();
   /*
@@ -65,12 +84,13 @@ void main(){
   struct Node mainMenuNode;
   menuInit(&mainMenuNode);
   menuLoop(&mainMenuNode);
-  */
+*/
+/*
   while(1){
     send_joystick_position(offset);
   }
 
-
+*/
 
 
   // SPI_SlaveInit();
