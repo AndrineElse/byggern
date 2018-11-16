@@ -12,16 +12,16 @@
 void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
   printf("TRANSMIT:\n\r" );
   cli();
-  USART_Transmit(2); // STX
-	USART_Transmit(0); // LEN0
+  USART_Transmit(0x02); // STX
+	USART_Transmit(0x00); // LEN0
   //uint8_t length = 5;
   //uint8_t payload[length];
   //switch(id_byte){
   uint8_t length;
-    if(id_byte == 0x10){
-    //case 0x10:  // Score message
+    if(id_byte == 0x10){ // Score message
+    //case 0x10:  
     //dosomething
-      length = 5;
+      length = 0x05;
       USART_Transmit(length); // LEN1
       // payload[length];
       uint8_t payload_10[length];
@@ -33,14 +33,16 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
       for (int i = 0; i < length; i++){
         USART_Transmit(payload_10[i]);
       }
+      USART_Transmit(0x03); // ETX
+
       // return 0x11;
       //break;
     }
 
     //case 0x12:  // Position
-    if(id_byte == 0x12){
+    else if(id_byte == 0x12){
     //dosomething
-      length = 3;
+      length = 0x03;
       USART_Transmit(length); // LEN1
       //uint8_t payload[length];
       uint8_t payload_12[length];
@@ -50,25 +52,29 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
       for (int i = 0; i < length; i++){
         USART_Transmit(payload_12[i]);
       }
+      USART_Transmit(0x03); // ETX
+
       // return payload
       //break;
     }
 
     //case 0x14:  // Lives
-    if(id_byte == 0x14){
+    else if(id_byte == 0x14){
     //dosomething
-      length = 5;
+      length = 0x05;
       USART_Transmit(length); // LEN1
       //uint8_t payload[length];
       uint8_t payload_14[length];
       payload_14[0] = 0x14;
-      payload_14[1] = 0;
-      payload_14[2] = 0;
-      payload_14[3] = 0;
+      payload_14[1] = 0x00;
+      payload_14[2] = 0x00;
+      payload_14[3] = 0x00;
       payload_14[4] = pay & 0xFF;
       for (int i = 0; i < length; i++){
         USART_Transmit(payload_14[i]);
       }
+      USART_Transmit(0x03); // ETX
+
       printf("Payload: %x\n\r", payload_14[4]);
       // return 0x15;
       //break;
@@ -100,7 +106,6 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
 
   //msg = STX 0x02 + LEN[0] uint8_t + LEN[1] uint8_t + Payload[0..LEN] + ETX 0x03;
   /* Put data into buffer, sends the data */
-  USART_Transmit(0x03); // ETX
   sei();
 }
 
