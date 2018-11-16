@@ -24,5 +24,5 @@ volatile struct Game_status* game_status_container_get_ptr(){
 }
 
 void print_game_status_container(){
-  printf("Lives : %d Fails: %d \n", game_status_container.lives,game_status_container.fails );
+  //printf("Lives : %d Fails: %d \n", game_status_container.lives,game_status_container.fails );
 }

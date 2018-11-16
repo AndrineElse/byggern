@@ -30,28 +30,40 @@ void main(){
 
   MCUCR = (1<<SRE);
   SFIOR = (1<<XMM2);
-  SREG |= 0x80;
-
+  //SREG |= 0x80;
+  sei();
   //init
   USART_Init ( MYUBRR );
+
+
   SRAM_init ();
   SPI_init();
   mcp2515_init();
   CAN_init();
+
+
+
   CAN_init_interrupt();
+
+
   OLED_init();
   OLED_clear();
   OLED_init_buffer_mode();
   OLED_buffer_clear();
 
-
+  OLED_buffer_fill();
+  OLED_buffer_update_screen();
+  _delay_ms(1000);
 
   //joystick_set_max_min_values();
-
-
+  //printf("Sreg: %d\n\r", SREG);
+  //sei();
+  //printf("Sreg: %d\n\r", SREG);
   JoystickOffset offset = userInputInit();
   game_status_container_init();
   timer_init();
+
+
 
   menuInit();
   menuLoop();

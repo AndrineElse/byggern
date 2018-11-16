@@ -115,7 +115,7 @@ void CAN_message_handler() {
       break;
     case 2:
       game_status_container_update(new_message);
-      printf("Recieved a game status message, num fails = %d \n", new_message.data[1]);
+      //printf("Recieved a game status message, num fails = %d \n", new_message.data[1]);
     break;
     //add more cases here
 

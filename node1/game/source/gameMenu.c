@@ -1,20 +1,28 @@
+#define F_CPU 5000000
 #include <stdint.h>
 #include <stdio.h>
+#include <avr/interrupt.h>
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
 #include <util/delay.h>
 
-volatile struct Node mainMenuNode;
-volatile struct Node playGameNode;
-volatile struct Node highScoresNode;
-volatile struct Node optionsNode;
-volatile struct Node middleGameNode;
-volatile struct Node endGameNode;
+struct Node mainMenuNode;
+
+struct Node playGameNode;
+struct Node highScoresNode;
+
+struct Node optionsNode;
+
+struct Node middleGameNode;
+
+struct Node endGameNode;
+
 
 void menuInit(){
 
-  printf("Inside init\n\r");
+  //printf("Inside init\n\r");
+
   playGameNode.parent = &mainMenuNode;
   playGameNode.options[0] = "Go back";
   playGameNode.description = "Game";
@@ -49,21 +57,27 @@ void menuInit(){
 }
 
 void menuLoop(){
-  printf("Inside menu function\n\r");
+  //printf("inside menu loop\n\r");
+
+
+
+  //printf("Inside menu function\n\r");
   JoystickOffset offset = userInputInit();
   uint8_t selectedOption = 0;
   JoystickDir currentDir;
-  struct Node* currentNode = &mainMenuNode;
+  volatile struct Node* currentNode = &mainMenuNode;
   JoystickDir lastDir;
   lastDir = calculateJoystickDirection();
   uint8_t lastButtonValue = 0;
-
+  JoystickOffset joystickOffset;
+  joystickOffset = calculateOffsetJoystick();
+  JoystickCoords joystickCoords;
+  printf("b");
   while(1){
-    printf("Inside menu loop\n\r");
+      printf("a");
+    //printf("Inside menu loop\n\r");
     //get joystick input
-    JoystickOffset joystickOffset;
-    joystickOffset = calculateOffsetJoystick();
-    JoystickCoords joystickCoords;
+
     joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
     JoystickDir currentDir;
     currentDir = calculateJoystickDirection(joystickCoords);
@@ -94,12 +108,12 @@ void menuLoop(){
 
     lastButtonValue = joystickButton();
     _delay_ms(50);
+    cli();
     printNodeUsingBuffer(currentNode, selectedOption);
     OLED_buffer_update_screen();
-    /*if (currentNode->description == "Game"){
-      send_joystick_position(offset);
-    }*/
+    sei();
   }
+
 }
 
 void printNode(volatile struct Node* node, uint8_t selectedOption){
