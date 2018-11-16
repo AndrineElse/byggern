@@ -165,6 +165,16 @@ void menuLoop(){
         OLED_buffer_clear();
       }
 
+      if (currentNode == levelsNode){
+        if(!lastButtonValue && joystickButton()){
+          game_level_select(selectedOption);s
+        };
+        
+        selectedOption = 0;
+        OLED_buffer_clear();
+      }
+    }
+
       lastButtonValue = joystickButton();
       _delay_ms(50);
       printNodeUsingBuffer(currentNode, selectedOption);
