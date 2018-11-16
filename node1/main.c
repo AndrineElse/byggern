@@ -17,6 +17,7 @@
 #include "drivers/include/CANDriver.h"
 #include "tests/include/OLEDTesting.h"
 #include "tests/include/CANTesting.h"
+#include "drivers/include/timerDriver.h"
 
 #define FOSC 1843200// Clock Speed
 #define BAUD 9600

@@ -2,7 +2,8 @@
 #include <avr/interrupt.h>
 #include <stdint.h>
 #include "../include/timerDriver.h"
-#include "../../controllers/include/speedController.h"
+// #include "../../controllers/include/speedController.h"
+#include "../../controllers/include/posController.h"
 #include "../../containers/include/userInputContainer.h"
 #include "../include/motorDriver.h"
 
@@ -64,11 +65,12 @@ void timer_ten_ms_init(){
   // COM0A 0b00
   // COM0B = 0b00
   TCCR0A = 0x02;
-  // CS 
+  // CS
   TCCR0B = 0x04;
 
   // Set OCR3A to contain 0xC2 (count to 194 in dec)
-  OCR0A = 0xC2;
+  //OCR0A = 0xC2;
+  OCR0A = 0xFF;
 
   // Set OCIE0A to high, which enables the interrupt call when
   // a compare matches on OCR0A. This interrupt activates by setting

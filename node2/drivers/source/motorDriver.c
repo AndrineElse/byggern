@@ -65,15 +65,15 @@ uint16_t read_motor_encoder() {
 
   PORTH &= ~(1<<PH5); // Output enable of encoder !OE
   PORTH &= ~(1<<PH3); // SEL high/low set low
-  _delay_us(20);
+  _delay_us(200);
   uint16_t encoder_counter = (PINK << 8); // read MSB
 
   PORTH |= (1<<PH3); // SEL high/low set high
-  _delay_us(20);
+  _delay_us(200);
   encoder_counter |= PINK; // read LSB
 
   PORTH &= ~(1<<PH6); // toggle RST
-  _delay_us(10);
+  _delay_us(1000);
   PORTH |= (1<<PH6);
   PORTH |= (1<<PH5); // Output disable of encoder !OE
   sei();

@@ -2,6 +2,7 @@
 
 #include <float.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
 #include "../include/posController.h"
@@ -12,7 +13,7 @@
 volatile struct PID_data pi_container;
 
 
-void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, uint8_t encoder_factor) {
+void pos_controller_init(float p_factor, int8_t i_factor, float sample_time, uint8_t encoder_factor) {
   //constants
   pi_container.Kp = p_factor;
   pi_container.Ki = i_factor;
@@ -23,6 +24,7 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, ui
   pi_container.position = -4000;
   pi_container.error_sum = 0;
   pi_container.current_power = 0;
+  pi_container.encoder_value = 0;
 }
 
 
@@ -35,19 +37,22 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, ui
 void pos_controller_calculate_power(int8_t reference_value, int16_t measured_value) {
 
   pi_container.position += measured_value;
-  int16_t error = reference_value - (int16_t)(pi_container.position/pi_container.encoder_factor);
+  int16_t error = reference_value - (int16_t)(pi_container.position/((int8_t)pi_container.encoder_factor));
   pi_container.error_sum += (error < 20 ? error : 0);
 
   //return kp*e + T*ki*int(e)
-  pi_container.current_power = pi_container.Kp*error + (pi_container.sample_time*pi_container.Ki*pi_container.error_sum);
+  pi_container.current_power = pi_container.Kp*error; //+ (pi_container.sample_time*pi_container.Ki*pi_container.error_sum);
+  pi_container.encoder_value = measured_value;
   //printf("r: %d\n\r", reference_value);
   //printf("p: %d\n\r", pi_container.position);
   //printf("x: %d\n\r", measured_value);
   //printf("e: %d\n\r", error);
   //printf("u: %d\n\r", pi_container.current_power);
+  //printf("int_e: %d\n\r", pi_container.error_sum);
 }
 
 int16_t pos_controller_get_power() {
+  printf("m: %d\n\r", pi_container.encoder_value);
   //return pi_container.current_power;
   return 0;
 }
