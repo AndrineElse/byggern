@@ -23,7 +23,7 @@ void game_loop(struct IR_status* IR_sample_container){
   game.lives = 3;
   game.fails = 0;
   game.timer = time_get_counter();
-
+  game.score = 0;
   uint8_t button_flag = 0;
   uint16_t solenoid_timer = 0;
   uint16_t update_CAN_timer=0;
@@ -39,11 +39,13 @@ void game_loop(struct IR_status* IR_sample_container){
       solenoid_update_status(&button_flag,&solenoid_timer);
       count_game_score(&game, IR_sample_container,&fail_timer,&fail_registerd_flag);
       //_delay_ms(1000);
+      game.score = time_get_counter() - game.timer;
       game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
+
     }
   }
 
-  game.score = time_get_counter() - game.timer;
+  //game.score = time_get_counter() - game.timer;
 }
 
 

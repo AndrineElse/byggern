@@ -97,7 +97,6 @@ void menuLoop(){
     if(currentNode->description == "Game"){
         // printf("inside game node\n\r");
       if(gameFlag){
-
         OLED_clear();
         send_joystick_position(offset);
         gameData.gameStart = 1;
