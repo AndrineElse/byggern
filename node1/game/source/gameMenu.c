@@ -91,6 +91,111 @@ void menuInit(){
   //mainMenuNode = &mainMenuNode;
 }
 
+/*void menuLoop(){
+  //printf("inside menu loop\n\r");
+
+
+
+  //printf("Inside menu function\n\r");
+  JoystickOffset offset = userInputInit();
+  uint8_t selectedOption = 0;
+  JoystickDir currentDir;
+  volatile struct Node* currentNode = &mainMenuNode;
+  JoystickDir lastDir;
+  lastDir = calculateJoystickDirection();
+  uint8_t lastButtonValue = 0;
+  JoystickOffset joystickOffset;
+  joystickOffset = calculateOffsetJoystick();
+  JoystickCoords joystickCoords;
+  printf("b");
+  while(1){
+      printf("a");
+    //printf("Inside menu loop\n\r");
+    //get joystick input
+
+    joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
+    JoystickDir currentDir;
+    currentDir = calculateJoystickDirection(joystickCoords);
+
+    //find selected option
+
+    if (currentDir != lastDir){
+      if (currentDir == UP){
+        if (selectedOption > 0){
+          selectedOption = selectedOption -1;
+        }
+      }
+      if (numFails != game_status_container_get_ptr()->fails){
+        //printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
+        gameFlag = 0;
+        numFails = game_status_container_get_ptr()->fails;
+        currentNode = &middleGameNode;
+      }
+      else if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
+        //printf("GAME OVER\n\r");
+        gameFlag = 0;
+        numFails = 0;
+        currentNode = &endGameNode;
+      }
+    }
+    else{
+      //printf("Option nodes description: %s\n\r", currentNode->optionNodes[0]->description );
+      //printf("inside menu looping\n\r");
+      gameFlag = 1;
+      //get joystick input
+      JoystickCoords joystickCoords;
+      joystickCoords = calculateCalibratedJoystickCoords(offset);
+      JoystickDir currentDir;
+      currentDir = calculateJoystickDirection(joystickCoords);
+
+      //find selected option
+
+      if (currentDir != lastDir){
+        if (currentDir == UP){
+          if (selectedOption > 0){
+            selectedOption = selectedOption -1;
+          }
+        }
+        else if (currentDir == DOWN){
+          if (selectedOption < (currentNode->numOptions-1)){
+            selectedOption = selectedOption +1;
+          }
+        }
+        lastDir = currentDir;
+      }
+      if (!lastButtonValue && joystickButton()) {
+        currentNode = currentNode->optionNodes[selectedOption];
+        selectedOption = 0;
+        OLED_buffer_clear();
+      }
+
+      lastButtonValue = joystickButton();
+      _delay_ms(50);
+      printNodeUsingBuffer(currentNode, selectedOption);
+      OLED_buffer_update_screen();
+    }
+
+    if (currentNode == levelsNode){
+      if(!lastButtonValue && joystickButton()){
+        game_level_select(selectedOption);s
+      };
+
+        selectedOption = 0;
+        OLED_buffer_clear();
+      }
+
+    }
+
+    lastButtonValue = joystickButton();
+    _delay_ms(50);
+    cli();
+    printNodeUsingBuffer(currentNode, selectedOption);
+    OLED_buffer_update_screen();
+    sei();
+  }
+
+}*/
+
 void menuLoop(){
   JoystickOffset offset = userInputInit();
   uint8_t selectedOption = 0;
