@@ -2,14 +2,12 @@
 #include <avr/interrupt.h>
 #include <stdint.h>
 #include "../include/timerDriver.h"
-// #include "../../controllers/include/speedController.h"
 #include "../../controllers/include/posController.h"
 #include "../../containers/include/userInputContainer.h"
 #include "../include/motorDriver.h"
 
 volatile uint16_t tenths_of_second_counter;
 volatile uint16_t twenty_ms_counter;
-volatile uint8_t twenty_ms_toggle_flag;
 
 void timer_hundred_ms_init(){
   // we want:
@@ -47,7 +45,7 @@ uint16_t time_get_counter(){
   return tenths_of_second_counter;
 }
 
-void timer_ten_ms_init(){
+void timer_twenty_ms_init(){
   cli();
 
   TCCR0A = 0x02; // sets CTC mode, and no pin output
@@ -55,9 +53,9 @@ void timer_ten_ms_init(){
   TCCR0B = 0x05; //prescaler 1024, use for 50hz
   //TCCR0B = 0x04; //prescaler 256, use for 100hz
 
-  //OCR0A = 0xC2; //use for 50hz
-  //OCR0A = 0x13; //use for 50hz
-  OCR0A = 0x9A; //use for 100hz
+  OCR0A = 0x9B; //use for 50hz 
+  //16MHz/(2*50Hz*1024) = 156 = (ocr+1)
+  // => ocr = 155 = 0x9B
 
   // Set OCIE0A to high, which enables the interrupt call when
   // a compare matches on OCR0A. This interrupt activates by setting
@@ -66,18 +64,11 @@ void timer_ten_ms_init(){
   TIMSK0 |= 0x02;
 
   sei();
-  twenty_ms_counter = 0;
-  twenty_ms_toggle_flag = 0;
 }
 
 ISR(TIMER0_COMPA_vect) {
-  //twenty_ms_counter++;
-  if(twenty_ms_toggle_flag){
-    pos_controller_calculate_power(input_container_get_ptr()->joystick.y,-1*read_motor_encoder());
-    twenty_ms_toggle_flag = 0;
-  } else {
-    twenty_ms_toggle_flag = 1;
-  }
+  twenty_ms_counter++;
+  pos_controller_calculate_power(input_container_get_ptr()->joystick.y,-1*read_motor_encoder());
 }
 
 uint16_t get_twenty_ms_counter() {

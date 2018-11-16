@@ -22,7 +22,6 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, ui
   pi_container.encoder_scale = encoder_max/255;
 
   //variables
-  pi_container.position = -4000;
   pi_container.error_sum = 0;
   pi_container.current_power = 0;
   pi_container.encoder_value = 0;
@@ -46,10 +45,13 @@ void pos_controller_calculate_power(uint8_t reference_value, int16_t measured_va
 
   int16_t error = scaled_reference - measured_value;
 
-  pi_container.error_sum += (error < 50 ? error : 0);
+  pi_container.error_sum += error;
 
+  //ive never seen such raw power before
+  int16_t raw_power = pi_container.Kp*error + (int16_t)(pi_container.sample_time*(pi_container.Ki*pi_container.error_sum));
+  
   //return kp*e + T*ki*int(e)
-  pi_container.current_power = pi_container.Kp*error + (int16_t)(pi_container.sample_time*(pi_container.Ki*pi_container.error_sum));
+  pi_container.current_power = 0.01*(raw_power);
 
   //printf("r: %d\n\r", reference_value);
   //printf("p: %d\n\r", pi_container.position);
@@ -60,7 +62,7 @@ void pos_controller_calculate_power(uint8_t reference_value, int16_t measured_va
 }
 
 int16_t pos_controller_get_power() {
-  printf("m: %d\n\r", pi_container.encoder_value);
+  printf("u: %d\n\r", pi_container.current_power);
   //return pi_container.current_power;
   return 0;
 }

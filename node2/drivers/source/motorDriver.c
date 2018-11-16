@@ -3,7 +3,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
-#include "../../controllers/include/speedController.h"
 #include "../include/TWI_Master.h"
 #include "../include/motorDriver.h"
 #include "../include/servoDriver.h"
@@ -71,6 +70,7 @@ uint16_t read_motor_encoder() {
   encoder_counter |= PINK; // read LSB
 
   //insert encoder reset toggle here, if wanting speed measures
+
   PORTH |= (1<<PH5); // Output disable of encoder !OE
   sei();
 
