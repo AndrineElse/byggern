@@ -1,4 +1,5 @@
-#define F_CPU 5000000 //16 000 000 needs to be changed to atmega2560, to compile on node 2, (5000000)
+//System frequency used by util/delay, 16MHz for node 2, 5MHz for node 1
+#define F_CPU 5000000
 
 #include <avr/io.h>
 #include <util/delay.h>
