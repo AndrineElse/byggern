@@ -59,7 +59,7 @@ void main(){
 
   while(1){
     //printf("Receive: %d\n\r", USART_Receive());
-
+    printf("MAIN\n\r");
     uint8_t* msg = USART_Receive_STXETX();
     printf("STXETX: %d\n\r", msg);
     if (msg[0] == 0x11) {
