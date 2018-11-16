@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include "../../drivers/include/PIDriver.h"
 #include "../../drivers/include/IRDriver.h"
 #include "../../drivers/include/timerDriver.h"
@@ -26,12 +27,12 @@ void game_loop(struct IR_status* IR_sample_container, struct PID_data* pid){
   while(game.fails < game.lives){
 
     servo_update_position(input_container_get_ptr()->joystick.x);
-    game_send_update_CAN(&game);
     set_motor_speed(pid);
     solenoid_update_status(&button_flag,&solenoid_timer);
-
     count_game_score(&game, IR_sample_container);
-    //_delay_ms(10000);
+    _delay_ms(1000);
+    game_send_update_CAN(&game);
+
   }
   game.score = time_get_counter() - game.timer;
 }
@@ -47,7 +48,7 @@ void count_game_score(struct Game_status* game,struct IR_status* IR_sample_conta
       //uint16_t pause =
       _delay_ms(2000);  //need timer like in PWM
     }
-    //printf("Num fails: %d\n\r", game->fails);
+    printf("Num fails: %d\n\r", game->fails);
   // }
 }
 
@@ -63,7 +64,7 @@ data[4] = game.score
 void game_send_update_CAN(struct Game_status* game){
   struct CAN_msg msg;
   msg.id = 2;
-  uint8_t array[8] = {game->timer,game->fails,,game->lives,game->score,0,0,0};
+  uint8_t array[8] = {game->timer,game->fails,game->lives,game->score,0,0,0};
 
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
@@ -71,5 +72,7 @@ void game_send_update_CAN(struct Game_status* game){
   }
   msg.length = 4;
   printf("Sending msg over CAN to node 1: num fails: %d \n\r", msg.data[1]);
+  cli();
   send_CAN_msg(&msg);
+  sei();
 }
