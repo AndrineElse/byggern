@@ -29,6 +29,11 @@
 
 //container
 #include "containers/include/userInputContainer.h"
+#include "containers/include/gameDataContainer.h"
+
+//container
+#include "containers/include/userInputContainer.h"
+
 
 //tests
 //include eventual tests here
@@ -42,6 +47,7 @@ void main(){
   //init
   USART_Init ( MYUBRR );
   input_container_init();
+  game_data_container_init();
   CAN_init();
   CAN_init_interrupt();
   pwm_init();
