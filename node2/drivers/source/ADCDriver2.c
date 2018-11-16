@@ -12,7 +12,7 @@ void adc_init(){
   // Single conversion mode must be selected
   DDRF &= ~(1<<DDF0);
   ADMUX = 0x00; // ADC0 single ended input
-  ADCSRB |= 0x00; // MUX5 low
+  ADCSRB |= 0x00; // MUX5 low, set auto-trigger to trigger on flag high
 
   // ADC Enable, Start Conversion and Conversion complete interrupt
   ADCSRA = 0xA0; // Set ADEN ADC Enable
@@ -32,6 +32,7 @@ uint16_t adc_read(){
     data |= ((((uint8_t*) 0x79)[0]) << 8);
     return data;
   }
+  printf("ADIF=0");
   return 0;
 }
 

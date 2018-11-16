@@ -2,7 +2,11 @@ struct IR_status {
   uint16_t IR_samples[5];
   uint8_t sample_counter;
   uint8_t current_sample_index;
+  uint8_t current_mean;
 };
-uint16_t get_IR_mean_value(struct IR_status* status);
-uint8_t IR_poll_failure(struct IR_status* IR_sample_container);
-void IR_init(struct IR_status* IR_sample_container);
+
+uint16_t IR_get_mean_value();
+uint8_t IR_check_failure();
+void IR_init();
+void IR_get_new_sample();
+void IR_reset_samples();

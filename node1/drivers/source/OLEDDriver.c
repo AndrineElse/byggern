@@ -1,9 +1,11 @@
+#include <stdint.h>
 #include <avr/io.h>
-#include "../include/OLEDDriver.h"
+#include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include "../../fonts.h"
+#include "../include/OLEDDriver.h"
+#include "../include/OLEDDriver.h"
 #include "../include/UARTdriver.h"
-#include <stdint.h>
 
 volatile char* command_address = (char*)0x1000;
 volatile char* data_address = (char*)0x1200;
@@ -59,9 +61,11 @@ void OLED_init(){
 }
 
 void OLED_pos(uint8_t row, uint8_t column){
+  cli();
   OLED_write_command(0xb0 + row); //rown (page select)
   OLED_write_command(column & 0xf);
   OLED_write_command((column >> 4) + 0x10);
+  pos();
 }
 
 void OLED_write_data(char c){
@@ -157,32 +161,40 @@ void OLED_update_buffer_line(uint8_t line, uint8_t* data) {
 * 2: Page mode
 */
 void OLED_set_access_mode(uint8_t mode) {
+  cli();
   if(mode < 3) {
     OLED_write_command(0x20);
     OLED_write_command(mode);
   }
+  sei();
 }
 
 /* sets coordinate bounds for horizontal addressing mode
 * bounds should be within [0,127]
 */
 void OLED_set_horizontal_bounds(uint8_t lower, uint8_t upper) {
+  cli();
   OLED_write_command(0x21);
   OLED_write_command(lower);
   OLED_write_command(upper);
+  sei();
 }
 
 /* sets coordinate bounds for horizontal addressing mode
 * bounds should be within [0,7]
 */
 void OLED_set_vertical_bounds(uint8_t lower, uint8_t upper) {
+  cli();
   OLED_write_command(0x22);
   OLED_write_command(lower);
   OLED_write_command(upper);
+  sei();
 }
 
 void OLED_init_buffer_mode(){
+  cli();
   OLED_set_access_mode(0);
+  sei();
 }
 
 void OLED_buffer_update_screen(){

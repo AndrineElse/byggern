@@ -46,8 +46,7 @@ void main(){
   CAN_init_interrupt();
   pwm_init();
   adc_init();
-  struct IR_status IR_sample_container;
-  IR_init(&IR_sample_container);
+  IR_init(5); //param: amount of samples to average for reading
   timer_hundred_ms_init();
   timer_twenty_ms_init();
   solenoid_init();

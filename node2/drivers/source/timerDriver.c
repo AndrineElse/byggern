@@ -72,4 +72,5 @@ ISR(TIMER0_COMPA_vect) {
   uint8_t pos_reference = input_container_get_ptr()->joystick.y + 100;
   int16_t pos_measured = -1*read_motor_encoder();
   pos_controller_calculate_power(pos_reference, pos_measured);
+  IR_get_new_sample();
 }
