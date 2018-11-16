@@ -1,29 +1,19 @@
-// WIll use UART to send raw data to the web server
-
-
-
 #include <avr/io.h>
 #include <stdio.h>
 #include <avr/interrupt.h>
 #include "../include/UARTDriver2.h"
 
-// Send 0x10 Score Position
-// 0x12
 void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
   printf("TRANSMIT:\n\r" );
   cli();
   USART_Transmit(0x02); // STX
 	USART_Transmit(0x00); // LEN0
-  //uint8_t length = 5;
-  //uint8_t payload[length];
-  //switch(id_byte){
+  
   uint8_t length;
     if(id_byte == 0x10){ // Score message
-    //case 0x10:  
-    //dosomething
+    
       length = 0x05;
       USART_Transmit(length); // LEN1
-      // payload[length];
       uint8_t payload_10[length];
       payload_10[0] = 0x10;
       payload_10[1] = 0;
@@ -34,9 +24,6 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
         USART_Transmit(payload_10[i]);
       }
       USART_Transmit(0x03); // ETX
-
-      // return 0x11;
-      //break;
     }
 
     //case 0x12:  // Position
