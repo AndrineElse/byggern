@@ -19,14 +19,6 @@
 #include "../include/game.h"
 
 void game_loop(struct IR_status* IR_sample_container){
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> 8b77c92e8be8125685641066469e29e181456bc1
-=======
-
->>>>>>> d3a4115db2114990bedeec242a5d8623911633b6
   struct Game_status game;
   game.lives = 3;
   game.fails = 0;
@@ -37,7 +29,7 @@ void game_loop(struct IR_status* IR_sample_container){
   uint16_t update_CAN_timer=0;
   uint8_t update_CAN_flag=0;
   while(game.fails < game.lives){
-<<<<<<< HEAD
+
     printf("game start: %d\n\r", (game_data_container_get_ptr()->gameStart));
     if(game_data_container_get_ptr()->gameStart){
       servo_update_position(input_container_get_ptr()->joystick.x);
@@ -47,16 +39,6 @@ void game_loop(struct IR_status* IR_sample_container){
       //_delay_ms(1000);
       game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
     }
-=======
-
-    servo_update_position(input_container_get_ptr()->joystick.x);
-    motor_set_power(pos_controller_get_power());
-    solenoid_update_status(&button_flag,&solenoid_timer);
-    count_game_score(&game, IR_sample_container);
-    _delay_ms(1000);
-    game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
-
->>>>>>> 8b77c92e8be8125685641066469e29e181456bc1
   }
 
   game.score = time_get_counter() - game.timer;
