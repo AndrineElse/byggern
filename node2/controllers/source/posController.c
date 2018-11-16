@@ -40,14 +40,10 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, ui
 //        255 being right wall
 //    reference_value:
 //      value from 0 to 11000 ish
-//      should probably be saturated from 0 to 100000
+//      should probably be saturated from 0 to 110000
 void pos_controller_calculate_power(uint8_t reference_value, int16_t measured_value) {
-  cli();
   uint16_t scaled_reference = reference_value*pi_container.encoder_scale;
-  // int16_t measure_diff = measured_value - pi_container.last_encoder_value;
-  // int16_t filtered_measure = ((measure_diff > 800 || measure_diff < -800) ? pi_container.last_encoder_value : measured_value);
-  int16_t filtered_measure = measured_value;
-  int16_t error = scaled_reference - filtered_measure;
+  int16_t error = scaled_reference - measured_value;
 
   pi_container.error_sum += error;
 
@@ -56,19 +52,10 @@ void pos_controller_calculate_power(uint8_t reference_value, int16_t measured_va
 
   //return kp*e + T*ki*int(e)
   pi_container.current_power = 0.01*(raw_power);
-  pi_container.last_encoder_value = filtered_measure;
-  //printf("r: %d\n\r", reference_value);
-  //printf("p: %d\n\r", pi_container.position);
-  //printf("x: %d\n\r", measured_value);
-  //printf("e: %d\n\r", error);
-  //printf("u: %d\n\r", pi_container.current_power);
-  //printf("int_e: %d\n\r", pi_container.error_sum);
-  sei();
+  pi_container.last_encoder_value = measured_value;
 }
 
 int16_t pos_controller_get_power() {
-  printf("u: %d\n\r", pi_container.current_power);
-
   //return pi_container.current_power;
   return 0;
 }
