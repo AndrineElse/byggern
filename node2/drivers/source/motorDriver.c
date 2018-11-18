@@ -93,31 +93,39 @@ void motor_encoder_reset(){
 
 void motor_set_max_min_encoder(uint8_t dir){
   motor_encoder_reset();
-  int16_t last_encoder_value = 0;
+  int16_t last_encoder_value = 100;
   int16_t current_encoder_value;
   uint8_t count = 0;
-  for(uint16_t i = 0; i < 300; i+=2){
+  int8_t k = 1;
+  if (dir){
+    k = -1;
+  }
+  while(1){
     current_encoder_value = read_motor_encoder();
     printf("Current encoder: %d\n", current_encoder_value);
-    motor_set_power(i);
-    printf("I = %d\n", i );
+    motor_set_power(k*(60));
+    //if ( (((-5<(current_encoder_value == last_encoder_value)) && ((current_encoder_value == last_encoder_value)<0)) || (((0<(current_encoder_value == last_encoder_value)) && ((current_encoder_value == last_encoder_value)<5))))
+    //&& (current_encoder_value!=0))
     if (current_encoder_value == last_encoder_value){
       count ++;
-      if (count == 4){
+      if (count == 10){
         motor_set_power(0);
-        //break;
+        switch (dir) {
+          case 1:
+            min_encoder  = current_encoder_value;
+            printf("Min value : %d \n", min_encoder );
+            break;
+          case 0:
+            max_encoder = (-1)*current_encoder_value;
+            printf("Max value : %d \n", max_encoder );
+            break;
+        }
+        break;
       }
     }
     last_encoder_value = current_encoder_value;
   }
-  switch (dir) {
-    case 1:
-      max_encoder = current_encoder_value;
-      printf("Max value : %d \n", max_encoder );
-    case 2:
-      max_encoder = (-1)*current_encoder_value;
-      printf("Min value : %d \n", min_encoder );
-  }
+
 }
 
 void motor_calibrate_encoder(){
