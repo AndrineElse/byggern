@@ -43,7 +43,7 @@ void motor_set_power(int16_t power) {
 
 unsigned char motor_set_direction_and_return_abs(int16_t signed_power) {
   uint16_t unsigned_power;
-
+  printf("|power| p: %d\n\r",signed_power);
   if (signed_power < 0){
     PORTH &= ~(1<<PH1); //sets dir to down
     unsigned_power = (uint16_t)(-1*(signed_power));
@@ -99,7 +99,7 @@ int16_t motor_get_max_encoder(){
   int16_t current_encoder_value;
   uint8_t count = 0;
   //Drive the motor to the opposite side
-  motor_set_power(-60);
+  motor_set_power(60);
   while(count < 10){
     _delay_ms(20);
     current_encoder_value = read_motor_encoder();
@@ -110,14 +110,14 @@ int16_t motor_get_max_encoder(){
   }
   motor_set_power(0);
   motor_encoder_reset();
-  motor_set_power(60);
-  
+  motor_set_power(-60);
+
   count = 0;
   last_encoder_value = 100;
   current_encoder_value;
   while(1){
     _delay_ms(20);
-    current_encoder_value = (-1)*read_motor_encoder();
+    current_encoder_value = (1)*read_motor_encoder();
     if (current_encoder_value == last_encoder_value){
       count ++;
       if (count == 20){

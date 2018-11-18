@@ -135,14 +135,6 @@ ISR(INT2_vect) {
 void CAN_message_handler(){
 
   struct CAN_msg new_message = receive_msg();
-  switch(new_message.id){
-    case 1:
-      input_container_update(new_message);
-      break;
-    //add more cases here
+  input_container_update(new_message);
 
-    default:
-      printf("Message with unmapped ID loaded :(\n\r");
-      break;
-  }
 }

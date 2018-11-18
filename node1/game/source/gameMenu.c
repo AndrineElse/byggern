@@ -97,31 +97,35 @@ void menuLoop(){
     //printf("Current node description: %s\n\r", currentNode->description );
     if(currentNode->description == "Game"){
         // printf("inside game node\n\r");
-      if(gameFlag){
-        OLED_buffer_clear();
-        OLED_buffer_update_screen();
-        playGame = 1;
-        send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
-        _delay_ms(10);
-        //gameData.gameStart = 1;
-      }
-      else if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
+        printf("%d %d\n\r", game_status_container_get_ptr()->lives, game_status_container_get_ptr()->fails);
+
+      if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
         //printf("GAME OVER\n\r");
         //gameData.gameStart = 0;
-        playGame = 1;
+        //playGame = 1;
+        printf("B\n\r");
         gameFlag = 0;
         numFails = 0;
         currentNode = &endGameNode;
-        send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
+        // send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
       }
       else if (numFails != game_status_container_get_ptr()->fails){
         //printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
         //gameData.gameStart = 0; //maybe pause? , set gameStart to initialize the game, and pause just pauses it???
-        playGame = 0;
+        //playGame = 0;
+        printf("A\n\r");
         gameFlag = 0;
         numFails = game_status_container_get_ptr()->fails;
         currentNode = &middleGameNode;
+        //send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
+      }
+      else if(gameFlag){
+        OLED_buffer_clear();
+        OLED_buffer_update_screen();
+        playGame = 1;
         send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
+        //_delay_ms(10);
+        //gameData.gameStart = 1;
       }
     }
     else{
@@ -159,7 +163,7 @@ void menuLoop(){
       }
 
       lastButtonValue = joystick_get_button();
-      _delay_ms(50);
+      //_delay_ms(50);
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();
     }
@@ -179,7 +183,7 @@ void printNode(volatile struct Node* node, uint8_t selectedOption){
     OLED_print(node->options[i]);
 
   }
-  _delay_ms(500);
+  //_delay_ms(500);
 }
 
 void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
@@ -205,7 +209,7 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
   data[2] = calibrateEncoder
   length = 3
 */
-
+/*
 void game_send_data_CAN(){
   // send can msg
   struct CAN_msg msg;
@@ -218,3 +222,4 @@ void game_send_data_CAN(){
   msg.length = 3;
   send_CAN_msg(&msg);
 }
+*/

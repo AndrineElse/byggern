@@ -46,7 +46,7 @@ void main(){
   //init
   USART_Init ( MYUBRR );
   input_container_init();
-  game_data_container_init();
+  // game_data_container_init();
   CAN_init();
   CAN_init_interrupt();
   pwm_init();
@@ -71,7 +71,7 @@ void main(){
   }*/
   //printf("main\n\r");
 
-  //game_loop();
+  game_loop();
 
 
 

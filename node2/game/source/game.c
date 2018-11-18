@@ -61,26 +61,31 @@ void game_loop(){
   while(game.fails < game.lives){
 
 
-    if ((input_container_get_ptr()->playGame)&& (last_game_fails==game.fails)){
+    if ((input_container_get_ptr()->playGame) && (last_game_fails==game.fails)){
+      printf("INSIDE IF!!!!!\n\r");
+      //IR_get_new_sample();
 
-      IR_get_new_sample();
+
 
       servo_update_position(input_container_get_ptr()->joystick.x);
       motor_set_power(pos_controller_get_power());
       solenoid_update_status(&button_flag,&solenoid_timer);
       //count_game_score(&game,&fail_timer,&fail_registerd_flag);
+
+
       count_game_score(&game);
       //_delay_ms(1000);
       game.score = time_get_counter() - game.timer;
-      game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
+      //game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
 
     }
-    else if(!(input_container_get_ptr()->playGame)){
+    else {
       last_game_fails=game.fails;
       motor_set_power(0);
-      game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
-      solenoid_update_status(0,&solenoid_timer);
+      //game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
+      // solenoid_update_status(1,&solenoid_timer);
     }
+    game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
   }
   //game.score = time_get_counter() - game.timer;
 }
@@ -140,7 +145,7 @@ void game_send_update_CAN(struct Game_status* game, uint16_t* timer, uint8_t* fl
     *flag = 1;
   }
   else{
-    if((time_get_counter() - *timer) > 1){
+    if((time_get_counter() - *timer) > 2){
       struct CAN_msg msg;
       msg.id = 2;
       //printf("Fails = %d\n\r",game->fails);
@@ -154,6 +159,7 @@ void game_send_update_CAN(struct Game_status* game, uint16_t* timer, uint8_t* fl
       //printf("Lives = %d\n\r", (msg.data[0] & 0x0F));
       msg.length = 1;
       cli();
+      printf("send game stats\n");
       send_CAN_msg(&msg);
       sei();
       *flag = 0;

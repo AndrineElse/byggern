@@ -20,8 +20,9 @@ void input_container_update(struct CAN_msg new_input_message){
 
   input_container.joystick.x = new_input_message.data[0];
   input_container.joystick.y = new_input_message.data[1];
-  input_container.joystickButton = (new_input_message.data[2] & 0x1);
-  input_container.playGame = (new_input_message.data[2] & 0x2);
+  input_container.joystickButton = (new_input_message.data[2] & 0x01);
+  input_container.playGame = ((new_input_message.data[2] & 0x2)>>1);
+  printf("%x %x\n\r", input_container.playGame, input_container.joystickButton);
   /*
   input_container.left_slider = 0; // not in use
   input_container.right_slider = 0; // not in use
