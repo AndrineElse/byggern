@@ -224,11 +224,12 @@ void OLED_buffer_fill(){
 //drawingfunctions
 
 void OLED_dance(){
+  OLED_clear();
   uint8_t radius = 5;
   x_center = 10;
   y_center = 10;
   r2= radius*radius;
-  for(int8_t t = -radius; t < radius; t++){
+  for(int8_t t = -radius; t < radius; t+=2){
     yt = (int8_t)(sqrt(r2-x*x) + 0.5);
 
     uint16_t Z = (x_center+xt) + 128*((y_center+yt)/8);
