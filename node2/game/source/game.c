@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include "../../controllers/include/posController.h"
 #include "../../drivers/include/IRDriver.h"
 #include "../../drivers/include/timerDriver.h"
@@ -27,10 +28,14 @@ void game_loop(struct IR_status* IR_sample_container, uint8_t* msg){
 
   uint8_t button_flag = 0;
   uint16_t solenoid_timer = 0;
-  //USART_Transmit_Lives(game.lives-game.fails);
+  cli();
+  USART_Transmit_Lives(game.lives-game.fails);
+  sei();
   //uint8_t* msg = USART_Receive_STXETX();
   while(game.fails < game.lives){
+    cli();
     USART_Transmit_Lives(game.lives-game.fails);
+    sei();
     //printf("Lives left: %d\n\r", game.lives-game.fails);
 
     servo_update_position(input_container_get_ptr()->joystick.x);
