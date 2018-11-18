@@ -34,6 +34,7 @@ void CAN_init_interrupt() {
 }
 
 void send_CAN_msg(struct CAN_msg* msg){
+  cli();
   // mcp2515_write(MCP_TXB0SIDL,((msg->id)&(0x07)<<5));
   mcp2515_bit_modify(MCP_TXB0SIDL, 0xD0, (((msg->id)&(0x07))<<5));
   mcp2515_write(MCP_TXB0SIDH,(msg->id)>>3);
@@ -71,7 +72,7 @@ void send_CAN_msg(struct CAN_msg* msg){
 
   mcp2515_request_to_send();
 
-
+  sei();
 }
 
 

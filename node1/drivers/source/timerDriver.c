@@ -2,6 +2,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "../include/timerDriver.h"
+#include "../../game/include/gameMenu.h"
 
 volatile uint16_t tenths_of_second_counter;
 
@@ -35,6 +36,11 @@ void timer_init() {
 
 ISR(TIMER3_COMPA_vect) {
 	//printf("time int!");
+  /*
+  if(!(tenths_of_second_counter%10)){
+    game_send_data_CAN();
+  }
+  */
 	tenths_of_second_counter++;
 }
 
