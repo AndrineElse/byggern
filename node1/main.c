@@ -64,8 +64,8 @@ void main(){
 
 
 
-  menuInit();
-  menuLoop();
+  //menuInit();
+  //menuLoop();
 
   /*
   while(1){
