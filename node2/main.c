@@ -58,10 +58,13 @@ void main(){
   while(1){
     //printf("Receive: %d\n\r", USART_Receive());
     // printf("MAIN\n\r");
-    uint8_t* msg;
     cli();
-    msg = USART_Receive_STXETX();
+    USART_Transmit_Lives(0x03);
     sei();
+    uint8_t* msg;
+    //cli();
+    msg = USART_Receive_STXETX();
+    //sei();
     //USART_Transmit_Lives(3);
     if(msg[0] == 0x11) {
       //printf("STXETX: %d\n\r", msg[0]);
