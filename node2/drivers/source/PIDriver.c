@@ -29,11 +29,11 @@ int16_t pid_controller(struct PID_data *pid){
   int16_t error = target_value - pid->position/40;
   float T = 0.1;
 
-  printf("Joystick Y: %d\n\r", target_value);
-  printf("Position: %d\n\r", pid->position/40);
+  printf("J_Y: %d\n\r", target_value);
+  /*printf("Position: %d\n\r", pid->position/40);
   printf("Error: %d\n\r", error);
-  printf("Kp %d\n\r", pid->Kp);
-  
+  printf("Kp %d\n\r", pid->Kp);*/
+
   pid->error_sum += error;
   //printf("ErrorSum: %d\n\r", pid->error_sum);
 

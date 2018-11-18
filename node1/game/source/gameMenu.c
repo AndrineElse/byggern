@@ -1,7 +1,10 @@
+#define F_CPU 5000000
+
 #include <stdint.h>
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
+#include "../../drivers/include/ADCDriver.h"
 #include <util/delay.h>
 
 
@@ -54,10 +57,9 @@ void menuLoop(struct Node* startNode){
   while(1){
 
     //get joystick input
-    JoystickOffset joystickOffset;
-    joystickOffset = calculateOffsetJoystick();
     JoystickCoords joystickCoords;
-    joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
+    //joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
+    joystickCoords = calculate_joystick_from_calibration(readChannel(2),readChannel(1));
     JoystickDir currentDir;
     currentDir = calculateJoystickDirection(joystickCoords);
 

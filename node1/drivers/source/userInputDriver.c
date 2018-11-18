@@ -29,7 +29,7 @@ JoystickOffset userInputInit(){
   maxY = 0;
   minX = 0;
   minY = 0;
-  centerX = 0; 
+  centerX = 0;
   centerY = 0;
 
   return offset;
@@ -142,11 +142,11 @@ JoystickDir getCurrentJoystickDir(){
 // data[2] = button (LSB = button), 7 unused bits here
 
 
-void send_joystick_position(JoystickOffset offset){
+void send_joystick_position(){
   //sends joystick position from node 1 to node 2
   struct CAN_msg msg;
   struct JoystickCoords coords;
-  coords = calculateCalibratedJoystickCoords(offset);
+  coords = calculate_joystick_from_calibration(readChannel(2),readChannel(1));
   msg.id = 1;
   uint8_t array[8] = {coords.x,coords.y,joystickButton(),0,0,0,0,0};
 
@@ -171,22 +171,20 @@ void joystick_set_max_min_values(){
     if(flag == 0){
       uint8_t rawX = readChannel(2);
       uint8_t rawY = readChannel(1);
-      printf("X = %d\n\r",maxX);
+      printf("i: %d\n\r",i);
       switch (i) {
 
         case 0:
-
-          maxX= rawX;
-
+          maxX = rawX;
           break;
         case 1:
           minX = rawX;
           break;
         case 2:
-          minY = rawY;
+          maxY = rawY;
           break;
         case 3:
-          maxY = rawY;
+          minY = rawY;
           break;
         case 4:
           centerX = rawX;
@@ -194,14 +192,14 @@ void joystick_set_max_min_values(){
           break;
       }
       if(getSliderButtons() == 1){ //right slider button
-        _delay_ms(1000);
+        _delay_ms(500);
         i++;
       }
     }
   }
-  //calculate slider scalers here. 
-  //scaler s should be a number such that 
-  //for pos_delta_x in [0,maxX-centerX] 
+  //calculate slider scalers here.
+  //scaler s should be a number such that
+  //for pos_delta_x in [0,maxX-centerX]
   // => pos_delta_x*s in [0,100]
   x_above_scaler = ((float)100)/(maxX-centerX);
   x_below_scaler = ((float)100)/(centerX-minX);
@@ -209,12 +207,12 @@ void joystick_set_max_min_values(){
   y_below_scaler = ((float)100)/(centerY-minY);
 }
 
-//after running calibration routine, 
+//after running calibration routine,
 // this function will return joystick measures that are always [-100,100]
-// returns (0,0) otherwise 
+// returns (0,0) otherwise
 JoystickCoords calculate_joystick_from_calibration(uint8_t rawX, uint8_t rawY) {
   JoystickCoords finalValues;
-  //
+  //return naive calibration if calibration routine has not run
   if(!maxX){
     printf("JS not calibrated!");
     finalValues.x = (rawX - 128)/1.28;
@@ -230,13 +228,14 @@ JoystickCoords calculate_joystick_from_calibration(uint8_t rawX, uint8_t rawY) {
   finalValues.x = (centeredX >= 0 ? centeredX*x_above_scaler : centeredX*x_below_scaler);
   finalValues.y = (centeredY >= 0 ? centeredY*y_above_scaler : centeredY*y_below_scaler);
 
-  /*
   //in case measurements have drifted off from inital max/min values
   //probably wont need this, might be better to just run calibration scheme again
   finalValues.x = (finalValues.x >= 100 ? 100 : finalValues.x);
   finalValues.x = (finalValues.x < -100 ? -100 : finalValues.x);
   finalValues.y = (finalValues.y >= 100 ? 100 : finalValues.y);
   finalValues.y = (finalValues.y < -100 ? -100 : finalValues.y);
-  */
+
+  printf("x:%d\n\r",finalValues.x);
+  printf("y:%d\n\r",finalValues.y);
   return finalValues;
 }

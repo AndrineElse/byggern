@@ -42,13 +42,9 @@ void main(){
   OLED_clear();
   OLED_init_buffer_mode();
   OLED_buffer_clear();
-
-
-  joystick_set_max_min_values();
-
-  while(1);
-
   JoystickOffset offset = userInputInit();
+  
+  joystick_set_max_min_values();
   timer_init();
 
   //OLEDTest();
@@ -71,7 +67,7 @@ void main(){
   menuLoop(&mainMenuNode);
   */
   while(1){
-    send_joystick_position(offset);
+    send_joystick_position();
   }
 
 
