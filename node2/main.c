@@ -56,6 +56,7 @@ void main(){
   timer_twenty_ms_init();
   solenoid_init();
   motor_init();
+  printf("Encoder max: \n\r", motor_get_max_encoder() );
   pos_controller_init(3,3,0.02); //params: kp, ki, sample_time, encoder_max
 
   /*
@@ -70,7 +71,7 @@ void main(){
     _delay_ms(20000);
   }*/
   //printf("main\n\r");
-  printf("Encoder max: \n\r", motor_get_max_encoder() );
+
   //game_loop();
 
 
