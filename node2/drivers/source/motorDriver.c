@@ -98,11 +98,14 @@ void motor_set_max_min_encoder(uint8_t dir){
   uint8_t count = 0;
   for(uint16_t i = 0; i < 300; i+=2){
     current_encoder_value = read_motor_encoder();
+    printf("Current encoder: %d\n", current_encoder_value);
     motor_set_power(i);
+    printf("I = %d\n", i );
     if (current_encoder_value == last_encoder_value){
       count ++;
       if (count == 4){
-        break;
+        motor_set_power(0);
+        //break;
       }
     }
     last_encoder_value = current_encoder_value;
