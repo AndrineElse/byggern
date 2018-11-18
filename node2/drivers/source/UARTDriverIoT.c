@@ -4,6 +4,60 @@
 #include <util/delay.h>
 #include "../include/UARTDriver2.h"
 
+void USART_Transmit_Score(uint16_t score){
+  USART_Transmit(0x02); // STX
+	USART_Transmit(0x00); // LEN0
+  USART_Transmit(0x05); // LEN1
+
+  uint8_t payload[5];
+  payload[0] = 0x10; //Score message
+  payload[1] = 0;
+  payload[2] = 0;
+  payload[3] = (score>>8)&0xFF;
+  payload[4] = score & 0xFF;
+
+  for (int i = 0; i < length; i++){
+    USART_Transmit(payload[i]);
+  }
+
+  USART_Transmit(0x03); // ETX
+}
+
+void USART_Transmit_Position(uint16_t position){
+  USART_Transmit(0x02); // STX
+	USART_Transmit(0x00); // LEN0
+  USART_Transmit(0x03); // LEN1
+
+  uint8_t payload[length];
+  payload[0] = 0x12;
+  payload[1] = (position>>8)&0xFF;
+  payload[2] = position & 0xFF;
+  for (int i = 0; i < length; i++){
+    USART_Transmit(payload[i]);
+  }
+  USART_Transmit(0x03); // ETX
+}
+
+void USART_Transmit_Lives(uint16_t lives){
+  USART_Transmit(0x02); // STX
+	USART_Transmit(0x00); // LEN0
+  USART_Transmit(0x05); // LEN1
+
+  uint8_t payload[5];
+  payload[0] = 0x14; //Lives
+  payload[1] = 0;
+  payload[2] = 0;
+  payload[3] = (lives>>8)&0xFF;
+  payload[4] = lives & 0xFF;
+
+  for (int i = 0; i < length; i++){
+    USART_Transmit(payload[i]);
+  }
+
+  USART_Transmit(0x03); // ETX
+}
+
+/*
 void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
   printf("TRANSMIT:\n\r" );
   // lag flere funksjoner, burde funke ellers, sjekk hva den får
@@ -66,7 +120,7 @@ void USART_Transmit_STXETX(uint16_t pay, uint8_t id_byte){
   _delay_ms(10);
 
 }
-
+*/
 
 
 
@@ -75,7 +129,6 @@ uint8_t* USART_Receive_STXETX(){
 
   //uint8_t data[length];
   // VI henter ut av register, 2, len, len, payload, 3
-  cli();
   //uint8_t value = USART_Receive();
   //printf("value: %x\n\r", value);
   while(USART_Receive() != 0x02){
