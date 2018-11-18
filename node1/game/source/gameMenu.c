@@ -92,7 +92,7 @@ void menuInit(){
   levelsNode.optionNodes[1] = &optionsNode;
   levelsNode.optionNodes[2] = &optionsNode;
   levelsNode.optionNodes[3] = &optionsNode;
-  
+
   usernameNode.parent = &mainMenuNode;
   usernameNode.options[0] = "Kolbjørn"
   usernameNode.options[1] = "Magne"
@@ -267,11 +267,11 @@ void game_username_select(volatile struct Node* node, uint8_t selectedOption){
 
 void game_highscore_update(){
   for (int i = 0; i < 3; i++){
-    if (highScoresNode->options[i] == "-" || game_data_container_get_ptr()->score > highScoresNode->options[i]){
-      game_highscore_SRAM_update(game_data_container_get_ptr()->user, game_data_container_get_ptr()->score);
+    if (highScoresNode.options[i] == "-" || game_status_container_get_ptr()->score > highScoresNode.options[i]){
+      game_highscore_SRAM_update(game_status_container_get_ptr()->user, game_status_container_get_ptr()->score);
       // game_highscore_SRAM_get(uint8_t place)
-      highScoresNode->options[i] = game_data_container_get_ptr()->user + ': ' + game_data_container_get_ptr()->score;
-      
+      highScoresNode.options[i] = game_status_container_get_ptr()->user + ': ' + game_status_container_get_ptr()->score;
+
       break;
     }
   }
