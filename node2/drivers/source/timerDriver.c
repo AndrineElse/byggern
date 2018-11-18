@@ -1,10 +1,13 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
+#include <stdio.h>
 #include "../include/timerDriver.h"
+#include "../include/CANDriver2.h"
 #include "../../controllers/include/posController.h"
 #include "../../containers/include/userInputContainer.h"
 #include "../include/motorDriver.h"
+#include "../include/IRDriver.h"
 
 volatile uint16_t tenths_of_second_counter;
 
@@ -37,7 +40,11 @@ void timer_hundred_ms_init(){
 }
 
 ISR(TIMER3_COMPA_vect) {
+  cli();
   tenths_of_second_counter++;
+  //printf("ISR3 \n\r");
+  sei();
+
 }
 
 uint16_t time_get_counter(){
@@ -57,7 +64,7 @@ void timer_twenty_ms_init(){
 
   OCR0A = 0x9B; //use for 50hz
   //OCR0A = 0x4D; //use for 100hz
-
+  //OCR0A = 0xFF; //use for testing
 
   // Set OCIE0A to high, which enables the interrupt call when
   // a compare matches on OCR0A. This interrupt activates by setting
@@ -69,10 +76,13 @@ void timer_twenty_ms_init(){
 }
 
 ISR(TIMER0_COMPA_vect) {
+  cli();
   uint8_t pos_reference = input_container_get_ptr()->joystick.y + 100;
 
-  //printf("Pos ref: %d\n\r", pos_reference);
+  //printf("ISR0 \n\r");
 
   int16_t pos_measured = -1*read_motor_encoder();
   pos_controller_calculate_power(pos_reference, pos_measured);
+  sei();
+  IR_get_new_sample();
 }

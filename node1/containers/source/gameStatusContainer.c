@@ -14,10 +14,11 @@ void game_status_container_init(){
 }
 
 void game_status_container_update(struct CAN_msg new_game_message){
-  game_status_container.fails = new_game_message.data[1];
-  game_status_container.timer = new_game_message.data[0];
-  game_status_container.lives = new_game_message.data[2];
-  game_status_container.score = new_game_message.data[3];
+  game_status_container.fails = ((new_game_message.data[0] & 0xF0)>>4);
+  //game_status_container.timer = new_game_message.data[0];
+  game_status_container.lives = (new_game_message.data[0] & 0x0F);
+  //printf("%d:%d\n\r", game_status_container.fails, game_status_container.lives);
+  //game_status_container.score = new_game_message.data[3];
 }
 
 void game_user_update(char username){

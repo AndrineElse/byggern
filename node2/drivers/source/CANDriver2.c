@@ -133,15 +133,12 @@ ISR(INT2_vect) {
 //    look at the id,
 //    and perform the appropriate action
 void CAN_message_handler(){
+
   struct CAN_msg new_message = receive_msg();
   switch(new_message.id){
     case 1:
       input_container_update(new_message);
       break;
-    case 3:
-      game_data_container_update(new_message);
-      //printf("Recieved a game status message, num fails = %d \n", new_message.data[1]);
-    break;
     
     case 4:
       game_select_controller(new_message);

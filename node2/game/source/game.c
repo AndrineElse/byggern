@@ -17,50 +17,119 @@
 #include "../../containers/include/gameDataContainer.h"
 
 #include "../include/game.h"
+/*
+void game_loop(){
+  while(1){
+  // Listen to Node 1
 
-void game_loop(struct IR_status* IR_sample_container){
+   game_data_container_get_ptr()
+
+   struct Game_status game;
+   game.lives = 3;
+   game.fails = 0;
+   game.timer = time_get_counter();
+   game.score = 0;
+
+    if(game_data_container_get_ptr()->gameStart){
+      // initialize controllers
+      // reset ir
+      // interrupt for ir and controllers
+
+      while(!IR_check_obstruction()){
+        // Play a round of the game
+      }
+    }
+    // turn off stuff
+  }
+}*/
+
+void game_loop(){
+
   struct Game_status game;
   game.lives = 3;
   game.fails = 0;
   game.timer = time_get_counter();
-
+  game.score = 0;
   uint8_t button_flag = 0;
   uint16_t solenoid_timer = 0;
   uint16_t update_CAN_timer=0;
   uint8_t update_CAN_flag=0;
+  uint8_t fail_registerd_flag =0;
+  uint16_t fail_timer=0;
+  uint8_t pause_flag = 0;
+  uint8_t last_game_fails = 0;
   while(game.fails < game.lives){
 
-    printf("game start: %d\n\r", (game_data_container_get_ptr()->gameStart));
-    if(game_data_container_get_ptr()->gameStart){
+
+    if ((input_container_get_ptr()->playGame) && (last_game_fails==game.fails)){
+      printf("INSIDE IF!!!!!\n\r");
+      //IR_get_new_sample();
+
+
+
       servo_update_position(input_container_get_ptr()->joystick.x);
       pos_controller_update();
       motor_set_power(pos_controller_get_power());
       solenoid_update_status(&button_flag,&solenoid_timer);
-      count_game_score(&game, IR_sample_container);
-      //_delay_ms(1000);
-      game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
-    }
-  }
+      //count_game_score(&game,&fail_timer,&fail_registerd_flag);
 
-  game.score = time_get_counter() - game.timer;
+
+      count_game_score(&game);
+      //_delay_ms(1000);
+      game.score = time_get_counter() - game.timer;
+      //game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
+
+    }
+    else {
+      last_game_fails=game.fails;
+      motor_set_power(0);
+      //game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
+      // solenoid_update_status(1,&solenoid_timer);
+    }
+    game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
+  }
+  //game.score = time_get_counter() - game.timer;
 }
 
 
 
-
-void count_game_score(struct Game_status* game,struct IR_status* IR_sample_container){
+/*
+void count_game_score(struct Game_status* game, uint16_t* timer, uint8_t* flag){
   // uint8_t last_IR_value = adc_read();
   // uint8_t count = 0;
   // while(count < game->lives){
-    if (IR_poll_failure(IR_sample_container)){
-      //printf("Fail registered:\n\r");
-      game->fails++;
-      //uint16_t pause =
-      _delay_ms(2000);  //need timer like in PWM
+    if(*flag ==0){
+      if (IR_check_obstruction()){
+        //printf("Fail registered:\n\r");
+        game->fails++;
+        printf("Fails++ %d\n\r", game->fails);
+        //uint16_t pause =
+         //need timer like in PWM
+         *timer = time_get_counter();
+         *flag = 1;
+      }
+      else{
+        if((time_get_counter() - *timer) > 10){
+          *timer = 0;
+          *flag = 0;
+        }
+      }
     }
-    printf("Num fails: %d\n\r", game->fails);
-  // }
+
+}*/
+
+
+void count_game_score(struct Game_status* game){
+  if (IR_check_obstruction()){
+    //printf("Fail registered:\n\r");
+    game->fails++;
+    //printf("Fails++ %d\n\r", game->fails);
+    //uint16_t pause =
+     //need timer like in PWM
+
+  }
 }
+
 
 /*
 MAPPING
@@ -77,17 +146,21 @@ void game_send_update_CAN(struct Game_status* game, uint16_t* timer, uint8_t* fl
     *flag = 1;
   }
   else{
-    if((time_get_counter() - *timer) > 10){
+    if((time_get_counter() - *timer) > 2){
       struct CAN_msg msg;
       msg.id = 2;
-      uint8_t array[8] = {game->timer,game->fails,game->lives,game->score,0,0,0};
+      //printf("Fails = %d\n\r",game->fails);
+      uint8_t array[8] = {((game->fails << 4)+game->lives),0,0,0,0,0,0,0}; //NB need to add game-score here !!
 
       for (int j = 0; j < 8; j++){
         msg.data[j] = array[j];
 
       }
-      msg.length = 4;
+      //printf("Fails = %d\n\r",((msg.data[0] & 0xF0)>>4));
+      //printf("Lives = %d\n\r", (msg.data[0] & 0x0F));
+      msg.length = 1;
       cli();
+      printf("send game stats\n");
       send_CAN_msg(&msg);
       sei();
       *flag = 0;

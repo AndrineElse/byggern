@@ -1,6 +1,5 @@
 #define F_CPU 5000000
 #include <avr/io.h>
-#include <util/delay.h>
 #include <stdio.h>
 #include <float.h>
 #include <avr/interrupt.h>
@@ -34,7 +33,7 @@ void solenoid_update_status(uint8_t* button_flag, uint16_t* timer){
     }
   }
   else{
-    if((time_get_counter() - *timer) > 5){
+    if((time_get_counter() - *timer) > 1){
       PORTF &= ~(1<<PF1);
       *timer = 0;
       *button_flag=0;
