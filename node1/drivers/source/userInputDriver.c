@@ -10,21 +10,28 @@
 #include "../include/CANDriver.h"
 #include "../include/OLEDDriver.h"
 #include "../include/timerDriver.h"
-//volatile ??
-/*
-volatile JoystickCoords max_coords;
-volatile JoystickCoords min_coords;
-*/
+
 uint8_t maxX;
 uint8_t maxY;
 uint8_t minX;
 uint8_t minY;
 uint8_t centerX;
 uint8_t centerY;
+float y_above_scaler;
+float y_below_scaler;
+float x_above_scaler;
+float x_below_scaler;
 
 JoystickOffset userInputInit(){
   PORTB |= 1<<PB0; // set pinB0 as pull-up resistor input
   JoystickOffset offset = calculateOffsetJoystick();
+  maxX = 0;
+  maxY = 0;
+  minX = 0;
+  minY = 0;
+  centerX = 0; 
+  centerY = 0;
+
   return offset;
 }
 
@@ -108,10 +115,8 @@ SliderPosition calculateSliderPosition(){
 // left button second least sign.b.
 // buttons are connected to PD4 and PD5
 uint8_t getSliderButtons(){
-  //uint8_t left_button_value = ( PIND & (1<<PD4)) >> PD4;
-  //uint8_t right_button_value = ( PIND & (1<<PD5)) >> PD5;
-  uint8_t left_button_value = ( PIND & 0x10) >> 3;
-  uint8_t right_button_value = ( PIND & 0x20) >> 5;
+  uint8_t left_button_value = ( PIND & 0x10) >> 3; // shifts to one above lsb
+  uint8_t right_button_value = ( PIND & 0x20) >> 5; //shifts to lsb
   return left_button_value + (right_button_value);
 }
 
@@ -151,8 +156,7 @@ void send_joystick_position(JoystickOffset offset){
   }
   msg.length = 3;
   send_CAN_msg(&msg);
-  printf("CoordsX: %d, CoordsY: %d, Button: %d\n\r", coords.x, coords.y, joystickButton());
-
+  //printf("CoordsX: %d, CoordsY: %d, Button: %d\n\r", coords.x, coords.y, joystickButton());
 }
 
 
@@ -161,10 +165,7 @@ void joystick_set_max_min_values(){
   uint8_t i = 0;
   uint8_t flag = 0;
 
-  while(1){
-    if(i == 5){
-      break;
-    }
+  while(i < 5){
     OLED_buffer_print_line(options[i], 1, 0);
     OLED_buffer_update_screen();
     if(flag == 0){
@@ -193,28 +194,49 @@ void joystick_set_max_min_values(){
           break;
       }
       if(getSliderButtons() == 1){ //right slider button
-        flag = 1;
         _delay_ms(1000);
-        flag = 0;
         i++;
       }
     }
   }
-  printf("Max x: %d, Max y: %d, min x: %d, min y: %d , centerX: %d , centerY: %d \n\r", maxX, maxY,minX,minY, centerX,centerY);
+  //calculate slider scalers here. 
+  //scaler s should be a number such that 
+  //for pos_delta_x in [0,maxX-centerX] 
+  // => pos_delta_x*s in [0,100]
+  x_above_scaler = ((float)100)/(maxX-centerX);
+  x_below_scaler = ((float)100)/(centerX-minX);
+  y_above_scaler = ((float)100)/(maxY-centerY);
+  y_below_scaler = ((float)100)/(centerY-minY);
 }
 
-JoystickOffset calculateOffsetJoystickFromCalibration() {
-  //optimization option: send address once, sample multiple times.
-  //performance option: more samples, median of samples..
+//after running calibration routine, 
+// this function will return joystick measures that are always [-100,100]
+// returns (0,0) otherwise 
+JoystickCoords calculate_joystick_from_calibration(uint8_t rawX, uint8_t rawY) {
+  JoystickCoords finalValues;
+  //
+  if(!maxX){
+    printf("JS not calibrated!");
+    finalValues.x = (rawX - 128)/1.28;
+    finalValues.y = (rawY - 128)/1.28;;
+    return finalValues;
+  }
 
-  //Sample a couple of times, do average, set as offset value
+  //shift values to center about zero
+  int16_t centeredX = rawX - centerX;
+  int16_t centeredY = rawY - centerY;
 
+  //scale values to [-100,100]
+  finalValues.x = (centeredX >= 0 ? centeredX*x_above_scaler : centeredX*x_below_scaler);
+  finalValues.y = (centeredY >= 0 ? centeredY*y_above_scaler : centeredY*y_below_scaler);
 
-
-
-JoystickOffset finalOffset;
-  finalOffset.x = totX/3;
-  finalOffset.y = totY/3;
-
-  return finalOffset;
+  /*
+  //in case measurements have drifted off from inital max/min values
+  //probably wont need this, might be better to just run calibration scheme again
+  finalValues.x = (finalValues.x >= 100 ? 100 : finalValues.x);
+  finalValues.x = (finalValues.x < -100 ? -100 : finalValues.x);
+  finalValues.y = (finalValues.y >= 100 ? 100 : finalValues.y);
+  finalValues.y = (finalValues.y < -100 ? -100 : finalValues.y);
+  */
+  return finalValues;
 }
