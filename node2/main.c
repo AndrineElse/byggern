@@ -71,6 +71,7 @@ void main(){
   }*/
   //printf("main\n\r");
   motor_set_max_min_encoder(1);
+  motor_set_max_min_encoder(0);
   //game_loop();
 
 

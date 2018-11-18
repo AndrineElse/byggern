@@ -103,7 +103,6 @@ void motor_set_max_min_encoder(uint8_t dir){
   //Drive the motor to the opposite side
   while(count < 5){
     current_encoder_value = read_motor_encoder();
-    printf("Current encoder: %d\n", current_encoder_value);
     motor_set_power((-1)*k*(60));
     if (current_encoder_value == last_encoder_value){
       count ++;
@@ -114,7 +113,6 @@ void motor_set_max_min_encoder(uint8_t dir){
   count = 0;
   while(count < 5){
     current_encoder_value = read_motor_encoder();
-    printf("Current encoder: %d\n", current_encoder_value);
     motor_set_power(k*(60));
     if (current_encoder_value == last_encoder_value){
       count ++;
