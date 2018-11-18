@@ -63,8 +63,8 @@ void main(){
 
 
 
-  menuInit();
-  menuLoop();
+  //menuInit();
+  //menuLoop();
 
   //OLEDTest();
   /*

@@ -9,6 +9,9 @@
 #include "../include/motorDriver.h"
 #include "../include/servoDriver.h"
 
+int16_t min_encoder;
+int16_t max_encoder;
+
 void motor_init() {
 
   TWI_Master_Initialise();
@@ -79,4 +82,37 @@ uint16_t read_motor_encoder() {
 
   return encoder_counter;
   // 2's complement from for negative numbers
+}
+
+
+void motor_encoder_reset(){
+    PORTH &= ~(1<<PH6);
+    _delay_us(10);
+    PORTH |= 1<<PH6;
+}
+
+void motor_calibrate_encoder(uint8_t dir){
+  motor_encoder_reset();
+  int16_t last_encoder_value = 0;
+  int16_t current_encoder_value;
+  count = 0;
+  for(uint16_t i = 0; i < 300; i++){
+    current_encoder_value = read_motor_encoder();
+    motor_set_power(i);
+    if (current_encoder_value == last_encoder_value){
+      count ++;
+      if (count == 4){
+        break;
+      }
+    }
+    last_encoder_values = current_encoder_value();
+  }
+  switch (dir) {
+    case 1:
+      max_encoder = current_encoder_value;
+      printf("Max value : %d \n", max_encoder );
+    case 2:
+      max_encoder = (-1)*current_encoder_value;
+      printf("Min value : %d \n", min_encoder );
+  }
 }

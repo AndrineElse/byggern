@@ -57,7 +57,7 @@ void main(){
   solenoid_init();
   motor_init();
   pos_controller_init(3,3,0.02,10000); //params: kp, ki, sample_time, encoder_max
-  
+
   /*
   struct CAN_msg msg;
   msg.data[0] = 50;
@@ -70,7 +70,8 @@ void main(){
     _delay_ms(20000);
   }*/
   //printf("main\n\r");
-  game_loop();
+  motor_calibrate_encoder(1);
+  //game_loop();
 
 
 
