@@ -98,7 +98,8 @@ void menuLoop(){
     if(currentNode->description == "Game"){
         // printf("inside game node\n\r");
       if(gameFlag){
-        OLED_clear();
+        OLED_buffer_clear();
+        OLED_buffer_update_screen();
         playGame = 1;
         send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
         _delay_ms(10);
@@ -111,7 +112,7 @@ void menuLoop(){
         gameFlag = 0;
         numFails = 0;
         currentNode = &endGameNode;
-        send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
+        send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
       }
       else if (numFails != game_status_container_get_ptr()->fails){
         //printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
@@ -120,7 +121,7 @@ void menuLoop(){
         gameFlag = 0;
         numFails = game_status_container_get_ptr()->fails;
         currentNode = &middleGameNode;
-        send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
+        send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
       }
     }
     else{
@@ -128,13 +129,13 @@ void menuLoop(){
       //printf("inside menu looping\n\r");
       gameFlag = 1;
       playGame = 0;
-      send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
-      
+      send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
+
       //get joystick input
       JoystickCoords joystickCoords;
       joystickCoords = get_joystick_coords(readChannel(2),readChannel(1));
       JoystickDir currentDir;
-      currentDir = calculate_joystick_direction(joystickCoords);
+      currentDir = calculate_joystick_dir(joystickCoords);
 
       //find selected option
 
@@ -151,13 +152,13 @@ void menuLoop(){
         }
         lastDir = currentDir;
       }
-      if (!lastButtonValue && get_joystick_button()) {
+      if (!lastButtonValue && joystick_get_button()) {
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
         OLED_buffer_clear();
       }
 
-      lastButtonValue = get_joystick_button();
+      lastButtonValue = joystick_get_button();
       _delay_ms(50);
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();

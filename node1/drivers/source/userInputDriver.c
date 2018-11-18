@@ -74,7 +74,7 @@ uint8_t get_slider_buttons(){
 
 //returns 1 if joystick button is pressed
 //returns 0 otherwise
-uint8_t get_joystick_button(){
+uint8_t joystick_get_button(){
   return !(PINB & 0x01);
 }
 
@@ -95,7 +95,7 @@ void send_joystick_position(uint16_t *timer, uint8_t *flag, uint8_t *playGame){
       struct JoystickCoords coords;
       coords = get_joystick_coords(readChannel(2),readChannel(1));
       msg.id = 1;
-      uint8_t array[8] = {coords.x,coords.y,(get_joystick_button() + (1 << *playGame)),0,0,0,0,0};
+      uint8_t array[8] = {coords.x,coords.y,(joystick_get_button() + (1 << *playGame)) ,0,0,0,0,0};
 
       for (int j = 0; j < 8; j++){
         msg.data[j] = array[j];
@@ -121,12 +121,14 @@ void joystick_set_max_min_values(){
   uint8_t minY;
 
   while(i < 5){
+    OLED_buffer_clear();
     OLED_buffer_print_line(options[i], 1, 0);
     OLED_buffer_update_screen();
+
     if(flag == 0){
       uint8_t rawX = readChannel(2);
       uint8_t rawY = readChannel(1);
-      printf("i: %d\n\r",i);
+
       switch (i) {
 
         case 0:
@@ -152,6 +154,7 @@ void joystick_set_max_min_values(){
       }
     }
   }
+  OLED_buffer_clear();
   //scalers such that (measure-center)*scaler is in [-100,100]
   x_above_scaler = ((float)100)/(maxX-centerX);
   x_below_scaler = ((float)100)/(centerX-minX);

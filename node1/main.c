@@ -57,7 +57,7 @@ void main(){
   //printf("Sreg: %d\n\r", SREG);
   //sei();
   //printf("Sreg: %d\n\r", SREG);
-  userInputInit();
+  user_input_init();
   game_status_container_init();
   timer_init();
   joystick_set_max_min_values();

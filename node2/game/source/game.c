@@ -17,6 +17,31 @@
 #include "../../containers/include/gameDataContainer.h"
 
 #include "../include/game.h"
+/*
+void game_loop(){
+  while(1){
+  // Listen to Node 1
+
+   game_data_container_get_ptr()
+
+   struct Game_status game;
+   game.lives = 3;
+   game.fails = 0;
+   game.timer = time_get_counter();
+   game.score = 0;
+
+    if(game_data_container_get_ptr()->gameStart){
+      // initialize controllers
+      // reset ir
+      // interrupt for ir and controllers
+
+      while(!IR_check_obstruction()){
+        // Play a round of the game
+      }
+    }
+    // turn off stuff
+  }
+}*/
 
 void game_loop(){
 
@@ -31,10 +56,12 @@ void game_loop(){
   uint8_t update_CAN_flag=0;
   uint8_t fail_registerd_flag =0;
   uint16_t fail_timer=0;
+  uint8_t pause_flag = 0;
+  uint8_t last_game_fails = 0;
   while(game.fails < game.lives){
 
 
-    if(input_container_get_ptr()->playGame){
+    if ((input_container_get_ptr()->playGame)&& (last_game_fails==game.fails)){
 
       IR_get_new_sample();
 
@@ -48,13 +75,13 @@ void game_loop(){
       game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
 
     }
-    else{
+    else if(!(input_container_get_ptr()->playGame)){
+      last_game_fails=game.fails;
       motor_set_power(0);
       game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
       solenoid_update_status(0,&solenoid_timer);
     }
   }
-
   //game.score = time_get_counter() - game.timer;
 }
 
@@ -90,7 +117,7 @@ void count_game_score(struct Game_status* game){
   if (IR_check_obstruction()){
     //printf("Fail registered:\n\r");
     game->fails++;
-    printf("Fails++ %d\n\r", game->fails);
+    //printf("Fails++ %d\n\r", game->fails);
     //uint16_t pause =
      //need timer like in PWM
 
@@ -113,7 +140,7 @@ void game_send_update_CAN(struct Game_status* game, uint16_t* timer, uint8_t* fl
     *flag = 1;
   }
   else{
-    if((time_get_counter() - *timer) > 5){
+    if((time_get_counter() - *timer) > 1){
       struct CAN_msg msg;
       msg.id = 2;
       //printf("Fails = %d\n\r",game->fails);
@@ -123,8 +150,8 @@ void game_send_update_CAN(struct Game_status* game, uint16_t* timer, uint8_t* fl
         msg.data[j] = array[j];
 
       }
-      printf("Fails = %d\n\r",((msg.data[0] & 0xF0)>>4));
-      printf("Lives = %d\n\r", (msg.data[0] & 0x0F));
+      //printf("Fails = %d\n\r",((msg.data[0] & 0xF0)>>4));
+      //printf("Lives = %d\n\r", (msg.data[0] & 0x0F));
       msg.length = 1;
       cli();
       send_CAN_msg(&msg);
