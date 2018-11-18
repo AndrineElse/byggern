@@ -31,6 +31,6 @@ void servo_update_position(int8_t setting){
   //transforms to an uint8,
   //  where max/min is 0,255
   //  and center is 128
-  uint8_t uint8_transform = (setting*1.28)+128;
+  uint8_t uint8_transform = (setting*1.27)+128;
   servo_set_duty_cycle(uint8_transform);
 }

@@ -1,23 +1,20 @@
 #define F_CPU 5000000
 #include <stdint.h>
 #include <stdio.h>
+#include <util/delay.h>
 #include <avr/interrupt.h>
 #include "../../drivers/include/CANDriver.h"
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
 #include "../../containers/include/gameStatusContainer.h"
-#include <util/delay.h>
+#include "../../drivers/include/ADCDriver.h"
 
 struct Node mainMenuNode;
-
 struct Node playGameNode;
 struct Node highScoresNode;
-
 struct Node optionsNode;
-
 struct Node middleGameNode;
-
 struct Node endGameNode;
 
 struct GameData gameData;
@@ -77,12 +74,11 @@ void menuInit(){
 }
 
 void menuLoop(){
-  JoystickOffset offset = userInputInit();
   uint8_t selectedOption = 0;
   JoystickDir currentDir;
   volatile struct Node* currentNode = &mainMenuNode;
   JoystickDir lastDir;
-  lastDir = calculateJoystickDirection();
+  lastDir = 0;
   uint8_t lastButtonValue = 0;
   uint8_t gameFlag = 1;
   uint8_t numFails = 0;
@@ -102,13 +98,11 @@ void menuLoop(){
     if(currentNode->description == "Game"){
         // printf("inside game node\n\r");
       if(gameFlag){
-
         OLED_clear();
         playGame = 1;
-        send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
+        send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
         _delay_ms(10);
         //gameData.gameStart = 1;
-
       }
       else if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
         //printf("GAME OVER\n\r");
@@ -135,11 +129,12 @@ void menuLoop(){
       gameFlag = 1;
       playGame = 0;
       send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
+      
       //get joystick input
       JoystickCoords joystickCoords;
-      joystickCoords = calculateCalibratedJoystickCoords(offset);
+      joystickCoords = get_joystick_coords(readChannel(2),readChannel(1));
       JoystickDir currentDir;
-      currentDir = calculateJoystickDirection(joystickCoords);
+      currentDir = calculate_joystick_direction(joystickCoords);
 
       //find selected option
 
@@ -156,13 +151,13 @@ void menuLoop(){
         }
         lastDir = currentDir;
       }
-      if (!lastButtonValue && joystickButton()) {
+      if (!lastButtonValue && get_joystick_button()) {
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
         OLED_buffer_clear();
       }
 
-      lastButtonValue = joystickButton();
+      lastButtonValue = get_joystick_button();
       _delay_ms(50);
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();

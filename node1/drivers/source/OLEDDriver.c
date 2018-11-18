@@ -5,7 +5,6 @@
 #include <avr/pgmspace.h>
 #include "../../fonts.h"
 #include "../include/OLEDDriver.h"
-#include "../include/OLEDDriver.h"
 #include "../include/UARTdriver.h"
 
 volatile char* command_address = (char*)0x1000;
