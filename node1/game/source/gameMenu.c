@@ -47,12 +47,13 @@ void menuInit(){
   playGameNode.optionNodes[0] = &mainMenuNode;
 
   highScoresNode.parent = &mainMenuNode;
-  highScoresNode.options[0] = "Go back";
-  highScoresNode.options[1] = "Go back";
-  highScoresNode.options[2] = "Go back";
+  highScoresNode.options[0] = "-";
+  highScoresNode.options[1] = "-";
+  highScoresNode.options[2] = "-";
+
   highScoresNode.options[3] = "Go back";
   highScoresNode.description = "Highscores: TOP 3";
-  highScoresNode.numOptions = 1;
+  highScoresNode.numOptions = 3;
   highScoresNode.optionNodes[0] = &mainMenuNode;
 
   optionsNode.parent = &mainMenuNode;
@@ -74,11 +75,13 @@ void menuInit(){
 
   endGameNode.parent = (struct Node*)0;
   endGameNode.description = "All lives lost, game over";
-  endGameNode.numOptions = 2;
-  endGameNode.options[0] = "New game";
-  endGameNode.options[1] = "Back to main menu";
-  endGameNode.optionNodes[0] = &playGameNode;
-  endGameNode.optionNodes[1] = &mainMenuNode;
+  endGameNode.numOptions = 3;
+  endGameNode.options[0] = "Your score: " + game_status_container_get_ptr()->score;
+  endGameNode.options[1] = "New game";
+  endGameNode.options[2] = "Back to main menu";
+  endGameNode.optionNodes[0] = &mainMenuNode;
+  endGameNode.optionNodes[1] = &playGameNode;
+  endGameNode.optionNodes[2] = &mainMenuNode;
 
   levelsNode.parent = &optionsNode;
   levelsNode.options[0] = "Easy";
@@ -115,6 +118,7 @@ void menuLoop(){
   uint8_t lastButtonValue = 0;
   uint8_t gameFlag = 1;
   uint8_t numFails = 0;
+  char username = "Player";
 
   gameData.gameStart = 0;
   gameData.pause = 0;
@@ -144,6 +148,7 @@ void menuLoop(){
         gameFlag = 0;
         numFails = 0;
         currentNode = &endGameNode;
+         
       }
     }
     else{
@@ -187,7 +192,7 @@ void menuLoop(){
 
       if (currentNode == usernameNode){
         if(!lastButtonValue && joystickButton()){
-          game_username_select(selectedOption);
+          game_username_select(currentNode, selectedOption);
         };
         selectedOption = 0;
         OLED_buffer_clear();
@@ -242,8 +247,42 @@ void game_level_select(uint8_t selected_option){
   msg.length = 1;
 }
 
-void game_username_select(uint8_t selectedOption){
-  
+void game_username_select(volatile struct Node* node, uint8_t selectedOption){
+  game_user_update(node->options[selectedOption]);
+}
+
+void game_highscore_update(){
+  for (int i = 0; i < 3; i++){
+    if (highScoresNode->options[i] == "-" || game_data_container_get_ptr()->score > highScoresNode->options[i]){
+      game_highscore_SRAM_update(game_data_container_get_ptr()->user, game_data_container_get_ptr()->score);
+      // game_highscore_SRAM_get(uint8_t place)
+      highScoresNode->options[i] = game_data_container_get_ptr()->user + ': ' + game_data_container_get_ptr()->score;
+      
+      break;
+    }
+  }
+}
+
+// make highscore list, must be updated when new highscore
+void game_highscore_SRAM_update(uint8_t user, uint16_t score, uint8_t place){
+  uint8_t data[3] = {user, score, score};
+  uint8_t data_amount = 3;
+
+  for (uint8_t i = 0; i < data_amount; i++){
+    char* ext_ram = (char*)0x1800+1024+place*16;
+    ext_ram[i] = data[i];
+  }
+}
+
+uint8_t* game_highscore_SRAM_get(uint8_t place){
+  uint8_t data[2];
+  char* ext_ram = (char*)0x1800+1024+place*16;
+
+  uint8_t data_amount = 2;
+    for (uint8_t i = 0; i < data_amount; i++){
+      data[i] = ext_ram[i];
+  }
+  return data;
 }
 /*
   MAPPING
