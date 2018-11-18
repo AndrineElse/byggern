@@ -91,51 +91,34 @@ void motor_encoder_reset(){
     PORTH |= 1<<PH6;
 }
 
-void motor_set_max_min_encoder(uint8_t dir){
+uint16_t motor_get_max_encoder(){
   motor_encoder_reset();
   int16_t last_encoder_value = 100;
   int16_t current_encoder_value;
   uint8_t count = 0;
-  int8_t k = 1;
-  if (dir){
-    k = -1;
-  }
   //Drive the motor to the opposite side
   while(count < 5){
     current_encoder_value = read_motor_encoder();
-    motor_set_power((-1)*k*(60));
+    motor_set_power((-1)*(60));
     if (current_encoder_value == last_encoder_value){
       count ++;
     }
     last_encoder_value = current_encoder_value;
   }
+  motor_encoder_reset();
   motor_set_power(0);
   count = 0;
   while(count < 5){
     current_encoder_value = read_motor_encoder();
-    motor_set_power(k*(60));
+    motor_set_power((60));
     if (current_encoder_value == last_encoder_value){
       count ++;
       if (count == 10){
         motor_set_power(0);
-        switch (dir) {
-          case 1:
-            min_encoder  = current_encoder_value;
-            printf("Min value : %d \n", min_encoder );
-            break;
-          case 0:
-            max_encoder = (-1)*current_encoder_value;
-            printf("Max value : %d \n", max_encoder );
-            break;
+        return current_encoder_value;
         }
-        break;
       }
     }
     last_encoder_value = current_encoder_value;
   }
-}
-
-void motor_get_max_min_encoder_ptr(int8_t* min, int8_t* max){
-  *min = min_encoder;
-  *max = max_encoder;
 }

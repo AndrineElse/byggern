@@ -56,7 +56,7 @@ void main(){
   timer_twenty_ms_init();
   solenoid_init();
   motor_init();
-  pos_controller_init(3,3,0.02,10000); //params: kp, ki, sample_time, encoder_max
+  pos_controller_init(3,3,0.02); //params: kp, ki, sample_time, encoder_max
 
   /*
   struct CAN_msg msg;
@@ -70,8 +70,7 @@ void main(){
     _delay_ms(20000);
   }*/
   //printf("main\n\r");
-  motor_set_max_min_encoder(1);
-  motor_set_max_min_encoder(0);
+  printf("Encoder max: \n\r", motor_get_max_encoder() );
   //game_loop();
 
 

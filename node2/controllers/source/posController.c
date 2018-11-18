@@ -17,16 +17,12 @@
 volatile struct PID_data pi_container;
 
 
-void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time, uint16_t encoder_max) {
+void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time) {
   //constants
-  int8_t max_encoder = 0;
-  int8_t min_encoder = 0;
-  motor_get_max_min_encoder_ptr(&min_encoder,&max_encoder);
   pi_container.Kp = p_factor;
   pi_container.Ki = i_factor;
   pi_container.sample_time = sample_time;
-  encoder_max = (-1)*min_encoder+max_encoder;
-  printf("encoder_max= %d\n\r", encoder_max );
+  encoder_max = motor_get_max_encoder();
   pi_container.encoder_max = encoder_max;
   pi_container.encoder_scale = 39;
 
