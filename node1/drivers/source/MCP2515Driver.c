@@ -2,9 +2,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <avr/io.h>
-#include <util/delay.h>
 #include "../include/MCP2515.h"
 #include "../include/MCP2515Driver.h"
+#include "../include/SPIDriver.h"
 
 void mcp2515_reset(){
   PORTB &= ~(1<<CAN_CS);

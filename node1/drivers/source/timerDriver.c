@@ -38,6 +38,6 @@ ISR(TIMER3_COMPA_vect) {
 	tenths_of_second_counter++;
 }
 
-void timer_get_counter() {
+uint16_t timer_get_counter() {
 	return tenths_of_second_counter;
 }
