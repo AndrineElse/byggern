@@ -4,7 +4,7 @@ SOURCE_FILES := main.c drivers/source/SPIDriver2.c drivers/source/UARTDriver2.c 
  tests/source/servoTesting.c drivers/source/IRDriver.c drivers/source/ADCDriver2.c tests/source/ADCTesting.c game/source/game.c \
  tests/source/gameTesting.c drivers/source/timerDriver.c drivers/source/TWI_Master.c drivers/source/motorDriver.c \
  drivers/source/PIDriver.c drivers/source/solenoidDriver.c  containers/source/userInputContainer.c drivers/source/UARTDriverIoT.c \
- 
+
 
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
@@ -50,6 +50,11 @@ fuse:
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)
+	mkdir -p $(BUILD_DIR)/controllers/source
+	mkdir -p $(BUILD_DIR)/drivers/source
+	mkdir -p $(BUILD_DIR)/tests/source
+	mkdir -p $(BUILD_DIR)/game/source
+	mkdir -p $(BUILD_DIR)/containers/source
 
 .PHONY: erase
 erase:
