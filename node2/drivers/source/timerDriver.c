@@ -57,9 +57,9 @@ void timer_twenty_ms_init(){
   //16MHz/(2*50Hz*1024) = 156 = (ocr+1)
   // => ocr = 155 = 0x9B
 
-  OCR0A = 0x9B; //use for 50hz
+  //OCR0A = 0x9B; //use for 50hz
   //OCR0A = 0x4D; //use for 100hz
-
+  OCR0A = 0xFF; //use for testing
 
   // Set OCIE0A to high, which enables the interrupt call when
   // a compare matches on OCR0A. This interrupt activates by setting

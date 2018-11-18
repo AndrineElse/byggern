@@ -78,7 +78,7 @@ uint8_t get_joystick_button(){
 }
 
 //sends user input and desired game state to node2, format:
-//    id = 1 
+//    id = 1
 //    data[0] = x joystick position [-100,100]
 //    data[1] = y joystick position [-100,100]
 //    data[2] = button (LSB = button), 7 unused bits here
@@ -86,7 +86,7 @@ void send_joystick_position(){
   //getting data to fill
   struct JoystickCoords coords;
   coords = get_joystick_coords(readChannel(2),readChannel(1));
-  uint8_t array[8] = {coords.x,coords.y,joystickButton(),0,0,0,0,0};
+  uint8_t array[8] = {coords.x,coords.y,get_joystick_button(),0,0,0,0,0};
 
   //filling can message
   struct CAN_msg msg;
@@ -95,7 +95,7 @@ void send_joystick_position(){
     msg.data[j] = array[j];
   }
   msg.length = 3;
-  
+
   //sending message
   send_CAN_msg(&msg);
 }
@@ -136,7 +136,7 @@ void joystick_set_max_min_values(){
           centerY = rawY;
           break;
       }
-      if(getSliderButtons() == 1){ //right slider button
+      if(get_slider_buttons() & 0x01){ //right slider button
         _delay_ms(500);
         i++;
       }

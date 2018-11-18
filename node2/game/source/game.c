@@ -32,7 +32,7 @@ void game_loop(){
     motor_set_power(pos_controller_get_power());
     solenoid_update_status(&button_flag, &solenoid_timer);
     count_game_score(&game);
-    printf("IR: %d\n\r",IR_get_mean_value());
+    //printf("I:%d\n\r",IR_get_mean_value());
   }
 
   game.score = time_get_counter() - game.timer;
@@ -42,7 +42,6 @@ void game_loop(){
 void count_game_score(struct Game_status* game){
   if (IR_check_obstruction()){
     game->fails++;
-    printf("a");
     _delay_ms(2000);  //need timer like in PWM
   }
 }
