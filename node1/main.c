@@ -44,10 +44,9 @@ void main(){
   OLED_clear();
   OLED_init_buffer_mode();
   OLED_buffer_clear();
-  JoystickOffset offset = userInputInit();
-  
-  joystick_set_max_min_values();
+  user_input_init();
   timer_init();
+  joystick_set_max_min_values();
 
   //OLEDTest();
   /*
@@ -98,7 +97,4 @@ void main(){
     }
   */
   //while(1);
-
-
-  return;
 }

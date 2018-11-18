@@ -47,22 +47,20 @@ void menuInit(struct Node* mainMenuNode){
 }
 
 void menuLoop(struct Node* startNode){
-  JoystickOffset offset = userInputInit();
   uint8_t selectedOption = 0;
   JoystickDir currentDir;
   struct Node* currentNode = startNode;
-  JoystickDir lastDir;
-  lastDir = calculateJoystickDirection();
-  uint8_t lastButtonValue = 0;
+  JoystickDir lastDir = 0; //direction neutral
+  uint8_t lastButtonValue = 0; //unpressed
 
   while(1){
 
     //get joystick input
     JoystickCoords joystickCoords;
-    //joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
-    joystickCoords = calculate_joystick_from_calibration(readChannel(2),readChannel(1));
+    joystickCoords = get_joystick_coords(readChannel(2),readChannel(1));
+
     JoystickDir currentDir;
-    currentDir = calculateJoystickDirection(joystickCoords);
+    currentDir = calculate_joystick_dir(joystickCoords);
 
     //find selected option
 
@@ -82,13 +80,13 @@ void menuLoop(struct Node* startNode){
     }
 
     //NB, this requires selectedoptions to be < length(options)
-    if (!lastButtonValue && joystickButton()) {
+    if (!lastButtonValue && get_joystick_button()) {
       currentNode = currentNode->optionNodes[selectedOption];
       selectedOption = 0;
       OLED_buffer_clear();
     }
 
-    lastButtonValue = joystickButton();
+    lastButtonValue = get_joystick_button();
     _delay_ms(50);
     printNodeUsingBuffer(currentNode, selectedOption);
     OLED_buffer_update_screen();

@@ -15,14 +15,13 @@ struct JoystickOffset {
 
 enum JoystickDir{NEUTRAL, LEFT, RIGHT, UP, DOWN} typedef JoystickDir;
 
-JoystickOffset userInputInit();
-JoystickCoords calculateCalibratedJoystickCoords(JoystickOffset offset);
-int8_t calculateJoystickMapping(int16_t rawValue);
-JoystickOffset calculateOffsetJoystick();
-JoystickDir calculateJoystickDirection();
-SliderPosition calculateSliderPosition();
-uint8_t joystickButton();
-JoystickDir getCurrentJoystickDir();
-void send_joystick_position();
+void userInputInit();
+
+SliderPosition get_slider_positions();
+uint8_t get_slider_buttons();
+
 void joystick_set_max_min_values();
-JoystickCoords calculate_joystick_from_calibration(uint8_t rawX, uint8_t rawY);
+JoystickCoords get_joystick_coords(uint8_t rawX, uint8_t rawY);
+JoystickDir calculate_joystick_dir(JoystickCoords coords);
+uint8_t joystick_get_button();
+void send_joystick_position();
