@@ -87,38 +87,45 @@ uint16_t read_motor_encoder() {
 
 void motor_encoder_reset(){
     PORTH &= ~(1<<PH6);
-    _delay_us(10);
+    _delay_us(50);
     PORTH |= 1<<PH6;
+    _delay_us(50);
 }
 
-uint16_t motor_get_max_encoder(){
+int16_t motor_get_max_encoder(){
   motor_encoder_reset();
+  motor_set_power(0);
   int16_t last_encoder_value = 100;
   int16_t current_encoder_value;
   uint8_t count = 0;
   //Drive the motor to the opposite side
-  while(count < 5){
+  motor_set_power(-60);
+  while(count < 10){
+    _delay_ms(20);
     current_encoder_value = read_motor_encoder();
-    motor_set_power((-1)*(60));
     if (current_encoder_value == last_encoder_value){
       count ++;
     }
     last_encoder_value = current_encoder_value;
   }
-  motor_encoder_reset();
   motor_set_power(0);
+  motor_encoder_reset();
+  motor_set_power(60);
+  
   count = 0;
+  last_encoder_value = 100;
+  current_encoder_value;
   while(1){
-    current_encoder_value = read_motor_encoder();
-    motor_set_power((60));
+    _delay_ms(20);
+    current_encoder_value = (-1)*read_motor_encoder();
     if (current_encoder_value == last_encoder_value){
       count ++;
-      if (count == 10){
+      if (count == 20){
+        motor_encoder_reset();
         motor_set_power(0);
         return current_encoder_value;
         }
       }
-    }
     last_encoder_value = current_encoder_value;
-  }
+    }
 }
