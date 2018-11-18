@@ -22,8 +22,7 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time) {
   pi_container.Kp = p_factor;
   pi_container.Ki = i_factor;
   pi_container.sample_time = sample_time;
-  encoder_max = motor_get_max_encoder();
-  pi_container.encoder_max = encoder_max;
+  pi_container.encoder_max = motor_get_max_encoder();
   pi_container.encoder_scale = 39;
 
   //variables
