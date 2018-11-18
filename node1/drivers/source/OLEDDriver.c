@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <math.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
@@ -58,7 +59,7 @@ void OLED_init(){
   OLED_write_command(0xa4);        //out  follows  RAM  content
   OLED_write_command(0xa6);        //set  normal  display
   OLED_write_command(0xaf);        //  display  on
-  
+
 
 }
 
@@ -221,3 +222,23 @@ void OLED_buffer_fill(){
   }
 }
 //drawingfunctions
+
+void OLED_dance(){
+  uint8_t radius = 5;
+  x_center = 10;
+  y_center = 10;
+  r2= radius*radius;
+  for(int8_t t = -radius; t < radius; t++){
+    yt = (int8_t)(sqrt(r2-x*x) + 0.5);
+
+    uint16_t Z = (x_center+xt) + 128*((y_center+yt)/8);
+    uint8_t b = 1<<((y_center+yt)%8);
+    ext_mem[Z] = ext_mem[Z] | b;
+    uint16_t Z = (x_center+xt) + 128*((y_center-yt)/8);
+    uint8_t b = 1<<((y_center-yt)%8);
+    ext_mem[Z] = ext_mem[Z] | b;
+  }
+
+
+
+}
