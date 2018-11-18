@@ -43,7 +43,7 @@ void motor_set_power(int16_t power) {
 
 unsigned char motor_set_direction_and_return_abs(int16_t signed_power) {
   uint16_t unsigned_power;
-  printf("|power| p: %d\n\r",signed_power);
+  //printf("|power| p: %d\n\r",signed_power);
   if (signed_power < 0){
     PORTH &= ~(1<<PH1); //sets dir to down
     unsigned_power = (uint16_t)(-1*(signed_power));
@@ -54,7 +54,7 @@ unsigned char motor_set_direction_and_return_abs(int16_t signed_power) {
   }
 
   if(unsigned_power > 255){
-    printf("|power| > 255!!! p: %d\n\r",signed_power);
+    //printf("|power| > 255!!! p: %d\n\r",signed_power);
     unsigned_power = 255;
   }
 

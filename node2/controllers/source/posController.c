@@ -34,6 +34,8 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time) {
 void pos_controller_update(int8_t p_factor, int8_t i_factor){
   pi_container.Kp = p_factor;
   pi_container.Ki = i_factor;
+  printf("Update PI\n\r");
+
 }
 
 
@@ -49,6 +51,7 @@ void pos_controller_update(int8_t p_factor, int8_t i_factor){
 //      value from 0 to 11000 ish
 //      should probably be saturated from 0 to 110000
 void pos_controller_calculate_power(uint8_t reference_value, int16_t measured_value) {
+  //printf("Kp: %d Ki: %d\n\r", pi_container.Kp, pi_container.Kp);
   uint16_t scaled_reference = reference_value*pi_container.encoder_scale;
   int16_t error = scaled_reference - measured_value;
 
@@ -63,6 +66,8 @@ void pos_controller_calculate_power(uint8_t reference_value, int16_t measured_va
 }
 
 int16_t pos_controller_get_power() {
+  //printf("Kp: %d Ki: %d\n\r", pi_container.Kp, pi_container.Kp);
   return pi_container.current_power;
+
   //return 0;
 }

@@ -11,6 +11,7 @@
 #include "../include/CANDriver2.h"
 #include "../../containers/include/userInputContainer.h"
 #include "../../containers/include/gameDataContainer.h"
+#include "../../game/include/game.h"
 
 void CAN_init(){
   mcp2515_init();
@@ -135,10 +136,11 @@ ISR(INT2_vect) {
 void CAN_message_handler(){
   struct CAN_msg new_message = receive_msg();
   switch(new_message.id){
+
     case 1:
       input_container_update(new_message);
       break;
-    
+
     case 4:
       game_select_controller(new_message);
     break;

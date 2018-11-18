@@ -96,7 +96,7 @@ void send_joystick_position(uint16_t *timer, uint8_t *flag, uint8_t *playGame){
       coords = get_joystick_coords(readChannel(2),readChannel(1));
       msg.id = 1;
       uint8_t array[8] = {coords.x,coords.y,(joystick_get_button() + (1 << *playGame)) ,0,0,0,0,0};
-      printf("%x\n\r", array[2]);
+      //printf("%x\n\r", array[2]);
       for (int j = 0; j < 8; j++){
         msg.data[j] = array[j];
 

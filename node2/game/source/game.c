@@ -62,7 +62,7 @@ void game_loop(){
 
 
     if ((input_container_get_ptr()->playGame) && (last_game_fails==game.fails)){
-      printf("INSIDE IF!!!!!\n\r");
+      //printf("INSIDE IF!!!!!\n\r");
       //IR_get_new_sample();
 
 
@@ -160,7 +160,7 @@ void game_send_update_CAN(struct Game_status* game, uint16_t* timer, uint8_t* fl
       //printf("Lives = %d\n\r", (msg.data[0] & 0x0F));
       msg.length = 1;
       cli();
-      printf("send game stats\n");
+      //printf("send game stats\n");
       send_CAN_msg(&msg);
       sei();
       *flag = 0;
@@ -172,13 +172,14 @@ void game_send_update_CAN(struct Game_status* game, uint16_t* timer, uint8_t* fl
 
 void game_select_controller(struct CAN_msg new_input_message){
   uint8_t level = new_input_message.data[0]; // 0 = easy, 1 = medium, 2 = hard
+  printf("Level%d\n\r", level);
   switch(level){
     case 0:   // easy
-      pos_controller_update(3,3);
+      pos_controller_update(0,0);
     case 1:   // medium
       pos_controller_update(1,1);
     case 2:   // hard
-      pos_controller_update(1,1);
+      pos_controller_update(3,3);
     default:
       pos_controller_update(3,3);
   }
