@@ -1,5 +1,4 @@
 #include <avr/io.h>
-#include <util/delay.h>
 #include <stdio.h>
 #include <float.h>
 #include <avr/interrupt.h>
@@ -33,7 +32,6 @@ void solenoid_update_status(uint8_t* button_flag, uint16_t* timer){
     }
   }
   else{
-    printf("Time diff: %d\n\r", (time_get_counter()-*timer));
     if((time_get_counter() - *timer) > 5){
       PORTF &= ~(1<<PF1);
       *timer = 0;

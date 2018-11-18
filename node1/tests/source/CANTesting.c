@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <avr/io.h>
-#include <util/delay.h>
 #include "../../drivers/include/MCP2515.h"
 #include "../../drivers/include/MCP2515Driver.h"
 #include "../../drivers/include/CANDriver.h"

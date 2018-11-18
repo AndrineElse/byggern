@@ -132,7 +132,7 @@ ISR(INT2_vect) {
 //    look at the id,
 //    and perform the appropriate action
 void CAN_message_handler(){
-
+  printf("int\n\r");
   struct CAN_msg new_message = receive_msg();
 
   // id of 1 corresponds to a new set of user inputs from node 1
