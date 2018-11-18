@@ -227,14 +227,14 @@ void OLED_dance(){
   OLED_clear();
   char* ext_mem = (char*)0x1800;
   uint8_t radius = 20;
-  uint8_t x_center = 100;
-  uint8_t y_center = 10;
+  uint8_t x_center = 50;
+  uint8_t y_center = 20;
   uint8_t r2= radius*radius;
   int8_t x;
   int8_t y;
   uint16_t Z;
   uint8_t b;
-  for(int8_t t = -radius; t < radius; t++){
+  for(x = -radius; x < radius; x++){
     y = (int8_t)(sqrt(r2-x*x) + 0.5);
 
     Z = (x_center+x) + 128*((y_center+y)/8);

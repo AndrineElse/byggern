@@ -61,9 +61,9 @@ void main(){
   game_status_container_init();
   timer_init();
 
-  while (1) {
-    OLED_dance();
-  }
+
+  OLED_dance();
+  
 
 //  menuInit();
   //menuLoop();
