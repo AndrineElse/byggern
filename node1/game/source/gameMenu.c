@@ -90,40 +90,51 @@ void menuLoop(){
   uint8_t send_joystick_flag = 0;
   uint16_t joystick_timer = 0;
 
+  uint8_t playGame = 0;
+  /*
   gameData.gameStart = 0;
   gameData.pause = 0;
   gameData.calibrateEncoder = 0;
+  */
   //volatile struct Game_status* game;
   while(1){
     //printf("Current node description: %s\n\r", currentNode->description );
     if(currentNode->description == "Game"){
         // printf("inside game node\n\r");
       if(gameFlag){
-        OLED_clear();
-        send_joystick_position(offset,&joystick_timer,&send_joystick_flag);
-        _delay_ms(10);
-        gameData.gameStart = 1;
 
-      }
-      if (numFails != game_status_container_get_ptr()->fails){
-        //printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
-        gameData.gameStart = 0; //maybe pause? , set gameStart to initialize the game, and pause just pauses it???
-        gameFlag = 0;
-        numFails = game_status_container_get_ptr()->fails;
-        currentNode = &middleGameNode;
+        OLED_clear();
+        playGame = 1;
+        send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
+        _delay_ms(10);
+        //gameData.gameStart = 1;
+
       }
       else if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
         //printf("GAME OVER\n\r");
-        gameData.gameStart = 0;
+        //gameData.gameStart = 0;
+        playGame = 1;
         gameFlag = 0;
         numFails = 0;
         currentNode = &endGameNode;
+        send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
+      }
+      else if (numFails != game_status_container_get_ptr()->fails){
+        //printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
+        //gameData.gameStart = 0; //maybe pause? , set gameStart to initialize the game, and pause just pauses it???
+        playGame = 0;
+        gameFlag = 0;
+        numFails = game_status_container_get_ptr()->fails;
+        currentNode = &middleGameNode;
+        send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
       }
     }
     else{
       //printf("Option nodes description: %s\n\r", currentNode->optionNodes[0]->description );
       //printf("inside menu looping\n\r");
       gameFlag = 1;
+      playGame = 0;
+      send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
       //get joystick input
       JoystickCoords joystickCoords;
       joystickCoords = calculateCalibratedJoystickCoords(offset);

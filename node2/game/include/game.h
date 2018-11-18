@@ -6,5 +6,6 @@ struct Game_status {
 };
 
 void game_loop();
-void count_game_score(struct Game_status* game, uint16_t* timer, uint8_t* flag);
+//void count_game_score(struct Game_status* game, uint16_t* timer, uint8_t* flag);
+void count_game_score(struct Game_status* game);
 void game_send_update_CAN(struct Game_status* game, uint16_t* timer, uint8_t* flag);

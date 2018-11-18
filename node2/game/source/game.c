@@ -34,15 +34,24 @@ void game_loop(){
   while(game.fails < game.lives){
 
 
-    if(game_data_container_get_ptr()->gameStart){
+    if(input_container_get_ptr()->playGame){
+
+      IR_get_new_sample();
+
       servo_update_position(input_container_get_ptr()->joystick.x);
       motor_set_power(pos_controller_get_power());
       solenoid_update_status(&button_flag,&solenoid_timer);
-      count_game_score(&game,&fail_timer,&fail_registerd_flag);
+      //count_game_score(&game,&fail_timer,&fail_registerd_flag);
+      count_game_score(&game);
       //_delay_ms(1000);
       game.score = time_get_counter() - game.timer;
       game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
 
+    }
+    else{
+      motor_set_power(0);
+      game_send_update_CAN(&game,&update_CAN_timer,&update_CAN_flag);
+      solenoid_update_status(0,&solenoid_timer);
     }
   }
 
@@ -51,7 +60,7 @@ void game_loop(){
 
 
 
-
+/*
 void count_game_score(struct Game_status* game, uint16_t* timer, uint8_t* flag){
   // uint8_t last_IR_value = adc_read();
   // uint8_t count = 0;
@@ -60,6 +69,7 @@ void count_game_score(struct Game_status* game, uint16_t* timer, uint8_t* flag){
       if (IR_check_obstruction()){
         //printf("Fail registered:\n\r");
         game->fails++;
+        printf("Fails++ %d\n\r", game->fails);
         //uint16_t pause =
          //need timer like in PWM
          *timer = time_get_counter();
@@ -73,9 +83,20 @@ void count_game_score(struct Game_status* game, uint16_t* timer, uint8_t* flag){
       }
     }
 
-    //printf("Num fails: %d\n\r", game->fails);
-  // }
+}*/
+
+
+void count_game_score(struct Game_status* game){
+  if (IR_check_obstruction()){
+    //printf("Fail registered:\n\r");
+    game->fails++;
+    printf("Fails++ %d\n\r", game->fails);
+    //uint16_t pause =
+     //need timer like in PWM
+
+  }
 }
+
 
 /*
 MAPPING
@@ -92,16 +113,19 @@ void game_send_update_CAN(struct Game_status* game, uint16_t* timer, uint8_t* fl
     *flag = 1;
   }
   else{
-    if((time_get_counter() - *timer) > 10){
+    if((time_get_counter() - *timer) > 5){
       struct CAN_msg msg;
       msg.id = 2;
-      uint8_t array[8] = {game->timer,game->fails,game->lives,game->score,0,0,0};
+      //printf("Fails = %d\n\r",game->fails);
+      uint8_t array[8] = {((game->fails << 4)+game->lives),0,0,0,0,0,0,0}; //NB need to add game-score here !!
 
       for (int j = 0; j < 8; j++){
         msg.data[j] = array[j];
 
       }
-      msg.length = 4;
+      printf("Fails = %d\n\r",((msg.data[0] & 0xF0)>>4));
+      printf("Lives = %d\n\r", (msg.data[0] & 0x0F));
+      msg.length = 1;
       cli();
       send_CAN_msg(&msg);
       sei();

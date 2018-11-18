@@ -23,5 +23,5 @@ JoystickDir calculateJoystickDirection();
 SliderPosition calculateSliderPosition();
 uint8_t joystickButton();
 JoystickDir getCurrentJoystickDir();
-void send_joystick_position(JoystickOffset offset, uint16_t *timer, uint8_t *flag);
+void send_joystick_position(JoystickOffset offset, uint16_t *timer, uint8_t *flag, uint8_t *playGame);
 void joystick_set_max_min_values();

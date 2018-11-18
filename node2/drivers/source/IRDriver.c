@@ -25,11 +25,13 @@ uint16_t IR_get_mean_value(){
 }
 
 uint8_t IR_check_obstruction(){
+  printf("IR mean value: %d\n\r", IR_get_mean_value());
   return (IR_get_mean_value() < 100);
 }
 
 void IR_get_new_sample() {
   IR_sample_container.IR_samples[IR_sample_container.current_sample_index] = adc_read();
+  printf("IR samples: %d\n\r", IR_sample_container.IR_samples[IR_sample_container.current_sample_index]);
   IR_sample_container.current_sample_index = (IR_sample_container.current_sample_index + 1)%IR_sample_container.sample_counter;
   uint16_t sum = 0;
   for (int i = 0; i < IR_sample_container.sample_counter; i++){

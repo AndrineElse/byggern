@@ -131,18 +131,18 @@ JoystickDir getCurrentJoystickDir(){
 // data[2] = button (LSB = button), 7 unused bits here
 
 
-void send_joystick_position(JoystickOffset offset, uint16_t *timer, uint8_t *flag){
+void send_joystick_position(JoystickOffset offset, uint16_t *timer, uint8_t *flag, uint8_t *playGame){
   if (*flag == 0){
     *timer = timer_get_counter();
     *flag = 1;
   }
   else{
-    if((timer_get_counter() - *timer) > 10){
+    if((timer_get_counter() - *timer) > 1){
       struct CAN_msg msg;
       struct JoystickCoords coords;
       coords = calculateCalibratedJoystickCoords(offset);
       msg.id = 1;
-      uint8_t array[8] = {coords.x,coords.y,joystickButton(),0,0,0,0,0};
+      uint8_t array[8] = {coords.x,coords.y,(joystickButton() + (1 << *playGame)),0,0,0,0,0};
 
       for (int j = 0; j < 8; j++){
         msg.data[j] = array[j];

@@ -77,5 +77,5 @@ ISR(TIMER0_COMPA_vect) {
 
   int16_t pos_measured = -1*read_motor_encoder();
   pos_controller_calculate_power(pos_reference, pos_measured);
-  IR_get_new_sample();
+  //IR_get_new_sample();
 }
