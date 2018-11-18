@@ -70,7 +70,7 @@ void main(){
     _delay_ms(20000);
   }*/
   //printf("main\n\r");
-  void motor_set_max_min_encoder(1);
+  motor_set_max_min_encoder(1);
   //game_loop();
 
 

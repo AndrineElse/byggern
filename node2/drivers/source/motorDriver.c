@@ -95,7 +95,7 @@ void motor_set_max_min_encoder(uint8_t dir){
   motor_encoder_reset();
   int16_t last_encoder_value = 0;
   int16_t current_encoder_value;
-  count = 0;
+  uint8_t count = 0;
   for(uint16_t i = 0; i < 300; i+=2){
     current_encoder_value = read_motor_encoder();
     motor_set_power(i);
@@ -105,7 +105,7 @@ void motor_set_max_min_encoder(uint8_t dir){
         break;
       }
     }
-    last_encoder_values = current_encoder_value();
+    last_encoder_value = current_encoder_value;
   }
   switch (dir) {
     case 1:
@@ -118,5 +118,5 @@ void motor_set_max_min_encoder(uint8_t dir){
 }
 
 void motor_calibrate_encoder(){
-  
+
 }
