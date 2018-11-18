@@ -108,7 +108,7 @@ uint16_t motor_get_max_encoder(){
   motor_encoder_reset();
   motor_set_power(0);
   count = 0;
-  while(count < 5){
+  while(1){
     current_encoder_value = read_motor_encoder();
     motor_set_power((60));
     if (current_encoder_value == last_encoder_value){
