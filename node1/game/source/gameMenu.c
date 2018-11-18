@@ -7,7 +7,6 @@
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
-#include "../../drivers/include/CANDriver.h"
 #include "../../containers/include/gameStatusContainer.h"
 #include "../../drivers/include/ADCDriver.h"
 
@@ -180,23 +179,22 @@ void menuLoop(){
         OLED_buffer_clear();
       }
 
-      if (currentNode == levelsNode){
-        if(!lastButtonValue && joystickButton()){
-          game_level_select(selectedOption);s
+      if (currentNode->description == "Select level"){
+        if(!lastButtonValue && joystick_get_button()){
+          game_level_select(selectedOption);
         };
-        
+
         selectedOption = 0;
         OLED_buffer_clear();
       }
     }
-
-      lastButtonValue = joystickButton();
+      lastButtonValue = joystick_get_button();
       //_delay_ms(50);
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();
     }
   }
-}
+
 
 void printNode(volatile struct Node* node, uint8_t selectedOption){
   OLED_clear();

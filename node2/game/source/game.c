@@ -68,7 +68,7 @@ void game_loop(){
 
 
       servo_update_position(input_container_get_ptr()->joystick.x);
-      pos_controller_update();
+      //pos_controller_update();
       motor_set_power(pos_controller_get_power());
       solenoid_update_status(&button_flag,&solenoid_timer);
       //count_game_score(&game,&fail_timer,&fail_registerd_flag);
