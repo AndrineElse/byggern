@@ -27,11 +27,11 @@ void game_loop(struct IR_status* IR_sample_container, uint8_t* msg){
 
   uint8_t button_flag = 0;
   uint16_t solenoid_timer = 0;
-  USART_Transmit_STXETX(game.lives-game.fails, 0x14);
+  //USART_Transmit_Lives(game.lives-game.fails);
   //uint8_t* msg = USART_Receive_STXETX();
   while(game.fails < game.lives){
-    USART_Transmit_STXETX(game.lives-game.fails, 0x14);
-    printf("Lives left: %d\n\r", game.lives-game.fails);
+    USART_Transmit_Lives(game.lives-game.fails);
+    //printf("Lives left: %d\n\r", game.lives-game.fails);
 
     servo_update_position(input_container_get_ptr()->joystick.x);
     motor_set_power(pos_controller_get_power());
@@ -46,8 +46,8 @@ void game_loop(struct IR_status* IR_sample_container, uint8_t* msg){
   }
 
   game.score = time_get_counter() - game.timer;
-  USART_Transmit_STXETX(game.score, 0x10); // uint16_t
-  printf("Game score: %d\n\r", game.score);
+  //USART_Transmit_Score(game.score); // uint16_t
+  //printf("Game score: %d\n\r", game.score);
 }
 
 

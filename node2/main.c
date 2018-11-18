@@ -57,15 +57,16 @@ void main(){
 
   while(1){
     //printf("Receive: %d\n\r", USART_Receive());
-    printf("MAIN\n\r");
+    // printf("MAIN\n\r");
     uint8_t* msg;
-    msg = USART_Receive_STXETX();
-    if(msg[0] == 0x11) {
-      printf("STXETX: %d\n\r", msg[0]);
-      printf("Inside if\n\r" );
-      USART_Transmit_STXETX(0x03, 0x14);
-      //game_loop(&IR_sample_container, &pid, msg);
-    }
+    //msg = USART_Receive_STXETX();
+    //USART_Transmit_Lives(3);
+    //if(msg[0] == 0x11) {
+      //printf("STXETX: %d\n\r", msg[0]);
+      //printf("Inside if\n\r" );
+      //USART_Transmit_Lives(3);
+      game_loop(&IR_sample_container, msg);
+    //}
     //_delay_ms(100);
   }
 
