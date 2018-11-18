@@ -1,22 +1,23 @@
 #define F_CPU 5000000
 #include <stdint.h>
 #include <stdio.h>
-#include <util/delay.h>
 #include <avr/interrupt.h>
 #include "../../drivers/include/CANDriver.h"
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
 #include "../../containers/include/gameStatusContainer.h"
-#include "../../drivers/include/ADCDriver.h"
+#include <util/delay.h>
 
 struct Node mainMenuNode;
+
 struct Node playGameNode;
 struct Node highScoresNode;
+
 struct Node optionsNode;
-struct Node levelsNode;
 
 struct Node middleGameNode;
+
 struct Node endGameNode;
 
 struct GameData gameData;
@@ -33,24 +34,21 @@ void menuInit(){
 
   highScoresNode.parent = &mainMenuNode;
   highScoresNode.options[0] = "Go back";
-  highScoresNode.description = "Highscore";
+  highScoresNode.description = "highscore";
   highScoresNode.numOptions = 1;
   highScoresNode.optionNodes[0] = &mainMenuNode;
 
   optionsNode.parent = &mainMenuNode;
-  optionsNode.options[0] = "Select level";
-  optionsNode.options[1] = "Go back";
-  optionsNode.description = "Options";
-  optionsNode.numOptions = 2;
-
-  optionsNode.optionNodes[0] = &levelsNode;
-  optionsNode.optionNodes[1] = &mainMenuNode;
-
+  optionsNode.options[0] = "Go back";
+  optionsNode.description = "options";
+  optionsNode.numOptions = 1;
+  optionsNode.optionNodes[0] = &mainMenuNode;
 
   mainMenuNode.parent = (struct Node*)0;
   mainMenuNode.options[0] = "Play game";
   mainMenuNode.options[1] = "Highscores";
   mainMenuNode.options[2] = "Options";
+
   mainMenuNode.description = "This is the main menu :)";
   mainMenuNode.numOptions = 3;
 
@@ -65,6 +63,15 @@ void menuInit(){
   endGameNode.options[1] = "Back to main menu";
   endGameNode.optionNodes[0] = &playGameNode;
   endGameNode.optionNodes[1] = &mainMenuNode;
+  //mainMenuNode = &mainMenuNode;
+
+  middleGameNode.parent = (struct Node*)0;
+  middleGameNode.description = "Fail registerd";
+  middleGameNode.numOptions = 2;
+  middleGameNode.options[0] = "Continue game";
+  middleGameNode.options[1] = "Back to main menu";
+  middleGameNode.optionNodes[0] = &playGameNode;
+  middleGameNode.optionNodes[1] = &mainMenuNode;
 
   levelsNode.parent = &optionsNode;
   levelsNode.options[0] = "Easy";
@@ -77,25 +84,17 @@ void menuInit(){
   levelsNode.optionNodes[1] = &optionsNode;
   levelsNode.optionNodes[2] = &optionsNode;
   levelsNode.optionNodes[3] = &optionsNode;
-  //mainMenuNode = &mainMenuNode;
-
-  middleGameNode.parent = (struct Node*)0;
-  middleGameNode.description = "Fail registerd";
-  middleGameNode.numOptions = 2;
-  middleGameNode.options[0] = "Continue game";
-  middleGameNode.options[1] = "Back to main menu";
-  middleGameNode.optionNodes[0] = &playGameNode;
-  middleGameNode.optionNodes[1] = &mainMenuNode;
 
   //mainMenuNode = &mainMenuNode;
 }
 
 void menuLoop(){
+  JoystickOffset offset = userInputInit();
   uint8_t selectedOption = 0;
   JoystickDir currentDir;
   volatile struct Node* currentNode = &mainMenuNode;
   JoystickDir lastDir;
-  lastDir = 0;
+  lastDir = calculateJoystickDirection();
   uint8_t lastButtonValue = 0;
   uint8_t gameFlag = 1;
   uint8_t numFails = 0;
@@ -114,35 +113,33 @@ void menuLoop(){
     //printf("Current node description: %s\n\r", currentNode->description );
     if(currentNode->description == "Game"){
         // printf("inside game node\n\r");
-        printf("%d %d\n\r", game_status_container_get_ptr()->lives, game_status_container_get_ptr()->fails);
 
       if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
         //printf("GAME OVER\n\r");
         //gameData.gameStart = 0;
-        //playGame = 1;
-        printf("B\n\r");
+        playGame = 1;
         gameFlag = 0;
         numFails = 0;
         currentNode = &endGameNode;
-        // send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
+        send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
       }
       else if (numFails != game_status_container_get_ptr()->fails){
         //printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
         //gameData.gameStart = 0; //maybe pause? , set gameStart to initialize the game, and pause just pauses it???
-        //playGame = 0;
-        printf("A\n\r");
+        playGame = 0;
         gameFlag = 0;
         numFails = game_status_container_get_ptr()->fails;
         currentNode = &middleGameNode;
-        //send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
+        send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
       }
       else if(gameFlag){
-        OLED_buffer_clear();
-        OLED_buffer_update_screen();
+
+        OLED_clear();
         playGame = 1;
-        send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
-        //_delay_ms(10);
+        send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
+        _delay_ms(10);
         //gameData.gameStart = 1;
+
       }
     }
     else{
@@ -150,13 +147,12 @@ void menuLoop(){
       //printf("inside menu looping\n\r");
       gameFlag = 1;
       playGame = 0;
-      send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
-
+      send_joystick_position(offset,&joystick_timer,&send_joystick_flag, &playGame);
       //get joystick input
       JoystickCoords joystickCoords;
-      joystickCoords = get_joystick_coords(readChannel(2),readChannel(1));
+      joystickCoords = calculateCalibratedJoystickCoords(offset);
       JoystickDir currentDir;
-      currentDir = calculate_joystick_dir(joystickCoords);
+      currentDir = calculateJoystickDirection(joystickCoords);
 
       //find selected option
 
@@ -173,28 +169,19 @@ void menuLoop(){
         }
         lastDir = currentDir;
       }
-      if (!lastButtonValue && joystick_get_button()) {
+      if (!lastButtonValue && joystickButton()) {
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
         OLED_buffer_clear();
       }
 
-      if (currentNode->description == "Select level"){
-        if(!lastButtonValue && joystick_get_button()){
-          game_level_select(selectedOption);
-        };
-
-        selectedOption = 0;
-        OLED_buffer_clear();
-      }
-    }
-      lastButtonValue = joystick_get_button();
-      //_delay_ms(50);
+      lastButtonValue = joystickButton();
+      _delay_ms(50);
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();
     }
   }
-
+}
 
 void printNode(volatile struct Node* node, uint8_t selectedOption){
   OLED_clear();
@@ -209,7 +196,7 @@ void printNode(volatile struct Node* node, uint8_t selectedOption){
     OLED_print(node->options[i]);
 
   }
-  //_delay_ms(500);
+  _delay_ms(500);
 }
 
 void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
@@ -226,15 +213,7 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
   }
 }
 
-void game_level_select(uint8_t selected_option){
-  struct CAN_msg msg;
-  msg.id = 4;
-  uint8_t array[8] = {selected_option,0,0,0,0,0,0,0};
-  for (int j = 0; j < 8; j++){
-    msg.data[j] = array[j];
-  }
-  msg.length = 1;
-}
+
 /*
   MAPPING
   id = 3
@@ -243,7 +222,7 @@ void game_level_select(uint8_t selected_option){
   data[2] = calibrateEncoder
   length = 3
 */
-/*
+
 void game_send_data_CAN(){
   // send can msg
   struct CAN_msg msg;
@@ -256,4 +235,3 @@ void game_send_data_CAN(){
   msg.length = 3;
   send_CAN_msg(&msg);
 }
-*/
