@@ -236,16 +236,38 @@ void OLED_dance(){
   uint8_t b;
   for(x = -radius; x < radius; x++){
     y = (int8_t)(sqrt(r2-x*x) + 0.5);
+    if(y_center - y == 0){
 
-    Z = (x_center+x) + 128*((y_center+y)/8);
-    b = 1<<((y_center+y)%8);
-    ext_mem[Z] = ext_mem[Z] | b;
-    Z = (x_center+x) + 128*((y_center-y)/8);
-    b = 1<<((y_center-y)%8);
-    ext_mem[Z] = ext_mem[Z] | b;
-
+    }
+    else{
+      Z = (x_center+x) + 128*((y_center+y)/8);
+      b = 1<<((y_center+y)%8);
+      ext_mem[Z] = ext_mem[Z] | b;
+      Z = (x_center+x) + 128*((y_center-y)/8);
+      b = 1<<((y_center-y)%8);
+      ext_mem[Z] = ext_mem[Z] | b;
+    }
+  }
+  uint8_t count =0;
+  while(1){
+    count ++;
+    uint8_t k = count%2;
+    OLED_draw_line((x_center-radius),k*(y_center+3*radius), (x_center+radius), k*(y_center+radius) );
+    OLED_draw_line((x_center-radius),k*(y_center+radius), (x_center+radius), k*(y_center+3*radius) );
+    OLED_buffer_update_screen();
   }
   OLED_buffer_update_screen();
+}
 
+void OLED_draw_line(uint8_t x0,uint8_t y0,uint8_t x1,uint8_t y1){
+  char* ext_mem = (char*)0x1800;
+  for (int t = 0; t < 1000; t++) {
+    uint8_t xt = (uint8_t)(((x1 - x0)/1000.0)*t + x0);
+    uint8_t yt = (uint8_t)(((y1 - y0)/1000.0)*t + y0);
 
+    uint16_t Z = xt + 128*(yt/8);
+    uint8_t b = 1<<(yt%8);
+
+    ext_mem[Z] = ext_mem[Z] | b;
+  }
 }
