@@ -91,12 +91,12 @@ void motor_encoder_reset(){
     PORTH |= 1<<PH6;
 }
 
-void motor_calibrate_encoder(uint8_t dir){
+void motor_set_max_min_encoder(uint8_t dir){
   motor_encoder_reset();
   int16_t last_encoder_value = 0;
   int16_t current_encoder_value;
   count = 0;
-  for(uint16_t i = 0; i < 300; i++){
+  for(uint16_t i = 0; i < 300; i+=2){
     current_encoder_value = read_motor_encoder();
     motor_set_power(i);
     if (current_encoder_value == last_encoder_value){
@@ -115,4 +115,8 @@ void motor_calibrate_encoder(uint8_t dir){
       max_encoder = (-1)*current_encoder_value;
       printf("Min value : %d \n", min_encoder );
   }
+}
+
+void motor_calibrate_encoder(){
+  
 }
