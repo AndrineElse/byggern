@@ -100,12 +100,22 @@ void motor_set_max_min_encoder(uint8_t dir){
   if (dir){
     k = -1;
   }
-  while(1){
+  //Drive the motor to the opposite side
+  while(count < 5){
+    current_encoder_value = read_motor_encoder();
+    printf("Current encoder: %d\n", current_encoder_value);
+    motor_set_power((-1)*k*(60));
+    if (current_encoder_value == last_encoder_value){
+      count ++;
+    }
+    last_encoder_value = current_encoder_value;
+  }
+  motor_set_power(0);
+  count = 0;
+  while(count < 5){
     current_encoder_value = read_motor_encoder();
     printf("Current encoder: %d\n", current_encoder_value);
     motor_set_power(k*(60));
-    //if ( (((-5<(current_encoder_value == last_encoder_value)) && ((current_encoder_value == last_encoder_value)<0)) || (((0<(current_encoder_value == last_encoder_value)) && ((current_encoder_value == last_encoder_value)<5))))
-    //&& (current_encoder_value!=0))
     if (current_encoder_value == last_encoder_value){
       count ++;
       if (count == 10){
@@ -125,9 +135,9 @@ void motor_set_max_min_encoder(uint8_t dir){
     }
     last_encoder_value = current_encoder_value;
   }
-
 }
 
-void motor_calibrate_encoder(){
-
+void motor_get_max_min_encoder_ptr(int8_t* min, int8_t* max){
+  *min = min_encoder;
+  *max = max_encoder;
 }
