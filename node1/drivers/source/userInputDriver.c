@@ -115,10 +115,11 @@ void send_joystick_position(){
   }
 }
 */
-void send_joystick_position(){
+
+void user_input_send_can(uint8_t joystickX_reading, uint8_t slider_right_reading){
   struct CAN_msg msg;
   msg.id = 1;
-  uint8_t array[8] = {get_joystick_coords_x(readChannel(2)),get_slider_position_right(),(joystick_get_button() + (1 << get_play_game())) ,0,0,0,0,0};
+  uint8_t array[8] = {get_joystick_coords_x(joystickX_reading),slider_right_reading,(joystick_get_button() + (1 << get_play_game())) ,0,0,0,0,0};
   //printf("%x\n\r", array[2]);
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];

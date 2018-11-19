@@ -43,10 +43,12 @@ ISR(TIMER3_COMPA_vect) {
   }
   */
   tenths_of_second_counter++;
+  /*
   if(!(tenths_of_second_counter%3)){
       send_joystick_position();
   }
-
+  */
+  ADC_start_conversion_cycle();
 
 }
 
