@@ -227,16 +227,18 @@ void game_level_select(uint8_t selected_option){
 void game_highscore_update(){
   for (int i = 0; i < 3; i++){
     if (highScoresNode.options[i] == "-" || game_status_container_get_ptr()->score > highScoresNode.options[i]){
-      game_highscore_SRAM_update(game_status_container_get_ptr()->user, game_status_container_get_ptr()->score);
+      
+      // game_highscore_SRAM_update(game_status_container_get_ptr()->user, game_status_container_get_ptr()->score);
       // game_highscore_SRAM_get(uint8_t place)
-      highScoresNode.options[i] = game_status_container_get_ptr()->user + ': ' + game_status_container_get_ptr()->score;
+      highScoresNode.options[i] = username + ': ' + (char*)(game_status_container_get_ptr()->score);
 
       break;
     }
   }
 }
 
-// make highscore list, must be updated when new highscore
+// make highscore list, must be updated when new highscore 
+/*
 void game_highscore_SRAM_update(uint8_t user, uint16_t score, uint8_t place){
   uint8_t data[3] = {user, score, score};
   uint8_t data_amount = 3;
@@ -257,7 +259,7 @@ uint8_t* game_highscore_SRAM_get(uint8_t place){
   }
   return data;
 }
-
+*/
 uint8_t get_play_game(){
   return play_game;
 }
