@@ -134,5 +134,5 @@ int16_t motor_get_max_encoder(){
 
 void power_saturation_set(uint16_t saturation){
   power_saturation = saturation;
-  printf("Sat: %d\n\r", saturation);
+  printf("Sat: %d\n\r", power_saturation);
 }
