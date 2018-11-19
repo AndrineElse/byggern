@@ -1,79 +1,67 @@
-//System frequency used by util/delay, 16MHz for node 2, 5MHz for node 1
-#define F_CPU 5000000
+//system clock frequency, used by util/delay, 16MHz for node 2, 5MHz for node 1
+#define F_CPU 16000000
 
+//system libraries
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdio.h>
+#include <stdint.h>
 #include <avr/interrupt.h>
-#include "drivers/include/UARTdriver.h"
-#include "drivers/include/SRAMDriver.h"
-#include "tests/include/addressTesting.h"
-#include "tests/include/joystickTesting.h"
-#include "drivers/include/ADCDriver.h"
-#include "drivers/include/OLEDDriver.h"
-#include "game/include/gameMenu.h"
-#include "drivers/include/userInputDriver.h"
-#include "drivers/include/SPIDriver.h"
-#include "drivers/include/MCP2515Driver.h"
-#include "drivers/include/MCP2515.h"
-#include "drivers/include/CANDriver.h"
-#include "tests/include/OLEDTesting.h"
-#include "tests/include/CANTesting.h"
-#include "drivers/include/timerDriver.h"
-#include "containers/include/gameStatusContainer.h"
 
-#define FOSC 1843200// Clock Speed
+//drivers
+#include "drivers/include/UARTDriver2.h"
+#include "drivers/include/CANDriver2.h"
+#include "drivers/include/SPIDriver2.h"
+#include "drivers/include/PWMDriver.h"
+#include "drivers/include/ADCDriver2.h"
+#include "drivers/include/solenoidDriver.h"
+
+//game
+#include "game/include/game.h"
+
+//more drivers
+#include "drivers/include/IRDriver.h"
+#include "drivers/include/motorDriver.h"
+#include "drivers/include/servoDriver.h"
+#include "drivers/include/timerDriver.h"
+
+//controller
+#include "controllers/include/posController.h"
+
+//container
+#include "containers/include/userInputContainer.h"
+
+
+
+
+//tests
+//include eventual tests here
+
+//#define FOSC 1843200// Clock Speed
 #define BAUD 9600
 #define MYUBRR F_CPU/16/BAUD-1
 
-
-
-
 void main(){
-
-  MCUCR = (1<<SRE);
-  SFIOR = (1<<XMM2);
-  //SREG |= 0x80;
-
+  game_init();
   //init
   USART_Init ( MYUBRR );
-  set_play_game(0);
-
-  SRAM_init ();
-  SPI_init();
-  mcp2515_init();
+  input_container_init();
+  // game_data_container_init();
   CAN_init();
-
-
-
   CAN_init_interrupt();
+  pwm_init();
+  adc_init();
+  IR_init(5); //param: amount of samples to average for reading
+  timer_hundred_ms_init();
+  timer_twenty_ms_init();
+  solenoid_init();
+  motor_init();
+  pos_controller_init(1,3,0.02); //params: kp, ki, sample_time, encoder_max
 
 
-  OLED_init();
-  OLED_clear();
-  OLED_init_buffer_mode();
-  OLED_buffer_clear();
-
-  //joystick_set_max_min_values();
-  //printf("Sreg: %d\n\r", SREG);
-  //sei();
-  //printf("Sreg: %d\n\r", SREG);
-  user_input_init();
-  game_status_container_init();
-  timer_init();
-
-  //Comment in again
-  //joystick_set_max_min_values();
+  game_loop();
 
 
 
-  menuInit();
-  sei();
-  menuLoop();
-
-  /*
-  while(1){
-    send_joystick_position();
-    _delay_ms(200);
-  }*/
   return;
 }

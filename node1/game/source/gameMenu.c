@@ -31,25 +31,22 @@ void menuInit(){
   //printf("Inside init\n\r");
 
   playGameNode.parent = &mainMenuNode;
-  playGameNode.options[0] = "Go back";
   playGameNode.description = "Game";
-  playGameNode.numOptions = 1;
+  playGameNode.numOptions = 0;
   playGameNode.optionNodes[0] = &mainMenuNode;
 
   highScoresNode.parent = &mainMenuNode;
   highScoresNode.options[0] = "Go back";
-  highScoresNode.description = "highscore";
+  highScoresNode.description = "Highscore";
   highScoresNode.numOptions = 1;
   highScoresNode.optionNodes[0] = &mainMenuNode;
 
   optionsNode.parent = &mainMenuNode;
-  optionsNode.options[0] = "Select level";
-  optionsNode.options[1] = "Go back";
+  optionsNode.options[0] = "Go back";
   optionsNode.description = "Options";
-  optionsNode.numOptions = 2;
+  optionsNode.numOptions = 1;
 
-  optionsNode.optionNodes[0] = &levelsNode;
-  optionsNode.optionNodes[1] = &mainMenuNode;
+  optionsNode.optionNodes[0] = &mainMenuNode;
 
   mainMenuNode.parent = (struct Node*)0;
   mainMenuNode.options[0] = "Play game";
@@ -59,7 +56,7 @@ void menuInit(){
   mainMenuNode.description = "This is the main menu :)";
   mainMenuNode.numOptions = 3;
 
-  mainMenuNode.optionNodes[0] = &playGameNode;
+  mainMenuNode.optionNodes[0] = &levelsNode;
   mainMenuNode.optionNodes[1] = &highScoresNode;
   mainMenuNode.optionNodes[2] = &optionsNode;
 
@@ -80,17 +77,17 @@ void menuInit(){
   middleGameNode.optionNodes[0] = &playGameNode;
   middleGameNode.optionNodes[1] = &mainMenuNode;
 
-  levelsNode.parent = &optionsNode;
+  levelsNode.parent = &mainMenuNode;
   levelsNode.options[0] = "Easy";
   levelsNode.options[1] = "Medium";
   levelsNode.options[2] = "Hard";
   levelsNode.options[3] = "Go back";
   levelsNode.description = "Select level";
   levelsNode.numOptions = 4;
-  levelsNode.optionNodes[0] = &optionsNode;
-  levelsNode.optionNodes[1] = &optionsNode;
-  levelsNode.optionNodes[2] = &optionsNode;
-  levelsNode.optionNodes[3] = &optionsNode;
+  levelsNode.optionNodes[0] = &playGameNode;
+  levelsNode.optionNodes[1] = &playGameNode;
+  levelsNode.optionNodes[2] = &playGameNode;
+  levelsNode.optionNodes[3] = &mainMenuNode;
 
   //mainMenuNode = &mainMenuNode;
 }
