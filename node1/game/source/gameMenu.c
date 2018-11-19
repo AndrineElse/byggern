@@ -51,7 +51,7 @@ void menuInit(){
   mainMenuNode.options[2] = "Options";
 
   mainMenuNode.description = "This is the main menu :)";
-  mainMenuNode.numOptions = 2;
+  mainMenuNode.numOptions = 3;
 
   mainMenuNode.optionNodes[0] = &playGameNode;
   mainMenuNode.optionNodes[1] = &highScoresNode;
@@ -67,7 +67,7 @@ void menuInit(){
 
 
   middleGameNode.parent = (struct Node*)0;
-  middleGameNode.description = "Fail registerd";
+  middleGameNode.description = "Fail registered";
   middleGameNode.numOptions = 2;
   middleGameNode.options[0] = "Continue game";
   middleGameNode.options[1] = "Back to main menu";
@@ -161,7 +161,7 @@ void menuLoop(){
       }
       */
       //Checking if the user has selected a option
-      if (!lastButtonValue && joystick_get_button()) {
+      if (!lastButtonValue && currentDir == RIGHT) {
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
         OLED_buffer_clear();

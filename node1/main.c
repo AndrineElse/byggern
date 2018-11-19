@@ -46,6 +46,7 @@ void main(){
   //OLED_clear();
   OLED_init_buffer_mode();
   OLED_buffer_clear();
+
   user_input_init();
   game_status_container_init();
   timer_init();
@@ -56,8 +57,10 @@ void main(){
 
 
   menuInit();
-  sei(); //REMOVE
+  sei();
+
   menuLoop();
+
 
   //Use the one below if you want to run without menu
   /*

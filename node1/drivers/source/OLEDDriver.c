@@ -197,9 +197,11 @@ void OLED_buffer_update_screen(){
 }
 
 void OLED_buffer_clear(){
+  cli();
   for(uint16_t i = 0; i < 1024; i++ ) {
     OLED_update_buffer_single_byte(i, 0x00);
   }
+  sei();
 }
 
 void OLED_buffer_fill(){

@@ -26,7 +26,6 @@ void SPI_write(char cData) {
 
   while(!(SPSR & (1<<SPIF)));
 
-  _delay_ms(10);
 }
 
 char SPI_read() {
