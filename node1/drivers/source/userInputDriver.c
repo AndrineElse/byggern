@@ -87,7 +87,10 @@ uint8_t joystick_get_button(){
 void send_joystick_position(){
   struct CAN_msg msg;
   msg.id = 1;
-  uint8_t array[8] = {get_joystick_coords_x(readChannel(2)),get_slider_position_right(),(joystick_get_button() + (1 << get_play_game())) ,0,0,0,0,0};
+  uint8_t array[8] = {get_joystick_coords_x(readChannel(2)),
+                      get_slider_position_right(),
+                      (joystick_get_button() + (get_play_game() << 1)+(get_restart_game() << 2)),
+                      0,0,0,0,0};
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
 

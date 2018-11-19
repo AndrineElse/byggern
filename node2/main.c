@@ -46,7 +46,6 @@ void main(){
   //init
   USART_Init ( MYUBRR );
   input_container_init();
-  // game_data_container_init();
   CAN_init();
   CAN_init_interrupt();
   pwm_init();
@@ -56,12 +55,12 @@ void main(){
   timer_twenty_ms_init();
   solenoid_init();
   motor_init();
-  pos_controller_init(1,3,0.02); //params: kp, ki, sample_time, encoder_max
-
+  pos_controller_init(1,5,0.02); //params: kp, ki, sample_time, encoder_max
+  //game_init();
 
   game_loop();
 
-
+  //game_big_loop();
 
   return;
 }
