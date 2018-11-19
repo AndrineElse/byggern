@@ -122,7 +122,8 @@ void menuLoop(){
 
       if( (currentNode->description == "Watching replay") && 
           (!game_status_container_get_ptr()->running_playback)){
-            
+            currentNode = currentNode->optionNodes[0];
+            run_playback = 0;
         }
       }
       //Inside the main menu system, game is not playing
@@ -156,7 +157,7 @@ void menuLoop(){
 
         //add specific handling for node transistions here
         if(currentNode->optionNodes[selectedOption]->description == "Watching replay"){
-          
+
           watchReplayNode.optionNodes[0] = currentNode;
           run_playback = 1;
           //hold the program here until node2 acknowledges playback
