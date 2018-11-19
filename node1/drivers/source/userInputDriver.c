@@ -190,7 +190,6 @@ JoystickCoords get_joystick_coords(uint8_t rawX, uint8_t rawY) {
   JoystickCoords finalValues;
   //return naive calibration if calibration routine has not run
   if(!centerX){
-    printf("JsNotCal!");
     finalValues.x = (rawX - 128)/1.28;
     finalValues.y = (rawY - 128)/1.28;
     return finalValues;

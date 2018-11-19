@@ -162,7 +162,7 @@ void menuLoop(){
       sei();
       JoystickDir currentDir;
       currentDir = calculate_joystick_dir(joystickCoords);
-      printf("%d %d\n\r", joystickCoords.x, joystickCoords.y);
+      
 
       //find selected option
 
