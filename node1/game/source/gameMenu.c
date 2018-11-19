@@ -3,11 +3,14 @@
 #include <stdio.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <avr/pgmspace.h>
+
+//#include "../../fonts.h"
 
 //drivers
+#include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/CANDriver.h"
 #include "../include/gameMenu.h"
-#include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
 #include "../../containers/include/gameStatusContainer.h"
 #include "../../drivers/include/ADCDriver.h"
@@ -211,7 +214,8 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
 
   if(node == &highScoresNode){
     printf("O");
-    print_highscore_node(game_highscore_update()[0], game_highscore_update()[1], game_highscore_update()[2], game_highscore_update()[3]);
+    OLED_buffer_print_line (node->description,0,0);
+    print_highscore_node(1, game_highscore_update()[1], 0, 0);
     for (int i = 0; i < node->numOptions; i++){
       if (i == selectedOption){
         OLED_buffer_print_line(node->options[i], i+4, 1);
@@ -315,7 +319,7 @@ void game_username_select(uint8_t selectedOption){
   // game_user_update(node->options[selectedOption]);
   set_username(selectedOption);
 }
-
+/*
 void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint8_t score_L){
   uint16_t currentByte = place*128;
 
@@ -339,8 +343,8 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
       continue;
     }
     uint8_t font_table_index = currentChar - 32;
-  for (int j=0; j < length; j++) {
-      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j]));
+  for (int j=0; j < 3; j++) {
+      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
       //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
       currentByte++;
     }
@@ -348,7 +352,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
 
   // USERNAME
   char* name;
-  unit8_t length;
+  uint8_t length;
   switch(username){
     case 0:
       name = "Magne";
@@ -372,13 +376,13 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
     }
     uint8_t font_table_index = currentChar - 32;
   for (int j=0; j < length; j++) {
-      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j]));
+      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
       //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
       currentByte++;
     }
   }
 
-  char* score = (char*)(score_H << 8) + score_L;
+  char* score = (char*)0;//(score_H << 8) + score_L;
   uint16_t c = 0;
   while(score[c]) {
     uint8_t currentChar = (uint8_t)score[c];
@@ -386,8 +390,8 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
       continue;
     }
     uint8_t font_table_index = currentChar - 32;
-  for (int j=0; j < length; j++) {
-      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j]));
+  for (int j=0; j < 5; j++) {
+      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
       //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
       currentByte++;
     }
