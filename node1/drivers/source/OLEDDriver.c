@@ -226,8 +226,8 @@ void OLED_buffer_fill(){
 void OLED_dance(){
   OLED_clear();
   char* ext_mem = (char*)0x1800;
-  uint8_t radius = 20;
-  uint8_t x_center = 50;
+  uint8_t radius = 10;
+  uint8_t x_center = 64;
   uint8_t y_center = 20;
   uint8_t r2= radius*radius;
   int8_t x;
@@ -248,6 +248,7 @@ void OLED_dance(){
       ext_mem[Z] = ext_mem[Z] | b;
     }
   }
+  OLED_draw_line(x_center,(y_center + radius),x_center,(y_center + 2*radius));
   uint8_t count =0;
   while(1){
     count ++;
