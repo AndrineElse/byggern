@@ -213,15 +213,32 @@ void OLED_buffer_fill(){
 
 
 void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint8_t score_L){
-  uint16_t currentByte = 3*128;
-  for(uint16_t i = 0; i < 1024; i++ ) {
-    OLED_update_buffer_single_byte(i, 0xFF);
-  }
+  uint16_t currentByte = (place+1)*128; // select line
 
-  uint16_t currentByte = 2*128;
-  char* number = (char*)place;
-  OLED_buffer_print_line(number, 1, 0);
-  //OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
+  char* number;
+  switch(place){
+    case 1:
+      number = "1. ";
+      break;
+    case 2:
+      number = "2. ";
+      break;
+    case 3:
+      number = "3. ";
+      break;
+  }
+  uint16_t a = 0;
+  while(number[a]) {
+    uint8_t currentChar = (uint8_t)number[a];
+    if(currentChar < 32){
+      continue;
+    }
+    uint8_t font_table_index = currentChar - 32;
+  for (int j=0; j < 5; j++) {
+      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
+      //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
+      currentByte++;
+    }
 
   // PLACE
   /*char* number;
@@ -267,7 +284,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
       length = 4;
       break;
   }
-  OLED_buffer_print_line(name, 2, 0);/*
+  //OLED_buffer_print_line(name, 2, 0);
 
   uint16_t b = 0;
   while(name[b]) {
@@ -276,7 +293,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
       continue;
     }
     uint8_t font_table_index = currentChar - 32;
-  for (int j=0; j < length; j++) {
+  for (int j=0; j < 5; j++) {
       OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
       //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
       currentByte++;
