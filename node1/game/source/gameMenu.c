@@ -66,16 +66,17 @@ void menuInit(){
 
   middleGameNode.parent = (struct Node*)0;
   middleGameNode.description = "Fail registerd";
-  middleGameNode.numOptions = 2;
-  middleGameNode.options[0] = "Continue game";
-  middleGameNode.options[1] = "Back to main menu";
+  middleGameNode.numOptions = 3;
+  middleGameNode.options[0] = "Your score: " + (char*)game_status_container_get_ptr()->score;
+  middleGameNode.options[1] = "Continue game";
+  middleGameNode.options[2] = "Back to main menu";
   middleGameNode.optionNodes[0] = &playGameNode;
   middleGameNode.optionNodes[1] = &mainMenuNode;
 
   endGameNode.parent = (struct Node*)0;
   endGameNode.description = "All lives lost, game over";
   endGameNode.numOptions = 3;
-  endGameNode.options[0] = "Your score: " + game_status_container_get_ptr()->score;
+  endGameNode.options[0] = "Your score: " + (char*)game_status_container_get_ptr()->score;
   endGameNode.options[1] = "New game";
   endGameNode.options[2] = "Back to main menu";
   endGameNode.optionNodes[0] = &mainMenuNode;
