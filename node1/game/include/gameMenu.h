@@ -9,7 +9,6 @@ struct Node {
 
 
 void menuLoop();
-void printNode(volatile struct Node* node, uint8_t selectedOption);
 void menuInit();
 void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption);
 void game_send_data_CAN();

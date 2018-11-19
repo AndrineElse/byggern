@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+
+//drivers
 #include "../../drivers/include/CANDriver.h"
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
@@ -12,18 +14,18 @@
 
 struct Node mainMenuNode;
 struct Node playGameNode;
-//struct Node highScoresNode;
+struct Node highScoresNode;
 struct Node optionsNode;
 struct Node middleGameNode;
 struct Node endGameNode;
 
-//struct GameData gameData;
+
 
 uint8_t play_game;
 
 void menuInit(){
 
-  //printf("Inside init\n\r");
+  //Initializing main menu system nodes
 
   playGameNode.parent = &mainMenuNode;
   playGameNode.options[0] = "Go back";
@@ -31,11 +33,11 @@ void menuInit(){
   playGameNode.numOptions = 1;
   playGameNode.optionNodes[0] = &mainMenuNode;
 
-  /*highScoresNode.parent = &mainMenuNode;
+  highScoresNode.parent = &mainMenuNode;
   highScoresNode.options[0] = "Go back";
   highScoresNode.description = "highscore";
   highScoresNode.numOptions = 1;
-  highScoresNode.optionNodes[0] = &mainMenuNode;*/
+  highScoresNode.optionNodes[0] = &mainMenuNode;
 
   optionsNode.parent = &mainMenuNode;
   optionsNode.options[0] = "Go back";
@@ -52,7 +54,7 @@ void menuInit(){
   mainMenuNode.numOptions = 2;
 
   mainMenuNode.optionNodes[0] = &playGameNode;
-  //mainMenuNode.optionNodes[1] = &highScoresNode;
+  mainMenuNode.optionNodes[1] = &highScoresNode;
   mainMenuNode.optionNodes[2] = &optionsNode;
 
   endGameNode.parent = (struct Node*)0;
@@ -62,7 +64,7 @@ void menuInit(){
   endGameNode.options[1] = "Back to main menu";
   endGameNode.optionNodes[0] = &playGameNode;
   endGameNode.optionNodes[1] = &mainMenuNode;
-  //mainMenuNode = &mainMenuNode;
+
 
   middleGameNode.parent = (struct Node*)0;
   middleGameNode.description = "Fail registerd";
@@ -72,7 +74,7 @@ void menuInit(){
   middleGameNode.optionNodes[0] = &playGameNode;
   middleGameNode.optionNodes[1] = &mainMenuNode;
 
-  //mainMenuNode = &mainMenuNode;
+
 }
 
 void menuLoop(){
@@ -85,46 +87,35 @@ void menuLoop(){
   uint8_t numFails = 0;
 
   while(1){
-    //printf("Current node description: %s\n\r", currentNode->description );
+
     if(currentNode->description == "Game"){
-        // printf("inside game node\n\r");
-      //  printf("%d %d\n\r", game_status_container_get_ptr()->lives, game_status_container_get_ptr()->fails);
 
       if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
-        //printf("GAME OVER\n\r");
-        //gameData.gameStart = 0;
-        //playGame = 1;
-
         play_game = 0;
         numFails = 0;
         currentNode = &endGameNode;
-        // send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
       }
-      else if (numFails != game_status_container_get_ptr()->fails){
-        //printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
-        //gameData.gameStart = 0; //maybe pause? , set gameStart to initialize the game, and pause just pauses it???
-        //playGame = 0;
 
+      else if (numFails != game_status_container_get_ptr()->fails){
         play_game = 0;
         numFails = game_status_container_get_ptr()->fails;
         currentNode = &middleGameNode;
-        //send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
+
       }
+
+
       else {
+        //Playing game, sending
         play_game = 1;
         OLED_buffer_clear();
         OLED_buffer_update_screen();
-        //send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
-        //_delay_ms(10);
-        //gameData.gameStart = 1;
+
       }
     }
     else{
-      //printf("Option nodes description: %s\n\r", currentNode->optionNodes[0]->description );
-      //printf("inside menu looping\n\r");
-
+      //Inside the main menu system, game is not playing
       play_game = 0;
-      //send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
+
 
       //get joystick input
       cli();
@@ -134,9 +125,29 @@ void menuLoop(){
       JoystickDir currentDir;
       currentDir = calculate_joystick_dir(joystickCoords);
 
-      //find selected option
+      //Finding index for selected option
 
       if (currentDir != lastDir){
+        switch (currentDir) {
+          case UP:
+            if (selectedOption > 0){
+              selectedOption = selectedOption -1;
+            }
+            break;
+
+          case DOWN:
+            if (selectedOption < (currentNode->numOptions-1)){
+              selectedOption = selectedOption +1;
+            }
+            break;
+        }
+        lastDir = currentDir;
+      }
+
+
+
+
+      /*
         if (currentDir == UP){
           if (selectedOption > 0){
             selectedOption = selectedOption -1;
@@ -149,6 +160,8 @@ void menuLoop(){
         }
         lastDir = currentDir;
       }
+      */
+      //Checking if the user har selected a option
       if (!lastButtonValue && joystick_get_button()) {
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
@@ -156,29 +169,12 @@ void menuLoop(){
       }
 
       lastButtonValue = joystick_get_button();
-      //_delay_ms(50);
 
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();
 
     }
   }
-}
-
-void printNode(volatile struct Node* node, uint8_t selectedOption){
-  OLED_clear();
-  OLED_pos(0,0);
-  OLED_print (node->description);
-
-  for (int i = 0; i < node->numOptions; i++){
-    OLED_pos(i+1,0);
-    if (i == selectedOption){
-      OLED_print("* ");
-    }
-    OLED_print(node->options[i]);
-
-  }
-  //_delay_ms(500);
 }
 
 void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
@@ -202,25 +198,3 @@ uint8_t get_play_game(){
 void set_play_game(uint8_t value){
   play_game = value;
 }
-/*
-  MAPPING
-  id = 3
-  data[0] = gameStart
-  data[1] = pause
-  data[2] = calibrateEncoder
-  length = 3
-*/
-/*
-void game_send_data_CAN(){
-  // send can msg
-  struct CAN_msg msg;
-  msg.id = 3;
-  uint8_t array[8] = {gameData.gameStart,gameData.pause,gameData.calibrateEncoder,0,0,0,0,0};
-  for (int j = 0; j < 8; j++){
-    msg.data[j] = array[j];
-
-  }
-  msg.length = 3;
-  send_CAN_msg(&msg);
-}
-*/

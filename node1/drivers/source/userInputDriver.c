@@ -83,38 +83,7 @@ uint8_t joystick_get_button(){
   return !(PINB & 0x01);
 }
 
-//sends user input and desired game state to node2, format:
-//    id = 1
-//    data[0] = x joystick position [-100,100]
-//    data[1] = y joystick position [-100,100]
-//    data[2] = button (LSB = button), 7 unused bits here
-/*
-void send_joystick_position(){
-  if (*flag == 0){
-    *timer = timer_get_counter();
-    *flag = 1;
-  }
-  else{
-    if((timer_get_counter() - *timer) > 2){
-      struct CAN_msg msg;
 
-      msg.id = 1;
-      uint8_t array[8] = {get_joystick_coords_x(readChannel(2)),get_slider_position_right(),(joystick_get_button() + (1 << get_play_game())) ,0,0,0,0,0};
-      //printf("%x\n\r", array[2]);
-      for (int j = 0; j < 8; j++){
-        msg.data[j] = array[j];
-
-      }
-      msg.length = 3;
-      cli();
-      send_CAN_msg(&msg);
-      sei();
-      *flag = 0;
-      *timer = 0;
-    }
-  }
-}
-*/
 void send_joystick_position(){
   struct CAN_msg msg;
   msg.id = 1;
