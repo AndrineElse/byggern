@@ -18,6 +18,7 @@ struct Node highScoresNode;
 struct Node optionsNode;
 struct Node middleGameNode;
 struct Node endGameNode;
+struct Node watchReplayNode;
 
 
 //global variables to indicate desired state to node2 via CAN
@@ -67,6 +68,7 @@ void menuInit(){
   endGameNode.options[2] = "Watch replay";
   endGameNode.optionNodes[0] = &playGameNode;
   endGameNode.optionNodes[1] = &mainMenuNode;
+  endGameNode.optionNodes[2] = &watchReplayNode;
 
 
   middleGameNode.parent = (struct Node*)0;
@@ -77,14 +79,15 @@ void menuInit(){
   middleGameNode.options[2] = "Watch replay";
   middleGameNode.optionNodes[0] = &playGameNode;
   middleGameNode.optionNodes[1] = &mainMenuNode;
+  middleGameNode.optionNodes[2] = &watchReplayNode;
 
   watchReplayNode.parent = (struct Node*)0;
   watchReplayNode.description = "Watching replay";
   watchReplayNode.numOptions = 1;
   watchReplayNode.options[0] = "Stop watching";
   watchReplayNode.optionNodes[0] = &mainMenuNode;
-  //optionnode pointer has to be set to whatever state you started watching from, 
-  //either middleGameNode or endGameNode. 
+  //optionnode pointer has to be set to whatever state you started watching from,
+  //either middleGameNode or endGameNode.
 
 }
 
@@ -120,11 +123,10 @@ void menuLoop(){
     }
     else{
 
-      if( (currentNode->description == "Watching replay") && 
+      if( (currentNode->description == "Watching replay") &&
           (!game_status_container_get_ptr()->running_playback)){
-            currentNode = currentNode->optionNodes[0];
-            run_playback = 0;
-        }
+          currentNode = currentNode->optionNodes[0];
+          run_playback = 0;
       }
       //Inside the main menu system, game is not playing
       play_game = 0;
@@ -154,19 +156,24 @@ void menuLoop(){
       }
       //Checking if the user has selected a option
       if (!lastButtonValue && (get_slider_buttons() & 0x01)) {
-
+        printf("push!\n\r");
         //add specific handling for node transistions here
         if(currentNode->optionNodes[selectedOption]->description == "Watching replay"){
-
+          printf("playback\n\r");
           watchReplayNode.optionNodes[0] = currentNode;
           run_playback = 1;
+          while(1){
+            printf("w:%d\n\r",get_run_playback());
+          }
           //hold the program here until node2 acknowledges playback
-          while(!game_status_container_get_ptr()->running_playback);
+          while(!game_status_container_get_ptr()->running_playback) {
+            printf("waiting\n\r");
+          }
 
         } else if (currentNode->description == "Watching replay") {
           run_playback = 0;
         }
-        
+
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
         OLED_buffer_clear();

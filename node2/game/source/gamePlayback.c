@@ -46,6 +46,8 @@ struct playback_sample_set_container playback_get_next_sample() {
 }
 
 uint8_t playback_get_finished_playing() {
+	printf("%d\n\r",playback_container.current_filler_index);
+	printf("%d\n\r",playback_container.current_playback_index);
 	return playback_container.finished_playing;
 }
 

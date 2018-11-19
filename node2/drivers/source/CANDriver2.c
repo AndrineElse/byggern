@@ -13,6 +13,7 @@
 #include "../include/solenoidDriver.h"
 #include "../../containers/include/userInputContainer.h"
 #include "../../game/include/game.h"
+#include "../../controllers/include/posController.h"
 
 void CAN_init(){
   mcp2515_init();
@@ -139,6 +140,6 @@ void CAN_message_handler(){
   if (game_get_playing_status()) {
     servo_update_position(input_container_get_ptr()->joystick.x);
     solenoid_update_status(input_container_get_ptr()->joystickButton);
+    playback_set_next_sample(pos_controller_get_power(),input_container_get_ptr()->joystick.x,input_container_get_ptr()->joystickButton);
   }
-  printf("%d\n\r", game_get_playing_status());
 }

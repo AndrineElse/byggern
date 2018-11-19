@@ -14,6 +14,7 @@
 #include "../../drivers/include/solenoidDriver.h"
 #include "../../tests/include/servoTesting.h"
 #include "../../containers/include/userInputContainer.h"
+#include "../include/gamePlayback.h"
 
 
 #include "../include/game.h"
@@ -86,7 +87,7 @@ uint8_t game_get_playing_status() {
   return game.playing;
 }
 
-uint8_t game_get_playback_Status() {
+uint8_t game_get_playback_status() {
   return game.running_playback;
 }
 
@@ -135,18 +136,21 @@ void game_loop(){
           game_send_update_CAN();
 
           //wait for new desired state from node1
-          while(!(input_container_get_ptr()->playGame || input_container_get_ptr()->run_playback));
-
-          if(input_container_get_ptr()->run_playback){
-
-            game_send_update_CAN();
-            
-            while(input_container_get_ptr()->run_playback && !playback_get_finished_playing()){
-              game.runningPlayback = 1;
-            }
+          while(!(input_container_get_ptr()->playGame || input_container_get_ptr()->run_playback)) {
+            printf("B\n\r");
           }
 
-          game.runningPlayback = 0;
+          if(input_container_get_ptr()->run_playback){
+            game.running_playback = 1;
+            game_send_update_CAN();
+            printf("%d\n\r",!playback_get_finished_playing());
+            while(input_container_get_ptr()->run_playback && !playback_get_finished_playing()){
+              printf("A\n\r");
+              _delay_ms(10);
+            }
+          }
+          printf("D\n\r");
+          game.running_playback = 0;
           playback_stop_playing();
 
           game_send_update_CAN();
@@ -194,9 +198,9 @@ void game_loop(){
           }
 
           //waiting for node1 to acknowledge death
-          while(input_container_get_ptr()->playGame);
-
-          while(input_container_get_ptr()->run_playback);
+          while(input_container_get_ptr()->playGame) {
+            printf("noDed\n\r");
+          }
         }
     }
   }
