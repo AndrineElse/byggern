@@ -134,28 +134,15 @@ void menuLoop(){
         }
         lastDir = currentDir;
       }
-      /*
-        if (currentDir == UP){
-          if (selectedOption > 0){
-            selectedOption = selectedOption -1;
-          }
-        }
-        else if (currentDir == DOWN){
-          if (selectedOption < (currentNode->numOptions-1)){
-            selectedOption = selectedOption +1;
-          }
-        }
-        lastDir = currentDir;
-      }
-      */
       //Checking if the user has selected a option
-      if (!lastButtonValue && currentDir == RIGHT) {
+      if (!lastButtonValue && (get_slider_buttons() & 0x01)) {
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
         OLED_buffer_clear();
       }
       lastButtonValue = joystick_get_button();
       //printing the current node info to the OLED
+
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();
 
@@ -185,6 +172,6 @@ void set_play_game(uint8_t value){
   play_game = value;
 }
 
-void get_restart_game() {
+uint8_t get_restart_game(){
   return restart_game;
 }

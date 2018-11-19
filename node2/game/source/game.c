@@ -35,14 +35,17 @@ void game_loop(){
   game.fail_detected = 0;
 
   while(game.fails < game.lives){
-
+    game.fail_detected = 0;
+    game_send_update_CAN();
     //wait for node1 to give start signal
     while(!input_container_get_ptr()->playGame);
 
     //set intial game state
     game.timer = time_get_counter();
+    solenoid_set_timer();
     game.playing = 1;
     game.fail_detected = 0;
+    //solenoid_set_timer();
     solenoid_reset();
     //housekeeping before game start
     IR_reset_samples();
@@ -53,14 +56,8 @@ void game_loop(){
 
       //these functions are currently run in the respective ISRs
       //for their sampled values. Only running if game.playing is high
-      /*
-      servo_update_position(input_container_get_ptr()->joystick.x);
-      motor_set_power(pos_controller_get_power());
-      solenoid_update_status(input_container_get_ptr()->joystickButton);
-      */
       //IR_get_new_sample();
-      solenoid_update_status(input_container_get_ptr()->joystickButton);
-
+      //solenoid_update_status(input_container_get_ptr()->joystickButton);
       if (IR_check_obstruction()){
         //cli();
         game.fail_detected = 1;
@@ -101,7 +98,6 @@ void game_send_update_CAN(){
   struct CAN_msg msg;
   msg.id = 2;
   uint8_t array[8] = {((game.fail_detected << 6)+(game.fails << 3)+(game.lives)),((game.score & 0xFF00) >> 8),(game.score & 0x00FF),0,0,0,0,0};
-  printf("Update: %x\n",msg.data[0] );
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
   }
@@ -115,7 +111,7 @@ void game_send_update_CAN(){
 void game_big_loop(){
   while (1) {
     game_init();
-    printf("INIT NEW GAME!!!!!!!!!!!!!\n\r");
+
     if(!(input_container_get_ptr()->restart_game)){
       game_loop();
     }

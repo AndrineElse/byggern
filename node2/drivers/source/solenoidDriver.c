@@ -22,7 +22,7 @@ void solenoid_update_status(){
     solenoid_timer = time_get_counter();
     PORTF |= (1<<PF1);
   }
-  else if ((time_get_counter() - solenoid_timer) > 1) {
+  else if ((time_get_counter() - solenoid_timer) > 5) {
     PORTF &= ~(1<<PF1);
     solenoid_timer = 0;
   }
@@ -34,5 +34,5 @@ void solenoid_reset(){
 }
 
 void solenoid_set_timer(){
-  solenoid_timer = 10;
+  solenoid_timer = time_get_counter()+10;
 }

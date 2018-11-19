@@ -10,6 +10,7 @@
 #include "../include/MCP2515Driver2.h"
 #include "../include/CANDriver2.h"
 #include "../include/servoDriver.h"
+#include "../include/solenoidDriver.h"
 #include "../../containers/include/userInputContainer.h"
 #include "../../game/include/game.h"
 
@@ -111,11 +112,11 @@ struct CAN_msg receive_msg(){
   msg.id |= (upperID<<3);
   msg.length = mcp2515_read(MCP_RXB0DLC)&0xF;
 
-  //printf("length: %d\n\r", msg.length);
+
 
   for(int i = 0; i < msg.length; i ++){
     mcp2515_read_store_pointer(MCP_RXB0D0+i,msg.data + i);
-    //printf("data : %d\n\r", msg.data[i]);
+
   }
   mcp2515_bit_modify(MCP_CANINTF,MCP_RX0IF,0);
 
@@ -137,8 +138,7 @@ void CAN_message_handler(){
   input_container_update(new_message);
   if (game_get_playing_status()) {
     servo_update_position(input_container_get_ptr()->joystick.x);
-
-//    solenoid_update_status(input_container_get_ptr()->joystickButton);
+    solenoid_update_status(input_container_get_ptr()->joystickButton);
   }
   printf("%d\n\r", game_get_playing_status());
 }
