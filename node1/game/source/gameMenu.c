@@ -23,7 +23,7 @@ struct Node middleGameNode;
 struct Node endGameNode;
 
 uint8_t play_game;
-char* username = "Player";
+uint8_t username = 0;
 
 void menuInit(){
 
@@ -113,6 +113,7 @@ void menuLoop(){
   uint8_t lastButtonValue = 0;
 
   uint8_t numFails = 0;
+  uint8_t score_array[3] = {0,0,0}
 
   while(1){
 
@@ -173,14 +174,18 @@ void menuLoop(){
         lastDir = currentDir;
       }
 
-      /*if (!lastButtonValue && joystick_get_button() && currentNode->description == "Select level"){
+      if (!lastButtonValue && joystick_get_button() && currentNode->description == "Select level"){
           printf("%d\n\r", selectedOption);
           game_level_select(selectedOption);
       }
 
-      if (!lastButtonValue && joystick_get_button() && currentNode->description == "Highscores: TOP 3"){
+      if (!lastButtonValue && joystick_get_button() && currentNode->description == "Who's playing?"){
           game_username_select(currentNode, selectedOption);
+      }
+      /*if (!lastButtonValue && joystick_get_button() && currentNode->description == "Highscores: TOP 3"){
+          print_highscore_node(char place, uint8_t username, uint16_t score);
       }*/
+      
 
       //Checking if the user has selected a option
       if (!lastButtonValue && joystick_get_button()) {
@@ -201,15 +206,20 @@ void menuLoop(){
 
 
 void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
+  if(node->description == "Highscores: TOP 3"){
+    OLED_buffer_print_line (node->description,0,0);
+    print_highscore_node(game_highscore_update()[0], game_highscore_update()[1], game_highscore_update()[2);
+  }
+  else{
+    OLED_buffer_print_line (node->description,0,0);
 
-  OLED_buffer_print_line (node->description,0,0);
-
-  for (int i = 0; i < node->numOptions; i++){
-    if (i == selectedOption){
-      OLED_buffer_print_line(node->options[i], i+1, 1);
-    }
-    else {
-      OLED_buffer_print_line(node->options[i],i+1,0);
+    for (int i = 0; i < node->numOptions; i++){
+      if (i == selectedOption){
+        OLED_buffer_print_line(node->options[i], i+1, 1);
+      }
+      else {
+        OLED_buffer_print_line(node->options[i],i+1,0);
+      }
     }
   }
 }
@@ -224,17 +234,21 @@ void game_level_select(uint8_t selected_option){
   msg.length = 1;
 }
 
-void game_highscore_update(){
+uint8_t* game_highscore_update(){
+  
+  uint8_t highscore_data[3];
   for (int i = 0; i < 3; i++){
-    if (highScoresNode.options[i] == "-"){; //|| game_status_container_get_ptr()->score > highScoresNode.options[i]){
-
+    if (highScoresNode.options[i] == "-"|| game_status_container_get_ptr()->score > score_array[i]){
+      highscore_data = {i, username, game_status_container_get_ptr()->score};
+      score_array[i] = game_status_container_get_ptr()->score;
       // game_highscore_SRAM_update(game_status_container_get_ptr()->user, game_status_container_get_ptr()->score);
       // game_highscore_SRAM_get(uint8_t place)
-      highScoresNode.options[i] = username; // + ': ' + (char*)(game_status_container_get_ptr()->score);
+      //highScoresNode.options[i] = username; // + ': ' + (char*)(game_status_container_get_ptr()->score);
 
-      break;
+    
     }
   }
+  return highscore_data;
 }
 
 // make highscore list, must be updated when new highscore
@@ -281,6 +295,40 @@ void game_username_select(volatile struct Node* node, uint8_t selectedOption){
   set_username(node->options[selectedOption]);
 }
 
+void print_highscore_node(uint8_t place, uint8_t username, uint16_t score){
+  uint8_t* data[128];
+  data[0] = (char)place;
+  data[1] = ".";
+  data[2] = " ";
+  char* name;
+  switch(username){
+    case 0:
+      name = "Magne";
+      length = 5;
+      for (int i = 3; i < length+3; i++){
+        data[i] = name[i];
+      }
+      break;
+    case 1:
+      name = "Andrine";
+      length = 7;
+      for (int i = 3; i < length+3; i++){
+        data[i] = name[i];
+      }
+      break;
+    case 2:
+      name = "Thea";
+      length = 4;
+      for (int i = 3; i < length+3; i++){
+        data[i] = name[i];
+      }
+      break;
+  }
+  for (int i = length+3; i < length+11; i++){
+        data[i] = score[i];
+      }
+  OLED_update_buffer_line(place, data);
+}
 
 /*
   MAPPING
