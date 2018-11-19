@@ -12,7 +12,7 @@
 
 struct Node mainMenuNode;
 struct Node playGameNode;
-//struct Node highScoresNode;
+struct Node highScoresNode;
 struct Node optionsNode;
 struct Node middleGameNode;
 struct Node endGameNode;
@@ -31,11 +31,11 @@ void menuInit(){
   playGameNode.numOptions = 1;
   playGameNode.optionNodes[0] = &mainMenuNode;
 
-  /*highScoresNode.parent = &mainMenuNode;
+  highScoresNode.parent = &mainMenuNode;
   highScoresNode.options[0] = "Go back";
   highScoresNode.description = "highscore";
   highScoresNode.numOptions = 1;
-  highScoresNode.optionNodes[0] = &mainMenuNode;*/
+  highScoresNode.optionNodes[0] = &mainMenuNode;
 
   optionsNode.parent = &mainMenuNode;
   optionsNode.options[0] = "Go back";
@@ -49,10 +49,10 @@ void menuInit(){
   mainMenuNode.options[2] = "Options";
 
   mainMenuNode.description = "This is the main menu :)";
-  mainMenuNode.numOptions = 2;
+  mainMenuNode.numOptions = 3;
 
   mainMenuNode.optionNodes[0] = &playGameNode;
-  //mainMenuNode.optionNodes[1] = &highScoresNode;
+  mainMenuNode.optionNodes[1] = &highScoresNode;
   mainMenuNode.optionNodes[2] = &optionsNode;
 
   endGameNode.parent = (struct Node*)0;
@@ -62,7 +62,6 @@ void menuInit(){
   endGameNode.options[1] = "Back to main menu";
   endGameNode.optionNodes[0] = &playGameNode;
   endGameNode.optionNodes[1] = &mainMenuNode;
-  //mainMenuNode = &mainMenuNode;
 
   middleGameNode.parent = (struct Node*)0;
   middleGameNode.description = "Fail registerd";
@@ -72,7 +71,6 @@ void menuInit(){
   middleGameNode.optionNodes[0] = &playGameNode;
   middleGameNode.optionNodes[1] = &mainMenuNode;
 
-  //mainMenuNode = &mainMenuNode;
 }
 
 void menuLoop(){

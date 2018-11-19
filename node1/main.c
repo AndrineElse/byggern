@@ -26,8 +26,6 @@
 #define MYUBRR F_CPU/16/BAUD-1
 
 
-
-
 void main(){
 
   MCUCR = (1<<SRE);
@@ -49,10 +47,9 @@ void main(){
   user_input_init();
   game_status_container_init();
   timer_init();
-
+  ADC_init();
   //Comment in again
   //joystick_set_max_min_values();
-
   menuInit();
   sei();
 

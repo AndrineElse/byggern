@@ -54,8 +54,8 @@ JoystickDir calculate_joystick_dir(JoystickCoords coords){
 SliderPosition get_slider_positions(){
 
   SliderPosition position;
-  uint8_t rawLeft = readChannel(3);
-  uint8_t rawRight = readChannel(4);
+  uint8_t rawLeft = ADC_ad_hoc_read(3);
+  uint8_t rawRight = ADC_ad_hoc_read(4);
 
   position.left = rawLeft;
   position.right = rawRight;
@@ -64,7 +64,7 @@ SliderPosition get_slider_positions(){
 }
 
 uint8_t get_slider_position_right(){
-  return readChannel(4);
+  return ADC_ad_hoc_read(4);
 }
 
 //returns value of slider buttons
@@ -148,8 +148,8 @@ void joystick_set_max_min_values(){
     OLED_buffer_update_screen();
 
     if(flag == 0){
-      uint8_t rawX = readChannel(2);
-      uint8_t rawY = readChannel(1);
+      uint8_t rawX = ADC_ad_hoc_read(2);
+      uint8_t rawY = ADC_ad_hoc_read(1);
 
       switch (i) {
 

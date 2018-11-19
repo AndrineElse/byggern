@@ -37,18 +37,19 @@ void timer_init() {
 
 ISR(TIMER3_COMPA_vect) {
 	//printf("time int!");
-  /*
-  if(!(tenths_of_second_counter%10)){
-    game_send_data_CAN();
-  }
-  */
+
+  /*if(tenths_of_second_counter){
+    ADC_start_conversion_cycle();
+  }*/
+
   tenths_of_second_counter++;
-  /*
+
   if(!(tenths_of_second_counter%3)){
-      send_joystick_position();
+      ADC_start_conversion_cycle();
   }
-  */
-  ADC_start_conversion_cycle();
+
+
+  //ADC_start_conversion_cycle();
 
 }
 
