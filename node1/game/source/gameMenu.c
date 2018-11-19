@@ -140,7 +140,7 @@ void menuLoop(){
         selectedOption = 0;
         OLED_buffer_clear();
       }
-      lastButtonValue = joystick_get_button();
+      lastButtonValue = (get_slider_buttons() & 0x01);
       //printing the current node info to the OLED
 
       printNodeUsingBuffer(currentNode, selectedOption);
