@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <avr/interrupt.h>
+
+//drivers
 #include "../../drivers/include/CANDriver.h"
 #include "../../drivers/include/ADCDriver.h"
 #include "../include/gameMenu.h"
@@ -22,13 +24,13 @@ struct Node middleGameNode;
 struct Node endGameNode;
 struct Node levelsNode;
 
-//struct GameData gameData;
+
 
 uint8_t play_game;
 
 void menuInit(){
 
-  //printf("Inside init\n\r");
+  //Initializing main menu system nodes
 
   playGameNode.parent = &mainMenuNode;
   playGameNode.description = "Game";
@@ -67,10 +69,10 @@ void menuInit(){
   endGameNode.options[1] = "Back to main menu";
   endGameNode.optionNodes[0] = &playGameNode;
   endGameNode.optionNodes[1] = &mainMenuNode;
-  //mainMenuNode = &mainMenuNode;
+
 
   middleGameNode.parent = (struct Node*)0;
-  middleGameNode.description = "Fail registerd";
+  middleGameNode.description = "Fail registered";
   middleGameNode.numOptions = 2;
   middleGameNode.options[0] = "Continue game";
   middleGameNode.options[1] = "Back to main menu";
@@ -96,61 +98,40 @@ void menuLoop(){
   uint8_t selectedOption = 0;
   JoystickDir currentDir;
   volatile struct Node* currentNode = &mainMenuNode;
-  JoystickDir lastDir;
-  lastDir = 0;
+  JoystickDir lastDir = 0;
   uint8_t lastButtonValue = 0;
 
   uint8_t numFails = 0;
 
-
-  play_game = 0;
-  /*
-  gameData.gameStart = 0;
-  gameData.pause = 0;
-  gameData.calibrateEncoder = 0;
-  */
-  //volatile struct Game_status* game;
   while(1){
-    //printf("Current node description: %s\n\r", currentNode->description );
+
     if(currentNode->description == "Game"){
-        // printf("inside game node\n\r");
-      //  printf("%d %d\n\r", game_status_container_get_ptr()->lives, game_status_container_get_ptr()->fails);
 
       if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
-        //printf("GAME OVER\n\r");
-        //gameData.gameStart = 0;
-        //playGame = 1;
-
         play_game = 0;
         numFails = 0;
         currentNode = &endGameNode;
-        // send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
       }
-      else if (numFails != game_status_container_get_ptr()->fails){
-        //printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
-        //gameData.gameStart = 0; //maybe pause? , set gameStart to initialize the game, and pause just pauses it???
-        //playGame = 0;
 
+      else if (numFails != game_status_container_get_ptr()->fails){
         play_game = 0;
         numFails = game_status_container_get_ptr()->fails;
         currentNode = &middleGameNode;
-        //send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
+
       }
+
       else {
+        //Playing game, sending
         play_game = 1;
         OLED_buffer_clear();
         OLED_buffer_update_screen();
-        //send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
-        //_delay_ms(10);
-        //gameData.gameStart = 1;
+
       }
     }
     else{
-      //printf("Option nodes description: %s\n\r", currentNode->optionNodes[0]->description );
-      //printf("inside menu looping\n\r");
-
+      //Inside the main menu system, game is not playing
       play_game = 0;
-      //send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
+
 
       //get joystick input
       cli();
@@ -161,18 +142,21 @@ void menuLoop(){
       currentDir = calculate_joystick_dir(joystickCoords);
       
 
-      //find selected option
+      //Finding index for selected option
 
       if (currentDir != lastDir){
-        if (currentDir == UP){
-          if (selectedOption > 0){
-            selectedOption = selectedOption -1;
-          }
-        }
-        else if (currentDir == DOWN){
-          if (selectedOption < (currentNode->numOptions-1)){
-            selectedOption = selectedOption +1;
-          }
+        switch (currentDir) {
+          case UP:
+            if (selectedOption > 0){
+              selectedOption = selectedOption -1;
+            }
+            break;
+
+          case DOWN:
+            if (selectedOption < (currentNode->numOptions-1)){
+              selectedOption = selectedOption +1;
+            }
+            break;
         }
         lastDir = currentDir;
       }
@@ -186,7 +170,9 @@ void menuLoop(){
         //OLED_buffer_clear();
       }
 
-      if (!lastButtonValue && joystick_get_button()) {
+    
+      //Checking if the user has selected a option
+      if (!lastButtonValue && currentDir == RIGHT) {
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
         OLED_buffer_clear();
@@ -195,31 +181,11 @@ void menuLoop(){
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();
 
-      //_delay_ms(50);
-
-
       lastButtonValue = joystick_get_button();
       //_delay_ms(50);
 
     }
   }
-}
-
-
-void printNode(volatile struct Node* node, uint8_t selectedOption){
-  OLED_clear();
-  OLED_pos(0,0);
-  OLED_print (node->description);
-
-  for (int i = 0; i < node->numOptions; i++){
-    OLED_pos(i+1,0);
-    if (i == selectedOption){
-      OLED_print("* ");
-    }
-    OLED_print(node->options[i]);
-
-  }
-  _delay_ms(500);
 }
 
 void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
@@ -257,26 +223,3 @@ uint8_t get_play_game(){
 void set_play_game(uint8_t value){
   play_game = value;
 }
-/*
-  MAPPING
-  id = 3
-  data[0] = gameStart
-  data[1] = pause
-  data[2] = calibrateEncoder
-  length = 3
-*/
-/*
-void game_send_data_CAN(){
-  // send can msg
-  struct CAN_msg msg;
-  msg.id = 4;
-  uint8_t array[8] = {gameData.gameStart,gameData.pause,gameData.calibrateEncoder,0,0,0,0,0};
-  for (int j = 0; j < 8; j++){
-    msg.data[j] = array[j];
-
-  }
-  msg.length = 3;
-  cli();
-  send_CAN_msg(&msg);
-  sei();
-}*/

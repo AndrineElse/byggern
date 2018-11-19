@@ -14,7 +14,7 @@
 #include "../../drivers/include/solenoidDriver.h"
 #include "../../tests/include/servoTesting.h"
 #include "../../containers/include/userInputContainer.h"
-#include "../../containers/include/gameDataContainer.h"
+
 
 #include "../include/game.h"
 
@@ -82,7 +82,7 @@ void game_loop(){
       motor_set_power(pos_controller_get_power());
       solenoid_update_status(input_container_get_ptr()->joystickButton);
       */
-      IR_get_new_sample();
+      //IR_get_new_sample();
       solenoid_update_status(input_container_get_ptr()->joystickButton);
 
       if (IR_check_obstruction()){

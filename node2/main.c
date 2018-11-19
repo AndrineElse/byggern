@@ -30,7 +30,7 @@
 
 //container
 #include "containers/include/userInputContainer.h"
-#include "containers/include/gameDataContainer.h"
+
 
 
 
@@ -56,7 +56,7 @@ void main(){
   timer_twenty_ms_init();
   solenoid_init();
   motor_init();
-  pos_controller_init(1,5,0.02); //params: kp, ki, sample_time, encoder_max
+  pos_controller_init(1,3,0.02); //params: kp, ki, sample_time, encoder_max
 
 
   game_loop();

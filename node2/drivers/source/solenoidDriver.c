@@ -33,3 +33,7 @@ void solenoid_reset(){
   PORTF &= ~(1<<PF1);
   solenoid_timer = 0;
 }
+
+void solenoid_set_timer(){
+  solenoid_timer = 10;
+}

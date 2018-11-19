@@ -15,12 +15,10 @@ void SPI_init(void) {
 
 void SPI_write(char cData) {
     /* Start transmission */
-  //PORTB &= ~0x10;
   SPDR = cData;
     /* Wait for transmission complete */
   SPSR = (1<<SPIF);
   while(!(SPSR & (1<<SPIF)));
-  //PORTB |= 0x010;
 }
 
 char SPI_read() {

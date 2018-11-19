@@ -36,14 +36,8 @@ void timer_init() {
 }
 
 ISR(TIMER3_COMPA_vect) {
-	//printf("time int!");
-  /*
-  if(!(tenths_of_second_counter%10)){
-    game_send_data_CAN();
-  }
-  */
-	tenths_of_second_counter++;
-  if(!(tenths_of_second_counter%3)){
+  tenths_of_second_counter++;
+  if(!(tenths_of_second_counter%1)){
       send_joystick_position();
   }
 }
