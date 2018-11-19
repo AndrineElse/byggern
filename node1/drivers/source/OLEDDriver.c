@@ -11,7 +11,6 @@ volatile char* command_address = (char*)0x1000;
 volatile char* data_address = (char*)0x1200;
 
 void OLED_write_command(uint8_t c) {
-  // char* command_address = (char*)0x1000;
   command_address[0] = c;
 }
 
@@ -35,6 +34,7 @@ void OLED_fill(){
 }
 
 void OLED_init(){
+  cli();
   OLED_write_command(0xae);        //  display  off
   OLED_write_command(0xa1);        //segment  remap
   OLED_write_command(0xda);        //common  pads  hardware:  alternative
@@ -57,7 +57,7 @@ void OLED_init(){
   OLED_write_command(0xa4);        //out  follows  RAM  content
   OLED_write_command(0xa6);        //set  normal  display
   OLED_write_command(0xaf);        //  display  on
-  
+  sei();
 
 }
 
@@ -174,22 +174,22 @@ void OLED_set_access_mode(uint8_t mode) {
 * bounds should be within [0,127]
 */
 void OLED_set_horizontal_bounds(uint8_t lower, uint8_t upper) {
-  cli();
+
   OLED_write_command(0x21);
   OLED_write_command(lower);
   OLED_write_command(upper);
-  sei();
+
 }
 
 /* sets coordinate bounds for horizontal addressing mode
 * bounds should be within [0,7]
 */
 void OLED_set_vertical_bounds(uint8_t lower, uint8_t upper) {
-  cli();
+
   OLED_write_command(0x22);
   OLED_write_command(lower);
   OLED_write_command(upper);
-  sei();
+
 }
 
 void OLED_init_buffer_mode(){
@@ -199,6 +199,7 @@ void OLED_init_buffer_mode(){
 }
 
 void OLED_buffer_update_screen(){
+  cli();
   OLED_set_horizontal_bounds(0,127);
   OLED_set_vertical_bounds(0,7);
   char* ext_ram = (char*)0x1800;
@@ -206,6 +207,7 @@ void OLED_buffer_update_screen(){
     //printf("currentByte: %d, asciivalue: %d\n\r", i, ext_ram[i]);
     OLED_write_data(ext_ram[i]);
   }
+  sei();
 }
 
 void OLED_buffer_clear(){

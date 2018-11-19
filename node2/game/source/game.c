@@ -64,7 +64,7 @@ void game_loop(){
     while(!input_container_get_ptr()->playGame);
 
     //set intial game state
-    game.timer = timer_get_counter();
+    game.timer = time_get_counter();
     game.playing = 1;
 
     //housekeeping before game start
@@ -81,14 +81,16 @@ void game_loop(){
       motor_set_power(pos_controller_get_power());
       solenoid_update_status(input_container_get_ptr()->joystickButton);
       */
+      IR_get_new_sample();
+      solenoid_update_status(input_container_get_ptr()->joystickButton);
 
       if (IR_check_obstruction()){
-        //cli(); 
+        //cli();
         game.fails++;
         game.playing = 0;
         motor_set_power(0);
         servo_update_position(0);
-        game.score += (timer_get_counter()-game.timer);
+        game.score += (time_get_counter()-game.timer);
         game_send_update_CAN();
         //sei();
         break;
@@ -98,7 +100,7 @@ void game_loop(){
     //waiting for node1 to acknowledge death
     while(input_container_get_ptr()->playGame);
   }
-  //state: game is over, node1 has acked and received final score. 
+  //state: game is over, node1 has acked and received final score.
 }
 
 uint8_t game_get_playing_status() {
@@ -139,7 +141,7 @@ void count_game_score(){
   }
 }
 
-// sends every half second while game is running, 
+// sends every half second while game is running,
 // and one extraordinary message on death
 void game_send_update_CAN(){
   struct CAN_msg msg;

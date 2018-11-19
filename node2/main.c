@@ -42,7 +42,7 @@
 #define MYUBRR F_CPU/16/BAUD-1
 
 void main(){
-
+  game_init();
   //init
   USART_Init ( MYUBRR );
   input_container_init();
@@ -56,20 +56,8 @@ void main(){
   timer_twenty_ms_init();
   solenoid_init();
   motor_init();
-  pos_controller_init(3,3,0.02); //params: kp, ki, sample_time, encoder_max
+  pos_controller_init(1,5,0.02); //params: kp, ki, sample_time, encoder_max
 
-  /*
-  struct CAN_msg msg;
-  msg.data[0] = 50;
-  msg.id = 3;
-  msg.length = 1;
-
-  while(1){
-    //printf("Port D : %d \n\r",(PIND));
-    send_CAN_msg(&msg);
-    _delay_ms(20000);
-  }*/
-  //printf("main\n\r");
 
   game_loop();
 

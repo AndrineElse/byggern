@@ -8,6 +8,7 @@
 #include "../include/MCP2515.h"
 #include "../include/MCP2515Driver.h"
 #include "../include/CANDriver.h"
+#include "../../containers/include/gameStatusContainer.h"
 
 void CAN_init(){
   mcp2515_init();

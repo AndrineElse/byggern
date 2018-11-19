@@ -17,7 +17,9 @@ struct Node optionsNode;
 struct Node middleGameNode;
 struct Node endGameNode;
 
-struct GameData gameData;
+//struct GameData gameData;
+
+uint8_t play_game;
 
 void menuInit(){
 
@@ -80,13 +82,11 @@ void menuLoop(){
   JoystickDir lastDir;
   lastDir = 0;
   uint8_t lastButtonValue = 0;
-  uint8_t gameFlag = 1;
+
   uint8_t numFails = 0;
 
-  uint8_t send_joystick_flag = 0;
-  uint16_t joystick_timer = 0;
 
-  uint8_t playGame = 0;
+  play_game = 0;
   /*
   gameData.gameStart = 0;
   gameData.pause = 0;
@@ -97,14 +97,14 @@ void menuLoop(){
     //printf("Current node description: %s\n\r", currentNode->description );
     if(currentNode->description == "Game"){
         // printf("inside game node\n\r");
-        printf("%d %d\n\r", game_status_container_get_ptr()->lives, game_status_container_get_ptr()->fails);
+      //  printf("%d %d\n\r", game_status_container_get_ptr()->lives, game_status_container_get_ptr()->fails);
 
       if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
         //printf("GAME OVER\n\r");
         //gameData.gameStart = 0;
         //playGame = 1;
-        printf("B\n\r");
-        gameFlag = 0;
+
+        play_game = 0;
         numFails = 0;
         currentNode = &endGameNode;
         // send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
@@ -113,17 +113,17 @@ void menuLoop(){
         //printf("inside fails node, numFails : %d, game fails: %d\n\r", numFails,game->fails);
         //gameData.gameStart = 0; //maybe pause? , set gameStart to initialize the game, and pause just pauses it???
         //playGame = 0;
-        printf("A\n\r");
-        gameFlag = 0;
+
+        play_game = 0;
         numFails = game_status_container_get_ptr()->fails;
         currentNode = &middleGameNode;
         //send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
       }
-      else if(gameFlag){
+      else {
+        play_game = 1;
         OLED_buffer_clear();
         OLED_buffer_update_screen();
-        playGame = 1;
-        send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
+        //send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
         //_delay_ms(10);
         //gameData.gameStart = 1;
       }
@@ -131,15 +131,18 @@ void menuLoop(){
     else{
       //printf("Option nodes description: %s\n\r", currentNode->optionNodes[0]->description );
       //printf("inside menu looping\n\r");
-      gameFlag = 1;
-      playGame = 0;
-      send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
+
+      play_game = 0;
+      //send_joystick_position(&joystick_timer,&send_joystick_flag, &playGame);
 
       //get joystick input
+      cli();
       JoystickCoords joystickCoords;
       joystickCoords = get_joystick_coords(readChannel(2),readChannel(1));
+      sei();
       JoystickDir currentDir;
       currentDir = calculate_joystick_dir(joystickCoords);
+      printf("%d %d\n\r", joystickCoords.x, joystickCoords.y);
 
       //find selected option
 
@@ -164,8 +167,10 @@ void menuLoop(){
 
       lastButtonValue = joystick_get_button();
       //_delay_ms(50);
+
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();
+
     }
   }
 }
@@ -200,7 +205,13 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
   }
 }
 
+uint8_t get_play_game(){
+  return play_game;
+}
 
+void set_play_game(uint8_t value){
+  play_game = value;
+}
 /*
   MAPPING
   id = 3

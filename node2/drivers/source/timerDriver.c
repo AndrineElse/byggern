@@ -8,6 +8,7 @@
 #include "../../containers/include/userInputContainer.h"
 #include "../include/motorDriver.h"
 #include "../include/IRDriver.h"
+#include "../../game/include/game.h"
 
 volatile uint16_t tenths_of_second_counter;
 
@@ -41,9 +42,6 @@ void timer_hundred_ms_init(){
 
 ISR(TIMER3_COMPA_vect) {
   tenths_of_second_counter++;
-  if(game_get_playing_status() && !(tenths_of_second_counter % 5)){
-    game_send_update_CAN();
-  }
 }
 
 uint16_t time_get_counter(){
@@ -59,9 +57,9 @@ void timer_twenty_ms_init(){
   //16MHz/(2*50Hz*1024) = 156 = (ocr+1)
   // => ocr = 155 = 0x9B
 
-  //OCR0A = 0x9B; //use for 50hz
+  OCR0A = 0x9B; //use for 50hz
   //OCR0A = 0x4D; //use for 100hz
-  OCR0A = 0xFF; //use for testing
+  //OCR0A = 0xFF; //use for testing
 
   // Set OCIE0A to high, which enables the interrupt call when
   // a compare matches on OCR0A. This interrupt activates by setting
@@ -71,10 +69,10 @@ void timer_twenty_ms_init(){
 }
 
 ISR(TIMER0_COMPA_vect) {
-  uint8_t pos_reference = input_container_get_ptr()->joystick.y + 100;
+  uint8_t pos_reference = input_container_get_ptr()->right_slider;
   int16_t pos_measured = -1*read_motor_encoder();
   pos_controller_calculate_power(pos_reference, pos_measured);
-  IR_get_new_sample();
+  // IR_get_new_sample();
   //fuckit gonna try running everything periodically
   if(game_get_playing_status()){
     motor_set_power(pos_controller_get_power());

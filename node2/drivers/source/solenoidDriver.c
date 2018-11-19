@@ -18,17 +18,17 @@ void solenoid_init(){
 }
 
 void solenoid_update_status(){
-  if (!timer && input_container_get_ptr()->joystickButton) {
-    timer = time_get_counter();
+  if (!solenoid_timer && input_container_get_ptr()->joystickButton) {
+    solenoid_timer = time_get_counter();
     PORTF |= (1<<PF1);
   }
-  else if ((time_get_counter() - timer) > 1) {
+  else if ((time_get_counter() - solenoid_timer) > 1) {
     PORTF &= ~(1<<PF1);
-    timer = 0;
+    solenoid_timer = 0;
   }
 }
 
 void solenoid_hard_stop(){
   PORTF &= ~(1<<PF1);
-  timer = 0;
+  solenoid_timer = 0;
 }

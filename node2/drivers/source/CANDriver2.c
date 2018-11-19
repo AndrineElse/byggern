@@ -9,8 +9,9 @@
 #include "../include/MCP25152.h"
 #include "../include/MCP2515Driver2.h"
 #include "../include/CANDriver2.h"
+#include "../include/servoDriver.h"
 #include "../../containers/include/userInputContainer.h"
-#include "../../containers/include/gameDataContainer.h"
+#include "../../game/include/game.h"
 
 void CAN_init(){
   mcp2515_init();
@@ -136,6 +137,8 @@ void CAN_message_handler(){
   input_container_update(new_message);
   if (game_get_playing_status()) {
     servo_update_position(input_container_get_ptr()->joystick.x);
-    solenoid_update_status(input_container_get_ptr()->joystickButton);
+
+//    solenoid_update_status(input_container_get_ptr()->joystickButton);
   }
+  printf("%d\n\r", game_get_playing_status());
 }
