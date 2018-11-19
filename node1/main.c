@@ -62,8 +62,9 @@ void main(){
   timer_init();
 
 
-  OLED_dance();
-  
+  OLED_fun();
+  OLED_buffer_update_screen();
+
 
 //  menuInit();
   //menuLoop();
