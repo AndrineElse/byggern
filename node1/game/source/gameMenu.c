@@ -91,6 +91,7 @@ void menuLoop(){
         //All lives are lost, game over.
         play_game = 0;
         restart_game = 1;
+        game_status_container_init();
         currentNode = &endGameNode;
       }
       else if (game_status_container_get_ptr()->fail_detected){

@@ -43,7 +43,7 @@ void game_loop(){
     game.timer = time_get_counter();
     game.playing = 1;
     game.fail_detected = 0;
-
+    solenoid_reset();
     //housekeeping before game start
     IR_reset_samples();
     pos_controller_reset();
@@ -100,15 +100,12 @@ void count_game_score(){
 void game_send_update_CAN(){
   struct CAN_msg msg;
   msg.id = 2;
-
-  //NB need to add game-score here !!
-  uint8_t array[8] = {((game.fail_detected << 6)+(game.fails << 3)+(game.lives)),0,0,0,0,0,0,0};
+  uint8_t array[8] = {((game.fail_detected << 6)+(game.fails << 3)+(game.lives)),((game.score & 0xFF00) >> 8),(game.score & 0x00FF),0,0,0,0,0};
   printf("Update: %x\n",msg.data[0] );
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
-
   }
-  msg.length = 1;
+  msg.length = 3;
   cli();
   send_CAN_msg(&msg);
   sei();
@@ -117,6 +114,7 @@ void game_send_update_CAN(){
 
 void game_big_loop(){
   while (1) {
+    game_init();
     printf("INIT NEW GAME!!!!!!!!!!!!!\n\r");
     if(!(input_container_get_ptr()->restart_game)){
       game_loop();
