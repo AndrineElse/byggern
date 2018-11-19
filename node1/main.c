@@ -36,7 +36,7 @@ void main(){
   sei();
   //init
   USART_Init ( MYUBRR );
-
+  set_play_game(0);
 
   SRAM_init ();
   SPI_init();
@@ -60,7 +60,9 @@ void main(){
   user_input_init();
   game_status_container_init();
   timer_init();
-  joystick_set_max_min_values();
+
+  //Comment in again
+  //joystick_set_max_min_values();
 
 
 
