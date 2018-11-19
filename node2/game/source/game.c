@@ -25,6 +25,7 @@ void game_init() {
   game.playing = 0;
 }
 
+/*
 void game_loop(){
 
   game.lives = 3;
@@ -78,6 +79,7 @@ void game_loop(){
   }
   //state: game is over, node1 has acked and received final score.
 }
+*/
 
 uint8_t game_get_playing_status() {
   return game.playing;
@@ -108,12 +110,60 @@ void game_send_update_CAN(){
 }
 
 
-void game_big_loop(){
+void game_loop(){
   while (1) {
     game_init();
 
     if(!(input_container_get_ptr()->restart_game)){
-      game_loop();
+
+        game.lives = 3;
+        game.fails = 0;
+        game.timer = time_get_counter();
+        game.score = 0;
+        game.playing = 0;
+        game.fail_detected = 0;
+
+        while(game.fails < game.lives){
+          game.fail_detected = 0;
+          game_send_update_CAN();
+          //wait for node1 to give start signal
+          while(!input_container_get_ptr()->playGame);
+
+          //set intial game state
+          game.timer = time_get_counter();
+          solenoid_set_timer();
+          game.playing = 1;
+          //solenoid_set_timer();
+          solenoid_reset();
+          //housekeeping before game start
+          IR_reset_samples();
+          pos_controller_reset();
+
+          //play until you die
+          while(game.playing){
+
+            //these functions are currently run in the respective ISRs
+            //for their sampled values. Only running if game.playing is high
+            //IR_get_new_sample();
+            //solenoid_update_status(input_container_get_ptr()->joystickButton);
+            if (IR_check_obstruction()){
+              //cli();
+              game.fail_detected = 1;
+              solenoid_reset();
+              game.fails++;
+              game.playing = 0;
+              motor_set_power(0);
+              servo_update_position(0);
+              game.score += (time_get_counter()-game.timer);
+              game_send_update_CAN();
+              //sei();
+              break;
+            }
+          }
+
+          //waiting for node1 to acknowledge death
+          while(input_container_get_ptr()->playGame);
+        }
     }
   }
 }
