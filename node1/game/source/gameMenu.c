@@ -113,7 +113,7 @@ void menuLoop(){
   uint8_t lastButtonValue = 0;
 
   uint8_t numFails = 0;
-  uint8_t score_array[3] = {0,0,0}
+  uint16_t score_array[3] = {0,0,0}
 
   while(1){
 
@@ -208,7 +208,7 @@ void menuLoop(){
 void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
   if(node->description == "Highscores: TOP 3"){
     OLED_buffer_print_line (node->description,0,0);
-    print_highscore_node(game_highscore_update()[0], game_highscore_update()[1], game_highscore_update()[2);
+    print_highscore_node(game_highscore_update()[0], game_highscore_update()[1], game_highscore_update()[2], game_highscore_update()[3]);
   }
   else{
     OLED_buffer_print_line (node->description,0,0);
@@ -236,10 +236,10 @@ void game_level_select(uint8_t selected_option){
 
 uint8_t* game_highscore_update(){
   
-  uint8_t highscore_data[3];
+  uint8_t highscore_data[4];
   for (int i = 0; i < 3; i++){
     if (highScoresNode.options[i] == "-"|| game_status_container_get_ptr()->score > score_array[i]){
-      highscore_data = {i, username, game_status_container_get_ptr()->score};
+      highscore_data = {i, username, (game_status_container_get_ptr()->score >> 8) & 0xFF, game_status_container_get_ptr()->score & 0xFF};
       score_array[i] = game_status_container_get_ptr()->score;
       // game_highscore_SRAM_update(game_status_container_get_ptr()->user, game_status_container_get_ptr()->score);
       // game_highscore_SRAM_get(uint8_t place)
@@ -295,7 +295,7 @@ void game_username_select(volatile struct Node* node, uint8_t selectedOption){
   set_username(node->options[selectedOption]);
 }
 
-void print_highscore_node(uint8_t place, uint8_t username, uint16_t score){
+void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint8_t score_L){
   uint8_t* data[128];
   data[0] = (char)place;
   data[1] = ".";
@@ -324,6 +324,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint16_t score){
       }
       break;
   }
+  char score = (char) score_L
   for (int i = length+3; i < length+11; i++){
         data[i] = score[i];
       }
