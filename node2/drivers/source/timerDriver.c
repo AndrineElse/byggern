@@ -8,6 +8,7 @@
 #include "../../containers/include/userInputContainer.h"
 #include "../include/motorDriver.h"
 #include "../include/IRDriver.h"
+#include "../../game/include/game.h"
 
 volatile uint16_t tenths_of_second_counter;
 
@@ -19,7 +20,7 @@ void timer_hundred_ms_init(){
 
   // using prescaler of 256
   // TOP has to be 0xC34 for the frequency to be 10Hz
-  cli();
+
   // Set WGM to 0100 (CTC mode with OCRA containing top)
   // WGM 2:1 = 0b01,
   // CS3 2:0 = 0b100 (prescaler of 256)
@@ -35,16 +36,12 @@ void timer_hundred_ms_init(){
   // the corresponding flag OCF3A in TIFR3.
   // This flag clears automatically when the interrupt handler is called.
   TIMSK3 |= 0x02;
-  sei();
+
   tenths_of_second_counter = 0;
 }
 
 ISR(TIMER3_COMPA_vect) {
-  cli();
   tenths_of_second_counter++;
-  //printf("ISR3 \n\r");
-  sei();
-
 }
 
 uint16_t time_get_counter(){
@@ -52,8 +49,6 @@ uint16_t time_get_counter(){
 }
 
 void timer_twenty_ms_init(){
-  cli();
-
   TCCR0A = 0x02; // sets CTC mode, and no pin output
 
   TCCR0B = 0x05; //prescaler 1024, use for 50hz
@@ -71,18 +66,15 @@ void timer_twenty_ms_init(){
   // the corresponding flag OCF0A in TIFR0.
   // This flag clears automatically when the interrupt handler is called.
   TIMSK0 |= 0x02;
-
-  sei();
 }
 
 ISR(TIMER0_COMPA_vect) {
-  cli();
-  uint8_t pos_reference = input_container_get_ptr()->joystick.y + 100;
-
-  //printf("ISR0 \n\r");
-
+  uint8_t pos_reference = input_container_get_ptr()->right_slider;
   int16_t pos_measured = -1*read_motor_encoder();
   pos_controller_calculate_power(pos_reference, pos_measured);
-  sei();
-  IR_get_new_sample();
+  // IR_get_new_sample();
+  //fuckit gonna try running everything periodically
+  if(game_get_playing_status()){
+    motor_set_power(pos_controller_get_power());
+  }
 }

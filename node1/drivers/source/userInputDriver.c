@@ -11,6 +11,7 @@
 #include "../include/userInputDriver.h"
 #include "../include/CANDriver.h"
 #include "../include/OLEDDriver.h"
+#include "../../game/include/gameMenu.h"
 #include "../include/timerDriver.h"
 
 uint8_t centerX;
@@ -62,6 +63,10 @@ SliderPosition get_slider_positions(){
   return position;
 }
 
+uint8_t get_slider_position_right(){
+  return readChannel(4);
+}
+
 //returns value of slider buttons
 // right button = LSB
 // left button second least sign.b.
@@ -78,38 +83,22 @@ uint8_t joystick_get_button(){
   return !(PINB & 0x01);
 }
 
-//sends user input and desired game state to node2, format:
-//    id = 1
-//    data[0] = x joystick position [-100,100]
-//    data[1] = y joystick position [-100,100]
-//    data[2] = button (LSB = button), 7 unused bits here
 
-void send_joystick_position(uint16_t *timer, uint8_t *flag, uint8_t *playGame){
-  if (*flag == 0){
-    *timer = timer_get_counter();
-    *flag = 1;
-  }
-  else{
-    if((timer_get_counter() - *timer) > 1){
-      struct CAN_msg msg;
-      struct JoystickCoords coords;
-      coords = get_joystick_coords(readChannel(2),readChannel(1));
-      msg.id = 1;
-      uint8_t array[8] = {coords.x,coords.y,(joystick_get_button() + (1 << *playGame)) ,0,0,0,0,0};
-      printf("%x\n\r", array[2]);
-      for (int j = 0; j < 8; j++){
-        msg.data[j] = array[j];
+void send_joystick_position(){
+  struct CAN_msg msg;
+  msg.id = 1;
+  uint8_t array[8] = {get_joystick_coords_x(readChannel(2)),get_slider_position_right(),(joystick_get_button() + (1 << get_play_game())) ,0,0,0,0,0};
+  for (int j = 0; j < 8; j++){
+    msg.data[j] = array[j];
 
-      }
-      msg.length = 3;
-      cli();
-      send_CAN_msg(&msg);
-      sei();
-      *flag = 0;
-      *timer = 0;
-    }
   }
+  msg.length = 3;
+  cli();
+  send_CAN_msg(&msg);
+  sei();
+
 }
+
 
 void joystick_set_max_min_values(){
   char* options[5]= {"Set max right (x)", "Set min left (x)","Set max up (y)", "Set min down(y)", "Set center" };
@@ -169,9 +158,8 @@ JoystickCoords get_joystick_coords(uint8_t rawX, uint8_t rawY) {
   JoystickCoords finalValues;
   //return naive calibration if calibration routine has not run
   if(!centerX){
-    printf("JsNotCal!");
     finalValues.x = (rawX - 128)/1.28;
-    finalValues.y = (rawY - 128)/1.28;;
+    finalValues.y = (rawY - 128)/1.28;
     return finalValues;
   }
 
@@ -191,4 +179,26 @@ JoystickCoords get_joystick_coords(uint8_t rawX, uint8_t rawY) {
   finalValues.y = (finalValues.y < -100 ? -100 : finalValues.y);
 
   return finalValues;
+}
+
+uint8_t get_joystick_coords_x(uint8_t rawX) {
+  uint8_t finalValue;
+  //return naive calibration if calibration routine has not run
+  if(!centerX){
+    finalValue = (rawX - 128)/1.28;
+    return finalValue;
+  }
+
+  //shift values to center about zero
+  int16_t centeredX = rawX - centerX;
+
+
+  //scale values to [-100,100]
+  finalValue = (centeredX >= 0 ? centeredX*x_above_scaler : centeredX*x_below_scaler);
+
+  //in case measurements have drifted off from inital max/min values
+  //probably wont need this, might be better to just run calibration scheme again
+  finalValue = (finalValue >= 100 ? 100 : finalValue);
+  finalValue = (finalValue < -100 ? -100 : finalValue);
+  return (uint8_t)finalValue;
 }

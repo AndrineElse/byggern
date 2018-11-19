@@ -56,9 +56,9 @@ void OLEDTest(){
 
 
   OLED_init();
-  OLED_clear();
+  OLED_buffer_clear();
   _delay_ms(1000);
-  OLED_fill();
+  OLED_buffer_fill();
   _delay_ms(1000);
 
   OLED_init_buffer_mode();

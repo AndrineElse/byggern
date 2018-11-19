@@ -9,8 +9,9 @@
 #include "../include/MCP25152.h"
 #include "../include/MCP2515Driver2.h"
 #include "../include/CANDriver2.h"
+#include "../include/servoDriver.h"
 #include "../../containers/include/userInputContainer.h"
-#include "../../containers/include/gameDataContainer.h"
+#include "../../game/include/game.h"
 
 void CAN_init(){
   mcp2515_init();
@@ -122,9 +123,7 @@ struct CAN_msg receive_msg(){
 }
 
 ISR(INT2_vect) {
-  cli();
   CAN_message_handler();
-  sei();
 }
 
 // This function should be called whenever a interrupt
@@ -138,15 +137,18 @@ void CAN_message_handler(){
   switch(new_message.id){
     case 1:
       input_container_update(new_message);
+      if (game_get_playing_status()) {
+        servo_update_position(input_container_get_ptr()->joystick.x);
+    //    solenoid_update_status(input_container_get_ptr()->joystickButton);
+      }
       break;
     
     case 4:
       game_select_controller(new_message);
-    break;
+      break;
 
     default:
       printf("Message with unmapped ID loaded :(\n\r");
       break;
   }
-  // add more elements here for further message types
 }

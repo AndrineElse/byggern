@@ -10,4 +10,3 @@ struct Game_status {
 void game_status_container_init();
 volatile struct Game_status* game_status_container_get_ptr();
 void game_status_container_update(struct CAN_msg new_game_message);
-void print_game_status_container();
