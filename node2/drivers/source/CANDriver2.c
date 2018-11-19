@@ -151,8 +151,6 @@ void CAN_message_handler(){
       break;
   }
   // add more elements here for further message types
-  
-
 //    solenoid_update_status(input_container_get_ptr()->joystickButton);
 }
 
