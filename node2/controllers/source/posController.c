@@ -23,6 +23,7 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time) {
   pi_container.Ki = i_factor;
   pi_container.sample_time = sample_time;
   pi_container.encoder_max = motor_get_max_encoder();
+  //TODO, insert encoder_scale = max/255 here!!
   pi_container.encoder_scale = 39;
 
   //variables
@@ -60,4 +61,10 @@ void pos_controller_calculate_power(uint8_t reference_value, int16_t measured_va
 int16_t pos_controller_get_power() {
   return pi_container.current_power;
   //return 0;
+}
+
+void pos_controller_reset() {
+  pi_container.error_sum = 0;
+  pi_container.current_power = 0;
+  pi_container.last_encoder_value = 0;
 }

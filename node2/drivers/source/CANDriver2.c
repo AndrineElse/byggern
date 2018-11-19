@@ -122,9 +122,7 @@ struct CAN_msg receive_msg(){
 }
 
 ISR(INT2_vect) {
-  cli();
   CAN_message_handler();
-  sei();
 }
 
 // This function should be called whenever a interrupt
@@ -136,5 +134,8 @@ void CAN_message_handler(){
 
   struct CAN_msg new_message = receive_msg();
   input_container_update(new_message);
-
+  if (game_get_playing_status()) {
+    servo_update_position(input_container_get_ptr()->joystick.x);
+    solenoid_update_status(input_container_get_ptr()->joystickButton);
+  }
 }
