@@ -4,6 +4,7 @@ SOURCE_FILES := main.c drivers/source/SPIDriver2.c drivers/source/UARTDriver2.c 
  drivers/source/IRDriver.c drivers/source/ADCDriver2.c game/source/game.c \
  drivers/source/timerDriver.c drivers/source/TWI_Master.c drivers/source/motorDriver.c \
  drivers/source/solenoidDriver.c  containers/source/userInputContainer.c controllers/source/posController.c \
+ game/source/gamePlayback.c
 
 
 #   tests/source/gameTesting.c tests/source/CANTesting2.c  tests/source/servoTesting.c

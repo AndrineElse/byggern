@@ -15,6 +15,7 @@ void input_container_init() {
   //input_container.left_button = 0; // not in use
   input_container.playGame = 0;
   input_container.restart_game = 1;
+  input_container.run_playback = 0;
 }
 
 void input_container_update(struct CAN_msg new_input_message){

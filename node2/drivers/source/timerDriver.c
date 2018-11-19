@@ -9,6 +9,7 @@
 #include "../include/motorDriver.h"
 #include "../include/IRDriver.h"
 #include "../../game/include/game.h"
+#include "../../game/include/gamePlayback.h"
 
 volatile uint16_t tenths_of_second_counter;
 
@@ -42,6 +43,12 @@ void timer_hundred_ms_init(){
 
 ISR(TIMER3_COMPA_vect) {
   tenths_of_second_counter++;
+  if(game_get_playback_status()){
+    struct playback_sample_set_container current_samples =  playback_get_next_sample();
+    motor_set_power(current_samples.controller_reference);
+    servo_update_position(current_samples.servo_reference);
+    solenoid_update_status(current_samples.solenoid_trigger);
+  }
 }
 
 uint16_t time_get_counter(){

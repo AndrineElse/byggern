@@ -20,9 +20,10 @@ struct Node middleGameNode;
 struct Node endGameNode;
 
 
-
+//global variables to indicate desired state to node2 via CAN
 uint8_t play_game;
 uint8_t restart_game;
+uint8_t run_playback;
 
 void menuInit(){
 
@@ -60,21 +61,30 @@ void menuInit(){
 
   endGameNode.parent = (struct Node*)0;
   endGameNode.description = "All lives lost, game over";
-  endGameNode.numOptions = 2;
+  endGameNode.numOptions = 3;
   endGameNode.options[0] = "New game";
   endGameNode.options[1] = "Back to main menu";
+  endGameNode.options[2] = "Watch replay";
   endGameNode.optionNodes[0] = &playGameNode;
   endGameNode.optionNodes[1] = &mainMenuNode;
 
 
   middleGameNode.parent = (struct Node*)0;
   middleGameNode.description = "Fail registered";
-  middleGameNode.numOptions = 2;
+  middleGameNode.numOptions = 3;
   middleGameNode.options[0] = "Continue game";
   middleGameNode.options[1] = "Back to main menu";
+  middleGameNode.options[2] = "Watch replay";
   middleGameNode.optionNodes[0] = &playGameNode;
   middleGameNode.optionNodes[1] = &mainMenuNode;
 
+  watchReplayNode.parent = (struct Node*)0;
+  watchReplayNode.description = "Watching replay";
+  watchReplayNode.numOptions = 1;
+  watchReplayNode.options[0] = "Stop watching";
+  watchReplayNode.optionNodes[0] = &mainMenuNode;
+  //optionnode pointer has to be set to whatever state you started watching from, 
+  //either middleGameNode or endGameNode. 
 
 }
 
@@ -86,6 +96,7 @@ void menuLoop(){
   uint8_t lastButtonValue = 0;
   restart_game = 0;
   while(1){
+
     if(currentNode->description == "Game"){
       if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
         //All lives are lost, game over.
@@ -108,6 +119,12 @@ void menuLoop(){
       }
     }
     else{
+
+      if( (currentNode->description == "Watching replay") && 
+          (!game_status_container_get_ptr()->running_playback)){
+            
+        }
+      }
       //Inside the main menu system, game is not playing
       play_game = 0;
 
@@ -136,11 +153,24 @@ void menuLoop(){
       }
       //Checking if the user has selected a option
       if (!lastButtonValue && (get_slider_buttons() & 0x01)) {
+
+        //add specific handling for node transistions here
+        if(currentNode->optionNodes[selectedOption]->description == "Watching replay"){
+          
+          watchReplayNode.optionNodes[0] = currentNode;
+          run_playback = 1;
+          //hold the program here until node2 acknowledges playback
+          while(!game_status_container_get_ptr()->running_playback);
+
+        } else if (currentNode->description == "Watching replay") {
+          run_playback = 0;
+        }
+        
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
         OLED_buffer_clear();
       }
-      lastButtonValue = joystick_get_button();
+      lastButtonValue = (get_slider_buttons() & 0x01);
       //printing the current node info to the OLED
 
       printNodeUsingBuffer(currentNode, selectedOption);
@@ -174,4 +204,9 @@ void set_play_game(uint8_t value){
 
 uint8_t get_restart_game(){
   return restart_game;
+}
+
+
+uint8_t get_run_playback() {
+  return run_playback;
 }

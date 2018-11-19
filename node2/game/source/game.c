@@ -23,6 +23,7 @@ struct Game_status game;
 
 void game_init() {
   game.playing = 0;
+  game.running_playback = 0;
 }
 
 /*
@@ -85,6 +86,9 @@ uint8_t game_get_playing_status() {
   return game.playing;
 }
 
+uint8_t game_get_playback_Status() {
+  return game.running_playback;
+}
 
 void count_game_score(){
   if (IR_check_obstruction()){
@@ -99,7 +103,7 @@ void count_game_score(){
 void game_send_update_CAN(){
   struct CAN_msg msg;
   msg.id = 2;
-  uint8_t array[8] = {((game.fail_detected << 6)+(game.fails << 3)+(game.lives)),((game.score & 0xFF00) >> 8),(game.score & 0x00FF),0,0,0,0,0};
+  uint8_t array[8] = {((game.running_playback)+(game.fail_detected << 6)+(game.fails << 3)+(game.lives)),((game.score & 0xFF00) >> 8),(game.score & 0x00FF),0,0,0,0,0};
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
   }
@@ -113,6 +117,8 @@ void game_send_update_CAN(){
 void game_loop(){
   while (1) {
     game_init();
+    //add switch for selecting mode here
+    while(input_container_get_ptr()->run_playback);
 
     if(!(input_container_get_ptr()->restart_game)){
 
@@ -121,31 +127,57 @@ void game_loop(){
         game.timer = time_get_counter();
         game.score = 0;
         game.playing = 0;
+        game.running_playback = 0;
         game.fail_detected = 0;
 
         while(game.fails < game.lives){
           game.fail_detected = 0;
           game_send_update_CAN();
+
+          //wait for new desired state from node1
+          while(!(input_container_get_ptr()->playGame || input_container_get_ptr()->run_playback));
+
+          if(input_container_get_ptr()->run_playback){
+
+            game_send_update_CAN();
+            
+            while(input_container_get_ptr()->run_playback && !playback_get_finished_playing()){
+              game.runningPlayback = 1;
+            }
+          }
+
+          game.runningPlayback = 0;
+          playback_stop_playing();
+
+          game_send_update_CAN();
+
           //wait for node1 to give start signal
           while(!input_container_get_ptr()->playGame);
+
+          //TODO, move function calls up, and assignments down
+          //test solenoid afterwards
 
           //set intial game state
           game.timer = time_get_counter();
           solenoid_set_timer();
           game.playing = 1;
-          //solenoid_set_timer();
           solenoid_reset();
+
           //housekeeping before game start
           IR_reset_samples();
           pos_controller_reset();
 
-          //play until you die
+          //play until you lose the ball
           while(game.playing){
 
-            //these functions are currently run in the respective ISRs
-            //for their sampled values. Only running if game.playing is high
-            //IR_get_new_sample();
-            //solenoid_update_status(input_container_get_ptr()->joystickButton);
+            //while game.playing is high:
+            //  upon receiving a new can message:
+            //    * solenoid updated from user input (limited by timer)
+            //    * servo updated from user input
+            //  every 20ms:
+            //    * new controller power computed and applied every 20ms
+            //    * new IR value sampled every 20ms
+
             if (IR_check_obstruction()){
               //cli();
               game.fail_detected = 1;
@@ -163,6 +195,8 @@ void game_loop(){
 
           //waiting for node1 to acknowledge death
           while(input_container_get_ptr()->playGame);
+
+          while(input_container_get_ptr()->run_playback);
         }
     }
   }
