@@ -24,6 +24,7 @@ struct Node middleGameNode;
 struct Node endGameNode;
 
 uint8_t play_game;
+char* username = "Player";
 
 void menuInit(){
 
@@ -112,7 +113,6 @@ void menuLoop(){
   volatile struct Node* currentNode = &mainMenuNode;
   JoystickDir lastDir = 0;
   uint8_t lastButtonValue = 0;
-  char username = "Player";
 
   uint8_t numFails = 0;
 
@@ -224,10 +224,6 @@ void game_level_select(uint8_t selected_option){
   msg.length = 1;
 }
 
-void game_username_select(volatile struct Node* node, uint8_t selectedOption){
-  game_user_update(node->options[selectedOption]);
-}
-
 void game_highscore_update(){
   for (int i = 0; i < 3; i++){
     if (highScoresNode.options[i] == "-" || game_status_container_get_ptr()->score > highScoresNode.options[i]){
@@ -269,6 +265,20 @@ uint8_t get_play_game(){
 void set_play_game(uint8_t value){
   play_game = value;
 }
+
+char* get_username(){
+  return username;
+}
+
+void set_username(char* name){
+  username = name;
+}
+
+void game_username_select(volatile struct Node* node, uint8_t selectedOption){
+  // game_user_update(node->options[selectedOption]);
+  set_username(node->options[selectedOption]);
+}
+
 
 /*
   MAPPING
