@@ -11,6 +11,7 @@ void OLED_set_brightness(uint16_t lvl);
 void OLED_write_command(uint8_t c);
 void OLED_fill(); //REMOVE ??
 void OLED_write_char(uint8_t b);
+void OLED_write_number(uint8_t b);
 
 /*buffer for oled starts at 0x1800
 * uses 1024 addresses, each containing 8 bits

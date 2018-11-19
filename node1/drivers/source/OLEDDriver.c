@@ -105,6 +105,7 @@ void OLED_buffer_print_line(char* string, uint8_t line, uint8_t inverseFlag){
   }
 }
 
+
 /*buffer for oled starts at 0x1800
 * uses 1024 addresses, each containing 8 bits
 * should have final adress at 0x1bFF
@@ -175,7 +176,6 @@ void OLED_set_vertical_bounds(uint8_t lower, uint8_t upper) {
   OLED_write_command(0x22);
   OLED_write_command(lower);
   OLED_write_command(upper);
-
 }
 
 void OLED_init_buffer_mode(){
@@ -197,9 +197,11 @@ void OLED_buffer_update_screen(){
 }
 
 void OLED_buffer_clear(){
+  cli();
   for(uint16_t i = 0; i < 1024; i++ ) {
     OLED_update_buffer_single_byte(i, 0x00);
   }
+  sei();
 }
 
 void OLED_buffer_fill(){

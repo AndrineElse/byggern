@@ -134,21 +134,11 @@ ISR(INT2_vect) {
 void CAN_message_handler(){
 
   struct CAN_msg new_message = receive_msg();
-  switch(new_message.id){
-    case 1:
-      input_container_update(new_message);
-      if (game_get_playing_status()) {
-        servo_update_position(input_container_get_ptr()->joystick.x);
-    //    solenoid_update_status(input_container_get_ptr()->joystickButton);
-      }
-      break;
-    
-    case 4:
-      game_select_controller(new_message);
-      break;
+  input_container_update(new_message);
+  if (game_get_playing_status()) {
+    servo_update_position(input_container_get_ptr()->joystick.x);
 
-    default:
-      printf("Message with unmapped ID loaded :(\n\r");
-      break;
+//    solenoid_update_status(input_container_get_ptr()->joystickButton);
   }
+  printf("%d\n\r", game_get_playing_status());
 }
