@@ -58,12 +58,13 @@ void game_loop(){
       motor_set_power(pos_controller_get_power());
       solenoid_update_status(input_container_get_ptr()->joystickButton);
       */
-      IR_get_new_sample();
+      //IR_get_new_sample();
       solenoid_update_status(input_container_get_ptr()->joystickButton);
 
       if (IR_check_obstruction()){
         //cli();
         game.fail_detected = 1;
+        solenoid_reset();
         game.fails++;
         game.playing = 0;
         motor_set_power(0);
@@ -102,7 +103,7 @@ void game_send_update_CAN(){
 
   //NB need to add game-score here !!
   uint8_t array[8] = {((game.fail_detected << 6)+(game.fails << 3)+(game.lives)),0,0,0,0,0,0,0};
-
+  printf("Update: %x\n",msg.data[0] );
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
 
@@ -116,6 +117,7 @@ void game_send_update_CAN(){
 
 void game_big_loop(){
   while (1) {
+    printf("INIT NEW GAME!!!!!!!!!!!!!\n\r");
     if(!(input_container_get_ptr()->restart_game)){
       game_loop();
     }

@@ -16,9 +16,10 @@ void game_status_container_init(){
 
 void game_status_container_update(struct CAN_msg new_game_message){
   game_status_container.fails = ((new_game_message.data[0] & 0x38)>>3); //gets bit 4,5,6
-  game_status_container.timer = new_game_message.data[0];
+  //game_status_container.timer = new_game_message.data[0];
   game_status_container.lives = (new_game_message.data[0] & 0x07); //gets bit 1,2,3
-  game_status_container.score = new_game_message.data[3];
+  //printf("%d : %d\n\r", game_status_container.fails,game_status_container.lives);
+  //game_status_container.score = new_game_message.data[3];
   game_status_container.fail_detected = ((new_game_message.data[0] & 0x40)>>6);
 }
 

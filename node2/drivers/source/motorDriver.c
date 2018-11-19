@@ -53,8 +53,8 @@ unsigned char motor_set_direction_and_return_abs(int16_t signed_power) {
     unsigned_power = (uint16_t)(signed_power);
   }
 
-  if(unsigned_power > 150){
-    unsigned_power = 150;
+  if(unsigned_power > 100){
+    unsigned_power = 100;
   }
 
   return (unsigned char)unsigned_power;

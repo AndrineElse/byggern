@@ -37,7 +37,7 @@ void timer_init() {
 
 ISR(TIMER3_COMPA_vect) {
   tenths_of_second_counter++;
-  if(!(tenths_of_second_counter%3)){
+  if(!(tenths_of_second_counter%1)){
       send_joystick_position();
   }
 }

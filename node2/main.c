@@ -59,10 +59,9 @@ void main(){
   pos_controller_init(1,5,0.02); //params: kp, ki, sample_time, encoder_max
   game_init();
 
+  //game_loop();
 
-  game_loop();
-
-  //game_big_loop();
+  game_big_loop();
 
   return;
 }
