@@ -7,13 +7,13 @@ volatile struct Input_status input_container;
 void input_container_init() {
   // setting reasonable initial input values
   input_container.joystick.x = 0;
-  input_container.joystick.y = 0;
+  //input_container.joystick.y = 0;
   input_container.joystickButton = 0;
-  input_container.left_slider = 0; // not in use
+  //input_container.left_slider = 0; // not in use
   input_container.right_slider = 0; // not in use
-  input_container.right_button = 0; // not in use
-  input_container.left_button = 0; // not in use
-  input_container.playGame = 0;
+  //input_container.right_button = 0; // not in use
+  //input_container.left_button = 0; // not in use
+  //input_container.playGame = 0;
 }
 
 void input_container_update(struct CAN_msg new_input_message){

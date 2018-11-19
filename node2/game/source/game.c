@@ -20,31 +20,6 @@
 
 struct Game_status game;
 
-/*
-void game_loop(){
-  while(1){
-  // Listen to Node 1
-
-   game_data_container_get_ptr()
-
-   struct Game_status game;
-   game.lives = 3;
-   game.fails = 0;
-   game.timer = time_get_counter();
-   game.score = 0;
-
-    if(game_data_container_get_ptr()->gameStart){
-      // initialize controllers
-      // reset ir
-      // interrupt for ir and controllers
-
-      while(!IR_check_obstruction()){
-        // Play a round of the game
-      }
-    }
-    // turn off stuff
-  }
-}*/
 
 void game_init() {
   game.playing = 0;
@@ -57,6 +32,7 @@ void game_loop(){
   game.timer = time_get_counter();
   game.score = 0;
   game.playing = 0;
+  game.fail_detected = 0;
 
   while(game.fails < game.lives){
 
@@ -66,6 +42,7 @@ void game_loop(){
     //set intial game state
     game.timer = time_get_counter();
     game.playing = 1;
+    game.fail_detected = 0;
 
     //housekeeping before game start
     IR_reset_samples();
@@ -86,6 +63,7 @@ void game_loop(){
 
       if (IR_check_obstruction()){
         //cli();
+        game.fail_detected = 1;
         game.fails++;
         game.playing = 0;
         motor_set_power(0);
@@ -107,31 +85,6 @@ uint8_t game_get_playing_status() {
   return game.playing;
 }
 
-/*
-void count_game_score(struct Game_status* game, uint16_t* timer, uint8_t* flag){
-  // uint8_t last_IR_value = adc_read();
-  // uint8_t count = 0;
-  // while(count < game->lives){
-    if(*flag ==0){
-      if (IR_check_obstruction()){
-        //printf("Fail registered:\n\r");
-        game->fails++;
-        printf("Fails++ %d\n\r", game->fails);
-        //uint16_t pause =
-         //need timer like in PWM
-         *timer = time_get_counter();
-         *flag = 1;
-      }
-      else{
-        if((time_get_counter() - *timer) > 10){
-          *timer = 0;
-          *flag = 0;
-        }
-      }
-    }
-
-}*/
-
 
 void count_game_score(){
   if (IR_check_obstruction()){
@@ -148,7 +101,7 @@ void game_send_update_CAN(){
   msg.id = 2;
 
   //NB need to add game-score here !!
-  uint8_t array[8] = {((game.fails << 4)+game.lives),0,0,0,0,0,0,0};
+  uint8_t array[8] = {((game.fail_detected << 6)+(game.fails << 3)+(game.lives)),0,0,0,0,0,0,0};
 
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
