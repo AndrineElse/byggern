@@ -88,7 +88,6 @@ void send_joystick_position(){
   struct CAN_msg msg;
   msg.id = 1;
   uint8_t array[8] = {get_joystick_coords_x(readChannel(2)),get_slider_position_right(),(joystick_get_button() + (1 << get_play_game())) ,0,0,0,0,0};
-  //printf("%x\n\r", array[2]);
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
 
@@ -186,7 +185,6 @@ uint8_t get_joystick_coords_x(uint8_t rawX) {
   uint8_t finalValue;
   //return naive calibration if calibration routine has not run
   if(!centerX){
-    //printf("JsNotCal!");
     finalValue = (rawX - 128)/1.28;
     return finalValue;
   }

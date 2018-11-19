@@ -37,26 +37,15 @@ void main(){
   //init
   USART_Init ( MYUBRR );
   set_play_game(0);
-
   SRAM_init ();
   SPI_init();
   mcp2515_init();
   CAN_init();
-
-
-
   CAN_init_interrupt();
-
-
   OLED_init();
-  OLED_clear();
+  //OLED_clear();
   OLED_init_buffer_mode();
   OLED_buffer_clear();
-
-  //joystick_set_max_min_values();
-  //printf("Sreg: %d\n\r", SREG);
-  //sei();
-  //printf("Sreg: %d\n\r", SREG);
   user_input_init();
   game_status_container_init();
   timer_init();
@@ -67,11 +56,10 @@ void main(){
 
 
   menuInit();
-  sei();
-  printf("A" );
+  sei(); //REMOVE
   menuLoop();
 
-
+  //Use the one below if you want to run without menu
   /*
   while(1){
     send_joystick_position();

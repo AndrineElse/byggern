@@ -70,7 +70,6 @@ void OLED_pos(uint8_t row, uint8_t column){
 }
 
 void OLED_write_data(char c){
-
   data_address[0] = c;
 }
 
@@ -86,19 +85,6 @@ void OLED_write_char(uint8_t b){
 }
 
 
-void OLED_print(char* string){
-  uint8_t currentLine = 0;
-  uint16_t i = 0;
-  uint8_t charsInLine = 128/5;
-  while(string[i]) {
-    OLED_write_char(string[i]);
-    if(!(i%charsInLine) && i) {
-      currentLine++;
-      OLED_pos(currentLine,0);
-    }
-    i++;
-  }
-}
 
 void OLED_buffer_print_line(char* string, uint8_t line, uint8_t inverseFlag){
   uint16_t i = 0;

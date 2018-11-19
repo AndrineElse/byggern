@@ -103,7 +103,6 @@ void menuLoop(){
 
       }
 
-
       else {
         //Playing game, sending
         play_game = 1;
@@ -161,7 +160,7 @@ void menuLoop(){
         lastDir = currentDir;
       }
       */
-      //Checking if the user har selected a option
+      //Checking if the user has selected a option
       if (!lastButtonValue && joystick_get_button()) {
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
