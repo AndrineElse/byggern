@@ -239,6 +239,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
       //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
       currentByte++;
     }
+  }
 
   // PLACE
   /*char* number;
@@ -266,7 +267,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
       currentByte++;
     }
   }*/
-
+/*
   // USERNAME
   char* name;
   uint8_t length;
@@ -314,4 +315,5 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
       currentByte++;
     }
   }*/
+
 }

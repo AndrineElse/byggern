@@ -20,7 +20,7 @@ void game_status_container_update(struct CAN_msg new_game_message){
 }
 
 void game_user_update(char username){
-  game_status_container.user = username;
+  //game_status_container.user = username;
 }
 
 volatile struct Game_status* game_status_container_get_ptr(){
