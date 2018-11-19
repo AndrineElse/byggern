@@ -12,7 +12,7 @@
 
 int16_t min_encoder;
 int16_t max_encoder;
-uint16_t saturations;
+uint16_t power_saturation;
 
 void motor_init() {
 
@@ -25,25 +25,25 @@ void motor_init() {
   PORTH &= ~(1<<PH6);
   _delay_ms(10);
   PORTH |= (1<<PH6);
-  motor_set_power(0,pos_controller_get_saturation());
+  motor_set_power(0);
   //PINH4 = 0xFF; // EN
   //PINH1 = 0xFF;// DIR
 }
 
-void motor_set_power(int16_t power, uint16_t saturation) {
+void motor_set_power(int16_t power) {
   unsigned char msgSize = 3;
   unsigned char msg[msgSize];
   unsigned char slave_address = 0b01011110;
 
   msg[0] = slave_address;
   msg[1] = 0;
-  msg[2] = motor_set_direction_and_return_abs(power, saturation);
+  msg[2] = motor_set_direction_and_return_abs(power);
 
   TWI_Start_Transceiver_With_Data(msg, msgSize);
 }
 
 
-unsigned char motor_set_direction_and_return_abs(int16_t signed_power, uint16_t saturation) {
+unsigned char motor_set_direction_and_return_abs(int16_t signed_power) {
   uint16_t unsigned_power;
   //printf("|power| p: %d\n\r",signed_power);
   if (signed_power < 0){
@@ -55,10 +55,10 @@ unsigned char motor_set_direction_and_return_abs(int16_t signed_power, uint16_t 
     unsigned_power = (uint16_t)(signed_power);
   }
 
-  if(unsigned_power > saturations){
-    unsigned_power = saturations;
+  if(unsigned_power > power_saturation){
+    unsigned_power = power_saturation;
   }
-  printf("%d %d\n\r", unsigned_power, saturations);
+  printf("%d %d\n\r", unsigned_power, power_saturation);
 
   return (unsigned char)unsigned_power;
 }
@@ -96,12 +96,12 @@ void motor_encoder_reset(){
 
 int16_t motor_get_max_encoder(){
   motor_encoder_reset();
-  motor_set_power(0,150);
+  motor_set_power(0);
   int16_t last_encoder_value = 100;
   int16_t current_encoder_value;
   uint8_t count = 0;
   //Drive the motor to the opposite side
-  motor_set_power(80, 150);
+  motor_set_power(80);
   while(count < 10){
     _delay_ms(20);
     current_encoder_value = read_motor_encoder();
@@ -110,9 +110,9 @@ int16_t motor_get_max_encoder(){
     }
     last_encoder_value = current_encoder_value;
   }
-  motor_set_power(0,150);
+  motor_set_power(0);
   motor_encoder_reset();
-  motor_set_power(-80, 150);
+  motor_set_power(-80);
 
   count = 0;
   last_encoder_value = 100;
@@ -124,7 +124,7 @@ int16_t motor_get_max_encoder(){
       count ++;
       if (count == 20){
         motor_encoder_reset();
-        motor_set_power(0,150);
+        motor_set_power(0);
         return current_encoder_value;
         }
       }
@@ -132,6 +132,6 @@ int16_t motor_get_max_encoder(){
   }
 }
 
-void saturation_set(uint16_t sat){
-  saturations = sat;
+void power_saturation_set(uint16_t saturation){
+  power_saturation = saturation;
 }

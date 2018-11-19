@@ -79,7 +79,7 @@ void game_loop(){
       /*
       servo_update_position(input_container_get_ptr()->joystick.x);
       //pos_controller_update();
-      motor_set_power(pos_controller_get_power(),pos_controller_get_saturation());
+      motor_set_power(pos_controller_get_power());
       solenoid_update_status(input_container_get_ptr()->joystickButton);
       */
       IR_get_new_sample();
@@ -90,7 +90,7 @@ void game_loop(){
         solenoid_reset();
         game.fails++;
         game.playing = 0;
-        motor_set_power(0,pos_controller_get_saturation());
+        motor_set_power(0);
         servo_update_position(0);
         game.score += (time_get_counter()-game.timer);
         game_send_update_CAN();
@@ -168,16 +168,16 @@ void game_select_controller(struct CAN_msg new_input_message){
   printf("Level%d\n\r", level);
   switch(level){
     case 0:   // easy
-      pos_controller_update(1,5,150);
+      pos_controller_update(1,5);
       saturation_set(150);
     case 1:   // medium
-      pos_controller_update(1,5,200);
+      pos_controller_update(1,5);
       saturation_set(200);
     case 2:   // hard
-      pos_controller_update(1,5,250);
+      pos_controller_update(1,5);
       saturation_set(250);
     default:
-      pos_controller_update(1,5,150);
+      pos_controller_update(1,5);
       saturation_set(150);
   }
 }

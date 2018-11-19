@@ -25,7 +25,6 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time) {
   pi_container.encoder_max = motor_get_max_encoder();
   //TODO, insert encoder_scale = max/255 here!!
   pi_container.encoder_scale = pi_container.encoder_max/255;
-  pi_container.saturation = 150;
 
   //variables
   pi_container.error_sum = 0;
@@ -33,10 +32,9 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time) {
   pi_container.last_encoder_value = 0;
 }
 
-void pos_controller_update(int8_t p_factor, int8_t i_factor, uint16_t saturation){
+void pos_controller_update(int8_t p_factor, int8_t i_factor){
   pi_container.Kp = p_factor;
   pi_container.Ki = i_factor;
-  pi_container.saturation = saturation;
   printf("Update PI\n\r");
 
 }
@@ -85,6 +83,3 @@ void pos_controller_reset() {
   pi_container.last_encoder_value = 0;
 }
 
-uint16_t pos_controller_get_saturation(){
-  return pi_container.saturation;
-}
