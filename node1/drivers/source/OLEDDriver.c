@@ -240,6 +240,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
       currentByte++;
     }
   }
+  currentByte += 40;
 
   // PLACE
   /*char* number;
@@ -267,7 +268,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
       currentByte++;
     }
   }*/
-/*
+
   // USERNAME
   char* name;
   uint8_t length;
