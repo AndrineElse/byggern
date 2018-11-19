@@ -4,6 +4,7 @@ struct Game_status {
   uint8_t lives;
   uint16_t score;
   uint8_t playing;
+  uint8_t fail_detected;
 };
 
 void game_init();
