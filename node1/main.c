@@ -33,7 +33,7 @@ void main(){
   MCUCR = (1<<SRE);
   SFIOR = (1<<XMM2);
   //SREG |= 0x80;
-  sei();
+
   //init
   USART_Init ( MYUBRR );
   set_play_game(0);
@@ -67,7 +67,10 @@ void main(){
 
 
   menuInit();
+  sei();
+  printf("A" );
   menuLoop();
+
 
   /*
   while(1){

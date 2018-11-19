@@ -12,7 +12,7 @@
 
 struct Node mainMenuNode;
 struct Node playGameNode;
-struct Node highScoresNode;
+//struct Node highScoresNode;
 struct Node optionsNode;
 struct Node middleGameNode;
 struct Node endGameNode;
@@ -31,11 +31,11 @@ void menuInit(){
   playGameNode.numOptions = 1;
   playGameNode.optionNodes[0] = &mainMenuNode;
 
-  highScoresNode.parent = &mainMenuNode;
+  /*highScoresNode.parent = &mainMenuNode;
   highScoresNode.options[0] = "Go back";
   highScoresNode.description = "highscore";
   highScoresNode.numOptions = 1;
-  highScoresNode.optionNodes[0] = &mainMenuNode;
+  highScoresNode.optionNodes[0] = &mainMenuNode;*/
 
   optionsNode.parent = &mainMenuNode;
   optionsNode.options[0] = "Go back";
@@ -49,10 +49,10 @@ void menuInit(){
   mainMenuNode.options[2] = "Options";
 
   mainMenuNode.description = "This is the main menu :)";
-  mainMenuNode.numOptions = 3;
+  mainMenuNode.numOptions = 2;
 
   mainMenuNode.optionNodes[0] = &playGameNode;
-  mainMenuNode.optionNodes[1] = &highScoresNode;
+  //mainMenuNode.optionNodes[1] = &highScoresNode;
   mainMenuNode.optionNodes[2] = &optionsNode;
 
   endGameNode.parent = (struct Node*)0;
@@ -79,20 +79,11 @@ void menuLoop(){
   uint8_t selectedOption = 0;
   JoystickDir currentDir;
   volatile struct Node* currentNode = &mainMenuNode;
-  JoystickDir lastDir;
-  lastDir = 0;
+  JoystickDir lastDir = 0;
   uint8_t lastButtonValue = 0;
 
   uint8_t numFails = 0;
 
-
-  play_game = 0;
-  /*
-  gameData.gameStart = 0;
-  gameData.pause = 0;
-  gameData.calibrateEncoder = 0;
-  */
-  //volatile struct Game_status* game;
   while(1){
     //printf("Current node description: %s\n\r", currentNode->description );
     if(currentNode->description == "Game"){
@@ -142,7 +133,6 @@ void menuLoop(){
       sei();
       JoystickDir currentDir;
       currentDir = calculate_joystick_dir(joystickCoords);
-      printf("%d %d\n\r", joystickCoords.x, joystickCoords.y);
 
       //find selected option
 

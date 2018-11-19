@@ -42,10 +42,12 @@ ISR(TIMER3_COMPA_vect) {
     game_send_data_CAN();
   }
   */
-	tenths_of_second_counter++;
+  tenths_of_second_counter++;
   if(!(tenths_of_second_counter%3)){
       send_joystick_position();
   }
+
+
 }
 
 uint16_t timer_get_counter() {
