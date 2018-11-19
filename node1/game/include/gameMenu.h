@@ -21,3 +21,4 @@ void set_username(uint8_t name);
 uint8_t get_username();
 //void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint8_t score_L);
 uint8_t* game_highscore_update();
+uint8_t get_restart_game();

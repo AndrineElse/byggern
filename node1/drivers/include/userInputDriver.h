@@ -15,7 +15,7 @@ struct JoystickOffset {
 
 enum JoystickDir{NEUTRAL, LEFT, RIGHT, UP, DOWN} typedef JoystickDir;
 
-void userInputInit();
+void user_input_init();
 
 SliderPosition get_slider_positions();
 uint8_t get_slider_buttons();

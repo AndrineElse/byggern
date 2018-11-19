@@ -53,7 +53,7 @@ void pos_controller_calculate_power(uint8_t reference_value, int16_t measured_va
   uint16_t scaled_reference = reference_value;//*pi_container.encoder_scale;
   int16_t error = scaled_reference - measured_value/pi_container.encoder_scale;
   int16_t raw_power;
-  if(error < 50){
+  if(error < 20){
     pi_container.error_sum += error;
 
     //ive never seen such raw power before

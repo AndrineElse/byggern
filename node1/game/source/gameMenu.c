@@ -28,6 +28,7 @@ struct Node endGameNode;
 uint8_t play_game;
 uint8_t username = 0;
 uint16_t score_array[3] = {0,0,0};
+uint8_t restart_game;
 
 void menuInit(){
 
@@ -116,41 +117,33 @@ void menuLoop(){
   volatile struct Node* currentNode = &mainMenuNode;
   JoystickDir lastDir = 0;
   uint8_t lastButtonValue = 0;
-
-  uint8_t numFails = 0;
-
-
+  restart_game = 0;
   while(1){
-
     if(currentNode->description == "Game"){
-
       if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
+        //All lives are lost, game over.
         play_game = 0;
-        numFails = 0;
+        restart_game = 1;
+        game_status_container_init();
         currentNode = &endGameNode;
       }
-
-      else if (numFails != game_status_container_get_ptr()->fails){
-
+      else if (game_status_container_get_ptr()->fail_detected){
+        //Lost a life, need verification from user to restart the game
         play_game = 0;
-        numFails = game_status_container_get_ptr()->fails;
         currentNode = &middleGameNode;
-
       }
-
       else {
         printf("A");
         //Playing game, sending
+        restart_game = 0;
         play_game = 1;
         OLED_buffer_clear();
         OLED_buffer_update_screen();
-
       }
     }
     else{
       //Inside the main menu system, game is not playing
       play_game = 0;
-
 
       //get joystick input
       cli();
@@ -159,9 +152,7 @@ void menuLoop(){
       sei();
       JoystickDir currentDir;
       currentDir = calculate_joystick_dir(joystickCoords);
-
       //Finding index for selected option
-
       if (currentDir != lastDir){
         switch (currentDir) {
           case UP:
@@ -169,7 +160,6 @@ void menuLoop(){
               selectedOption = selectedOption -1;
             }
             break;
-
           case DOWN:
             if (selectedOption < (currentNode->numOptions-1)){
               selectedOption = selectedOption +1;
@@ -193,16 +183,16 @@ void menuLoop(){
 
 
       //Checking if the user has selected a option
-      if (!lastButtonValue && joystick_get_button()) {
+      if (!lastButtonValue && (get_slider_buttons() & 0x01)) {
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
         OLED_buffer_clear();
       }
+      lastButtonValue = (get_slider_buttons() & 0x01);
+      //printing the current node info to the OLED
 
-
-    printNodeUsingBuffer(currentNode, selectedOption);
-    OLED_buffer_update_screen();
-    lastButtonValue = joystick_get_button();
+      printNodeUsingBuffer(currentNode, selectedOption);
+      OLED_buffer_update_screen();
     //_delay_ms(50);
     }
 
@@ -460,3 +450,6 @@ void game_send_data_CAN(){
   send_CAN_msg(&msg);
 }
 */
+uint8_t get_restart_game(){
+  return restart_game;
+}
