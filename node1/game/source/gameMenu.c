@@ -22,6 +22,7 @@ struct Node endGameNode;
 
 
 uint8_t play_game;
+uint8_t restart_game;
 
 void menuInit(){
 
@@ -83,12 +84,13 @@ void menuLoop(){
   volatile struct Node* currentNode = &mainMenuNode;
   JoystickDir lastDir = 0;
   uint8_t lastButtonValue = 0;
-
+  restart_game = 0;
   while(1){
     if(currentNode->description == "Game"){
       if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
         //All lives are lost, game over.
         play_game = 0;
+        restart_game = 1;
         currentNode = &endGameNode;
       }
       else if (game_status_container_get_ptr()->fail_detected){
@@ -106,6 +108,7 @@ void menuLoop(){
     else{
       //Inside the main menu system, game is not playing
       play_game = 0;
+      restart_game = 0;
       //get joystick input
       cli();
       JoystickCoords joystickCoords;
@@ -178,4 +181,8 @@ uint8_t get_play_game(){
 
 void set_play_game(uint8_t value){
   play_game = value;
+}
+
+void get_restart_game() {
+  return restart_game;
 }

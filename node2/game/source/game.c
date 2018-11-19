@@ -112,3 +112,12 @@ void game_send_update_CAN(){
   send_CAN_msg(&msg);
   sei();
 }
+
+
+void game_big_loop(){
+  while (1) {
+    if(!(input_container_get_ptr()->restart_game)){
+      game_loop();
+    }
+  }
+}
