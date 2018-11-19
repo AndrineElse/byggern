@@ -29,7 +29,7 @@ void solenoid_update_status(){
   }
 }
 
-void solenoid_hard_stop(){
+void solenoid_reset(){
   PORTF &= ~(1<<PF1);
   solenoid_timer = 0;
 }

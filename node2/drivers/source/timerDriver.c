@@ -75,6 +75,6 @@ ISR(TIMER0_COMPA_vect) {
   // IR_get_new_sample();
   //fuckit gonna try running everything periodically
   if(game_get_playing_status()){
-    motor_set_power(pos_controller_get_power());
+    motor_set_power(pos_controller_get_power(), pos_controller_get_saturation());
   }
 }
