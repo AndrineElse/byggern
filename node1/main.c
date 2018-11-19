@@ -19,6 +19,7 @@
 #include "tests/include/OLEDTesting.h"
 #include "tests/include/CANTesting.h"
 #include "drivers/include/timerDriver.h"
+#include "containers/include/gameStatusContainer.h"
 
 #define FOSC 1843200// Clock Speed
 #define BAUD 9600
@@ -31,72 +32,41 @@ void main(){
 
   MCUCR = (1<<SRE);
   SFIOR = (1<<XMM2);
-  SREG |= 0x80;
+  //SREG |= 0x80;
 
   //init
   USART_Init ( MYUBRR );
+  set_play_game(0);
   SRAM_init ();
   SPI_init();
   mcp2515_init();
   CAN_init();
   CAN_init_interrupt();
   OLED_init();
-  OLED_clear();
+  //OLED_clear();
   OLED_init_buffer_mode();
   OLED_buffer_clear();
-  JoystickOffset offset = userInputInit();
+
+  user_input_init();
+  game_status_container_init();
   timer_init();
 
-  //OLEDTest();
-  /*
-  while (1) {
+  //Comment in again
+  joystick_set_max_min_values();
 
-    struct CAN_msg received_message = receive_msg();
-    printf("Data [0]: %d , ID = %d\n\r", received_message.data[0], received_message.id);
-    if (received_message.id == 3){ //Because joystick messages has id 1
-      printf("HER\n");
-      printf("Data [1]\n\r", received_message.data[0]);
-    }
-    //send_joystick_position(offset);
-  }
-  */
 
+
+  menuInit();
+  sei();
+
+  menuLoop();
+
+
+  //Use the one below if you want to run without menu
   /*
-  struct Node mainMenuNode;
-  menuInit(&mainMenuNode);
-  menuLoop(&mainMenuNode);
-  */
   while(1){
-    send_joystick_position(offset);
-  }
-
-
-
-
-  // SPI_SlaveInit();
-  /*while(1){
-    _delay_ms(2);
-    printf("mcp Status: %d\n\r", mcp2515_read_status());
+    send_joystick_position();
+    _delay_ms(200);
   }*/
-
-/*
-    while(1){
-      JoystickOffset joystickOffset;
-      joystickOffset = calculateOffsetJoystick();
-      JoystickCoords joystickCoords;
-      joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
-      JoystickDir joystickDir;
-      joystickDir = calculateJoystickDirection(joystickCoords);
-      //printf("Joystickbutton: %d \n\r", joystickButton() );
-      printf("Joystickdir : %d \n\r", joystickDir);
-
-
-      joystickCoords = calculateCalibratedJoystickCoords(joystickOffset);
-      printf("X = %d , Y = %d \n\r", joystickCoords.x , joystickCoords.y);
-    }
-  */
-  //while(1);
-
-
   return;
 }

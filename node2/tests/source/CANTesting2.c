@@ -1,3 +1,6 @@
+//system clock frequency, used by util/delay, 16MHz for node 2, 5MHz for node 1
+#define F_CPU 16000000
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -12,17 +15,17 @@
 //joystickCoords id = 1
 
 void testCAN() {
-  printf("testCan\n\r");
+  // printf("testCan\n\r");
   struct CAN_msg recieved_message = receive_msg();
-  printf("Message ID: %d \n\r",recieved_message.id);
+  // printf("Message ID: %d \n\r",recieved_message.id);
 
   if (recieved_message.id == 1){
     for (int i = 0; i < recieved_message.length ; i++){
       int8_t temp_data = (int8_t)recieved_message.data[i];
-      printf("Message data: %d , i = %d \n\r",temp_data, i);
+      // printf("Message data: %d , i = %d \n\r",temp_data, i);
     }
   }
 
-  printf("Message length : %d \n\r",recieved_message.length);
+  // printf("Message length : %d \n\r",recieved_message.length);
   _delay_ms(2000);
 }

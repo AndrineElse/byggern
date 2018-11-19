@@ -8,6 +8,7 @@
 #include "../include/MCP2515.h"
 #include "../include/MCP2515Driver.h"
 #include "../include/CANDriver.h"
+#include "../../containers/include/gameStatusContainer.h"
 
 void CAN_init(){
   mcp2515_init();
@@ -34,6 +35,7 @@ void CAN_init_interrupt() {
 }
 
 void send_CAN_msg(struct CAN_msg* msg){
+  cli();
   // mcp2515_write(MCP_TXB0SIDL,((msg->id)&(0x07)<<5));
   mcp2515_bit_modify(MCP_TXB0SIDL, 0xD0, (((msg->id)&(0x07))<<5));
   mcp2515_write(MCP_TXB0SIDH,(msg->id)>>3);
@@ -42,41 +44,13 @@ void send_CAN_msg(struct CAN_msg* msg){
   }
   mcp2515_write(MCP_TXB0DLC,msg->length);
 
-  //see if buffermsg is equal to message being sent
-  /*
-  //TODO, is all of this testing necessary?
-  //probably takes ages!
-  struct CAN_msg buffermsg;
-
-  uint8_t lowerID;
-  uint8_t upperID;
-
-  mcp2515_read_store_pointer(MCP_TXB0SIDL,&lowerID);
-  mcp2515_read_store_pointer(MCP_TXB0SIDH,&upperID);
-
-  buffermsg.id = (lowerID>>5);
-  buffermsg.id |= (upperID<<3);
-  buffermsg.length = mcp2515_read(MCP_TXB0DLC)&0xF;
-
-  for(int i = 0; i < buffermsg.length; i ++){
-    mcp2515_read_store_pointer(MCP_TXB0D0+i,buffermsg.data + i);
-  }
-
-  if (buffermsg.id == msg->id && buffermsg.data[0] == msg->data[0] && buffermsg.length == msg->length){
-      //printf("buffer == message recieved\n\r");
-      mcp2515_request_to_send();
-      _delay_ms(100);
-      //printf("TXReq %02x\n", mcp2515_read(0x30));
-  }*/
-
   mcp2515_request_to_send();
 
-
+  sei();
 }
 
 
 struct CAN_msg receive_msg(){
-  //printf("CANINTF %02x\n", mcp2515_read(MCP_CANINTF));
   struct CAN_msg msg;
   uint8_t lowerID;
   uint8_t upperID;
@@ -109,14 +83,7 @@ ISR(INT1_vect){
 
 void CAN_message_handler() {
   struct CAN_msg new_message = receive_msg();
-  switch(new_message.id){
-    case 1:
-      //dosomething
-      break;
-    //add more cases here
-
-    default:
-      printf("Message with unmapped ID loaded :(\n\r");
-      break;
+  if(new_message.id ==2){
+    game_status_container_update(new_message);
   }
 }

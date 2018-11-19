@@ -1,3 +1,6 @@
+//System frequency used by util/delay, 16MHz for node 2, 5MHz for node 1
+#define F_CPU 5000000
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include "../../drivers/include/OLEDDriver.h"
@@ -53,9 +56,9 @@ void OLEDTest(){
 
 
   OLED_init();
-  OLED_clear();
+  OLED_buffer_clear();
   _delay_ms(1000);
-  OLED_fill();
+  OLED_buffer_fill();
   _delay_ms(1000);
 
   OLED_init_buffer_mode();

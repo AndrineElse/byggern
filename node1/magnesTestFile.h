@@ -1,1 +1,0 @@
-JoystickDir calculateJoystickDirection_new(JoystickCoords joystickCoords);

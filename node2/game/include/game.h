@@ -3,7 +3,13 @@ struct Game_status {
   uint16_t timer;
   uint8_t lives;
   uint16_t score;
+  uint8_t playing;
+  uint8_t fail_detected;
 };
 
-void game_loop(struct IR_status* IR_sample_container, uint8_t* msg);
-void count_game_score(struct Game_status* game,struct IR_status* IR_sample_container);
+void game_init();
+void game_loop(uint8_t* msg);
+//void count_game_score(struct Game_status* game, uint16_t* timer, uint8_t* flag);
+void count_game_score();
+void game_send_update_CAN();
+uint8_t  game_get_playing_status();

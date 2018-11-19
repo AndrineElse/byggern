@@ -1,10 +1,14 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
+#include <stdio.h>
 #include "../include/timerDriver.h"
+#include "../include/CANDriver2.h"
 #include "../../controllers/include/posController.h"
 #include "../../containers/include/userInputContainer.h"
 #include "../include/motorDriver.h"
+#include "../include/IRDriver.h"
+#include "../../game/include/game.h"
 
 volatile uint16_t tenths_of_second_counter;
 
@@ -16,7 +20,7 @@ void timer_hundred_ms_init(){
 
   // using prescaler of 256
   // TOP has to be 0xC34 for the frequency to be 10Hz
-  cli();
+
   // Set WGM to 0100 (CTC mode with OCRA containing top)
   // WGM 2:1 = 0b01,
   // CS3 2:0 = 0b100 (prescaler of 256)
@@ -32,7 +36,7 @@ void timer_hundred_ms_init(){
   // the corresponding flag OCF3A in TIFR3.
   // This flag clears automatically when the interrupt handler is called.
   TIMSK3 |= 0x02;
-  sei();
+
   tenths_of_second_counter = 0;
 }
 
@@ -45,8 +49,6 @@ uint16_t time_get_counter(){
 }
 
 void timer_twenty_ms_init(){
-  cli();
-
   TCCR0A = 0x02; // sets CTC mode, and no pin output
 
   TCCR0B = 0x05; //prescaler 1024, use for 50hz
@@ -57,19 +59,22 @@ void timer_twenty_ms_init(){
 
   OCR0A = 0x9B; //use for 50hz
   //OCR0A = 0x4D; //use for 100hz
-
+  //OCR0A = 0xFF; //use for testing
 
   // Set OCIE0A to high, which enables the interrupt call when
   // a compare matches on OCR0A. This interrupt activates by setting
   // the corresponding flag OCF0A in TIFR0.
   // This flag clears automatically when the interrupt handler is called.
   TIMSK0 |= 0x02;
-
-  sei();
 }
 
 ISR(TIMER0_COMPA_vect) {
-  uint8_t pos_reference = input_container_get_ptr()->joystick.y + 100;
+  uint8_t pos_reference = input_container_get_ptr()->right_slider;
   int16_t pos_measured = -1*read_motor_encoder();
   pos_controller_calculate_power(pos_reference, pos_measured);
+  IR_get_new_sample();
+  //fuckit gonna try running everything periodically
+  if(game_get_playing_status()){
+    motor_set_power(pos_controller_get_power());
+  }
 }

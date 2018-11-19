@@ -1,3 +1,6 @@
+//System frequency used by util/delay, 16MHz for node 2, 5MHz for node 1
+#define F_CPU 5000000
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -20,7 +23,7 @@ uint8_t readChannel(int channel) {
   adc_ch1[0] = mappedChannel;
 
   // Waiting for ADC to sample value
-  _delay_ms(60); //ADC raises an interrupt when value is calculated, this could be replaced with proper interrupt handling.
+  _delay_ms(20); //ADC raises an interrupt when value is calculated, this could be replaced with proper interrupt handling.
 
   //Pulling value
   uint8_t retreived_value = adc_ch1[0];

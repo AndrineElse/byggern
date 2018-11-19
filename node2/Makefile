@@ -1,11 +1,12 @@
 # List all source files to be compiled; separate with space
 SOURCE_FILES := main.c drivers/source/SPIDriver2.c drivers/source/UARTDriver2.c drivers/source/MCP2515Driver2.c \
- drivers/source/CANDriver2.c tests/source/CANTesting2.c drivers/source/PWMDriver.c drivers/source/servoDriver.c \
- tests/source/servoTesting.c drivers/source/IRDriver.c drivers/source/ADCDriver2.c tests/source/ADCTesting.c game/source/game.c \
- tests/source/gameTesting.c drivers/source/timerDriver.c drivers/source/TWI_Master.c drivers/source/motorDriver.c \
- drivers/source/solenoidDriver.c  containers/source/userInputContainer.c controllers/source/posController.c drivers/source/UARTDriverIoT.c \
+ drivers/source/CANDriver2.c  drivers/source/PWMDriver.c drivers/source/servoDriver.c \
+ drivers/source/IRDriver.c drivers/source/ADCDriver2.c game/source/game.c \
+ drivers/source/timerDriver.c drivers/source/TWI_Master.c drivers/source/motorDriver.c \
+ drivers/source/solenoidDriver.c  containers/source/userInputContainer.c controllers/source/posController.c drivers/source/UARTDriverIoT.c\
 
 
+#   tests/source/gameTesting.c tests/source/CANTesting2.c  tests/source/servoTesting.c
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes
 

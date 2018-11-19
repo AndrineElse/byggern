@@ -1,2 +1,2 @@
 void timer_init();
-void timer_get_counter();
+uint16_t timer_get_counter();

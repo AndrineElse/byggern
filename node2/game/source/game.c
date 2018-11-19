@@ -18,69 +18,159 @@
 #include "../../containers/include/userInputContainer.h"
 #include "../../drivers/include/UARTDriverIoT.h"
 
+
 #include "../include/game.h"
 
-void game_loop(struct IR_status* IR_sample_container, uint8_t* msg){
-  struct Game_status game;
-  game.lives = 3;
-  game.fails = 0;
-  game.timer = time_get_counter();
-
-  uint8_t button_flag = 0;
-  uint16_t solenoid_timer = 0;
-  cli();
-  USART_Transmit_Lives(game.lives-game.fails);
-  sei();
-  //uint8_t* msg = USART_Receive_STXETX();
-  while(game.fails < game.lives){
-    cli();
-    USART_Transmit_Lives(game.lives-game.fails);
-    sei();
-    //printf("Lives left: %d\n\r", game.lives-game.fails);
-
-    servo_update_position(input_container_get_ptr()->joystick.x);
-    motor_set_power(pos_controller_get_power());
-    solenoid_update_status(&button_flag,&solenoid_timer);
-    // if (msg[0] == 0x15){
-      /*if (msg[0] == 0x15){
-          solenoid_fire(&button_flag,&solenoid_timer);
-    }*/
-    count_game_score(&game, IR_sample_container);
-
-    //_delay_ms(10000);
-  }
-
-  game.score = time_get_counter() - game.timer;
-  //USART_Transmit_Score(game.score); // uint16_t
-  //printf("Game score: %d\n\r", game.score);
-}
+struct Game_status game;
 
 
-void count_game_score(struct Game_status* game, struct IR_status* IR_sample_container){
-  if (IR_poll_failure(IR_sample_container)){
-    game->fails++;
-    _delay_ms(2000);  //need timer like in PWM
-  }
+void game_init() {
+  game.playing = 0;
 }
 
 /*
-MAPPING
-id = 2 = IR-Status
-data[0] = game.lives
-data[1] = game.fails
-data[3] = game.timer
-data[4] = game.score
+void game_loop(){
+
+  game.lives = 3;
+  game.fails = 0;
+  game.timer = time_get_counter();
+  game.score = 0;
+  game.playing = 0;
+  game.fail_detected = 0;
+
+  while(game.fails < game.lives){
+    game.fail_detected = 0;
+    game_send_update_CAN();
+    //wait for node1 to give start signal
+    while(!input_container_get_ptr()->playGame);
+
+    //set intial game state
+    game.timer = time_get_counter();
+    solenoid_set_timer();
+    game.playing = 1;
+    game.fail_detected = 0;
+    //solenoid_set_timer();
+    solenoid_reset();
+    //housekeeping before game start
+    IR_reset_samples();
+    pos_controller_reset();
+
+    //play until you die
+    while(game.playing){
+
+      //these functions are currently run in the respective ISRs
+      //for their sampled values. Only running if game.playing is high
+      //IR_get_new_sample();
+      //solenoid_update_status(input_container_get_ptr()->joystickButton);
+      if (IR_check_obstruction()){
+        //cli();
+        game.fail_detected = 1;
+        solenoid_reset();
+        game.fails++;
+        game.playing = 0;
+        motor_set_power(0);
+        servo_update_position(0);
+        game.score += (time_get_counter()-game.timer);
+        game_send_update_CAN();
+        //sei();
+        break;
+      }
+    }
+
+    //waiting for node1 to acknowledge death
+    while(input_container_get_ptr()->playGame);
+  }
+  //state: game is over, node1 has acked and received final score.
+}
 */
 
-void game_send_update_CAN(struct Game_status* game){
+uint8_t game_get_playing_status() {
+  return game.playing;
+}
+
+
+void count_game_score(){
+  if (IR_check_obstruction()){
+    game.fails++;
+    game.playing = 0;
+    game_send_update_CAN();
+  }
+}
+
+// sends every half second while game is running,
+// and one extraordinary message on death
+void game_send_update_CAN(){
   struct CAN_msg msg;
   msg.id = 2;
-  uint8_t array[8] = {game->lives,game->fails,game->timer,game->score,0,0,0};
-
+  uint8_t array[8] = {((game.fail_detected << 6)+(game.fails << 3)+(game.lives)),((game.score & 0xFF00) >> 8),(game.score & 0x00FF),0,0,0,0,0};
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
-
   }
-  msg.length = 4;
+  msg.length = 3;
+  cli();
   send_CAN_msg(&msg);
+  sei();
 }
+
+
+void game_loop(){
+  while (1) {
+    game_init();
+
+    if(!(input_container_get_ptr()->restart_game)){
+
+        game.lives = 3;
+        game.fails = 0;
+        game.timer = time_get_counter();
+        game.score = 0;
+        game.playing = 0;
+        game.fail_detected = 0;
+
+        while(game.fails < game.lives){
+          game.fail_detected = 0;
+          game_send_update_CAN();
+          //wait for node1 to give start signal
+          while(!input_container_get_ptr()->playGame);
+
+          //set intial game state
+          game.timer = time_get_counter();
+          solenoid_set_timer();
+          game.playing = 1;
+          //solenoid_set_timer();
+          solenoid_reset();
+          //housekeeping before game start
+          IR_reset_samples();
+          pos_controller_reset();
+
+          //play until you die
+          while(game.playing){
+
+            //these functions are currently run in the respective ISRs
+            //for their sampled values. Only running if game.playing is high
+            //IR_get_new_sample();
+            //solenoid_update_status(input_container_get_ptr()->joystickButton);
+            if (IR_check_obstruction()){
+              //cli();
+              game.fail_detected = 1;
+              solenoid_reset();
+              game.fails++;
+              game.playing = 0;
+              motor_set_power(0);
+              servo_update_position(0);
+              game.score += (time_get_counter()-game.timer);
+              game_send_update_CAN();
+              //sei();
+              break;
+            }
+          }
+
+          //waiting for node1 to acknowledge death
+          while(input_container_get_ptr()->playGame);
+        }
+    }
+  }
+}
+
+/*cli();
+  USART_Transmit_Lives(game.lives-game.fails);
+  sei();*/

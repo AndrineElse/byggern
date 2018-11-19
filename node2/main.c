@@ -14,6 +14,7 @@
 #include "drivers/include/SPIDriver2.h"
 #include "drivers/include/PWMDriver.h"
 #include "drivers/include/ADCDriver2.h"
+#include "drivers/include/solenoidDriver.h"
 
 //game
 #include "game/include/game.h"
@@ -31,6 +32,9 @@
 //container
 #include "containers/include/userInputContainer.h"
 
+
+
+
 //tests
 //include eventual tests here
 
@@ -39,7 +43,7 @@
 #define MYUBRR F_CPU/16/BAUD-1
 
 void main(){
-
+  game_init();
   //init
   USART_Init ( MYUBRR );
   input_container_init();
@@ -47,13 +51,12 @@ void main(){
   CAN_init_interrupt();
   pwm_init();
   adc_init();
-  struct IR_status IR_sample_container;
-  IR_init(&IR_sample_container);
+  IR_init(5); //param: amount of samples to average for reading
   timer_hundred_ms_init();
   timer_twenty_ms_init();
   solenoid_init();
   motor_init();
-  pos_controller_init(3,3,0.02,10000); //params: kp, ki, sample_time, encoder_max
+  pos_controller_init(1,5,0.02); //params: kp, ki, sample_time, encoder_max
 
   while(1){
     //printf("Receive: %d\n\r", USART_Receive());
@@ -70,14 +73,16 @@ void main(){
       //printf("STXETX: %d\n\r", msg[0]);
       //printf("Inside if\n\r" );
       //USART_Transmit_Lives(3);
-      game_loop(&IR_sample_container, msg);
+      game_loop(msg);
     }
     //_delay_ms(100);
   }
 
   // game_loop(&IR_sample_container, &pid);
 
+  game_loop();
 
+  //game_big_loop();
 
   return;
 }
