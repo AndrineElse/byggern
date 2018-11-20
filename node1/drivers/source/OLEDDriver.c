@@ -14,25 +14,6 @@ void OLED_write_command(uint8_t c) {
   command_address[0] = c;
 }
 
-
-void OLED_clear(){
-  for (int i = 0; i < 8; i++){
-    OLED_write_command(0xb0 + i);
-    for (int j = 0; j < 128; j++){
-      data_address[i] = 0x0;
-    }
-  }
-}
-
-void OLED_fill(){
-  for (int i = 0; i < 8; i++){
-    OLED_write_command(0xb0 + i);
-    for (int j =0; j < 128; j++){
-      data_address[i] = 0xFF;
-    }
-  }
-}
-
 void OLED_init(){
   cli();
   OLED_write_command(0xae);        //  display  off
@@ -61,30 +42,9 @@ void OLED_init(){
 
 }
 
-void OLED_pos(uint8_t row, uint8_t column){
-  cli();
-  OLED_write_command(0xb0 + row); //rown (page select)
-  OLED_write_command(column & 0xf);
-  OLED_write_command((column >> 4) + 0x10);
-  sei();
-}
-
 void OLED_write_data(char c){
   data_address[0] = c;
 }
-
-void OLED_write_char(uint8_t b){
-  if(b < 32){
-    return;
-  }
-  uint8_t font_table_index = b - 32;
-
-  for (int i=0; i < 5; i++) {
-    OLED_write_data(pgm_read_byte(&font5[font_table_index][i]));
-  }
-}
-
-
 
 void OLED_buffer_print_line(char* string, uint8_t line, uint8_t inverseFlag){
   uint16_t i = 0;
@@ -98,7 +58,6 @@ void OLED_buffer_print_line(char* string, uint8_t line, uint8_t inverseFlag){
 
     for (int j=0; j < 5; j++) {
       OLED_update_buffer_single_byte(currentByte, (inverseFlag ? ~pgm_read_byte(&font5[font_table_index][j]) : pgm_read_byte(&font5[font_table_index][j])));
-      //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
       currentByte++;
     }
     i++;
@@ -122,7 +81,6 @@ void OLED_update_buffer_single_byte(uint16_t address, uint8_t data ){
 */
 void OLED_update_buffer_array(uint16_t start_address, uint8_t* data, uint8_t data_amount) {
   if(start_address + data_amount > 1023){
-    printf("attempted to update buffer outside of screen, implement wrap around?");
     return;
   }
   for (uint8_t i = 0; i < data_amount; i++){
@@ -135,7 +93,6 @@ void OLED_update_buffer_array(uint16_t start_address, uint8_t* data, uint8_t dat
 */
 void OLED_update_buffer_line(uint8_t line, uint8_t* data) {
   if(line > 7){
-    printf("attempted to update buffer with invalid line, implement wrap around?");
     return;
   }
   uint16_t address = ((uint16_t)line)*128;
@@ -190,7 +147,6 @@ void OLED_buffer_update_screen(){
   OLED_set_vertical_bounds(0,7);
   char* ext_ram = (char*)0x1800;
   for (uint16_t i = 0; i < 1024; i++){
-    //printf("currentByte: %d, asciivalue: %d\n\r", i, ext_ram[i]);
     OLED_write_data(ext_ram[i]);
   }
   sei();
@@ -300,3 +256,44 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
   }
 }
 
+void OLED_fun(){
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim1[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim2[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim3[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim4[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim5[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim6[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim5[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim4[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim3[i]));
+  }
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim2[i]));
+  }
+  OLED_buffer_update_screen();
+}

@@ -1,5 +1,5 @@
 struct IR_status {
-  uint16_t IR_samples[5];
+  uint16_t IR_samples[10];
   uint8_t sample_counter;
   uint8_t current_sample_index;
   uint16_t current_mean;

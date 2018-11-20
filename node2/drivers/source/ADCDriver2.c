@@ -22,23 +22,10 @@ void adc_init(){
 
 
 uint16_t adc_read(){
-  // ADCSRA |= 0x40; // start conversion ADSC
-  // printf("ADCSRA: %X\n\r", ADCSRA);
-  if (ADCSRA & 0x10) { // if ADIF = 1
-    // read from ADCH (right adjusted)
-
+  if (ADCSRA & 0x10) {
     uint16_t data = ((uint8_t*) 0x78)[0];
     data |= ((((uint8_t*) 0x79)[0]) << 8);
     return data;
   }
-  printf("ADIF=0");
   return 0;
 }
-
-
-
-// blekksprut hvit = regnbue rød
-// blekksprut lilla = regnbue oransje
-// blekksprut grønn = regnbue gul
-
-// hvit, lilla, grønn, ornasje

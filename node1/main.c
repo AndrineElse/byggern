@@ -32,7 +32,6 @@ void main(){
 
   MCUCR = (1<<SRE);
   SFIOR = (1<<XMM2);
-  //SREG |= 0x80;
 
   //init
   USART_Init ( MYUBRR );
@@ -43,7 +42,6 @@ void main(){
   CAN_init();
   CAN_init_interrupt();
   OLED_init();
-  //OLED_clear();
   OLED_init_buffer_mode();
   OLED_buffer_clear();
 

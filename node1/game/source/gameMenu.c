@@ -1,7 +1,6 @@
 #define F_CPU 5000000
 #include <stdint.h>
 #include <stdio.h>
-#include <util/delay.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 
@@ -10,20 +9,25 @@
 //drivers
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/CANDriver.h"
+#include "../../drivers/include/ADCDriver.h"
 #include "../include/gameMenu.h"
 #include "../../drivers/include/userInputDriver.h"
 #include "../../containers/include/gameStatusContainer.h"
-#include "../../drivers/include/ADCDriver.h"
+#include <util/delay.h>
 
 struct Node mainMenuNode;
+
 struct Node playGameNode;
 struct Node highScoresNode;
+
 struct Node optionsNode;
-struct Node levelsNode;
+
 struct Node usernameNode;
 
 struct Node middleGameNode;
+
 struct Node endGameNode;
+struct Node levelsNode;
 
 uint8_t play_game;
 uint8_t username = 0;
@@ -47,27 +51,20 @@ void menuInit(){
 
 
   playGameNode.parent = &usernameNode;
-  //playGameNode.options[0] = "Go back";
   playGameNode.description = "Game";
   playGameNode.numOptions = 0;
-  //playGameNode.optionNodes[0] = &mainMenuNode;
 
   highScoresNode.parent = &mainMenuNode;
-  /*highScoresNode.options[0] = "1. ";
-  highScoresNode.options[1] = "2. ";
-  highScoresNode.options[2] = "3. ";*/
   highScoresNode.options[0] = "Go back";
   highScoresNode.description = "Highscores TOP 3";
   highScoresNode.numOptions = 1;
   highScoresNode.optionNodes[0] = &mainMenuNode;
 
   optionsNode.parent = &mainMenuNode;
-  optionsNode.options[0] = "Select level";
-  optionsNode.options[1] = "Go back";
+  optionsNode.options[0] = "Go back";
   optionsNode.description = "Options";
-  optionsNode.numOptions = 2;
-  optionsNode.optionNodes[0] = &levelsNode;
-  optionsNode.optionNodes[1] = &mainMenuNode;
+  optionsNode.numOptions = 1;
+  optionsNode.optionNodes[0] = &mainMenuNode;
 
   middleGameNode.parent = (struct Node*)0;
   middleGameNode.description = "Fail registerd";
@@ -89,17 +86,25 @@ void menuInit(){
   endGameNode.optionNodes[1] = &playGameNode;
   endGameNode.optionNodes[2] = &mainMenuNode;
 
-  levelsNode.parent = &optionsNode;
+  middleGameNode.parent = (struct Node*)0;
+  middleGameNode.description = "Fail registered";
+  middleGameNode.numOptions = 2;
+  middleGameNode.options[0] = "Continue game";
+  middleGameNode.options[1] = "Back to main menu";
+  middleGameNode.optionNodes[0] = &playGameNode;
+  middleGameNode.optionNodes[1] = &mainMenuNode;
+
+  levelsNode.parent = &usernameNode;
   levelsNode.options[0] = "Easy";
   levelsNode.options[1] = "Medium";
   levelsNode.options[2] = "Hard";
   levelsNode.options[3] = "Go back";
   levelsNode.description = "Select level";
   levelsNode.numOptions = 4;
-  levelsNode.optionNodes[0] = &optionsNode;
-  levelsNode.optionNodes[1] = &optionsNode;
-  levelsNode.optionNodes[2] = &optionsNode;
-  levelsNode.optionNodes[3] = &optionsNode;
+  levelsNode.optionNodes[0] = &playGameNode;
+  levelsNode.optionNodes[1] = &playGameNode;
+  levelsNode.optionNodes[2] = &playGameNode;
+  levelsNode.optionNodes[3] = &usernameNode;
 
   usernameNode.parent = &mainMenuNode;
   usernameNode.options[0] = "Magne";
@@ -107,9 +112,10 @@ void menuInit(){
   usernameNode.options[2] = "Thea";
   usernameNode.description = "Who's playing?";
   usernameNode.numOptions = 3;
-  usernameNode.optionNodes[0] = &playGameNode;
-  usernameNode.optionNodes[1] = &playGameNode;
-  usernameNode.optionNodes[2] = &playGameNode;
+  usernameNode.optionNodes[0] = &levelsNode;
+  usernameNode.optionNodes[1] = &levelsNode;
+  usernameNode.optionNodes[2] = &levelsNode;
+  
 }
 
 void menuLoop(){
@@ -125,19 +131,23 @@ void menuLoop(){
         //All lives are lost, game over.
         play_game = 0;
         restart_game = 1;
+        OLED_buffer_clear();
         game_status_container_init();
         currentNode = &endGameNode;
       }
       else if (game_status_container_get_ptr()->fail_detected){
         //Lost a life, need verification from user to restart the game
+        OLED_buffer_clear();
         play_game = 0;
         currentNode = &middleGameNode;
       }
       else {
         //Playing game, sending
+        OLED_buffer_clear();
+        OLED_fun();
         restart_game = 0;
         play_game = 1;
-        OLED_buffer_clear();
+        //OLED_buffer_clear();
         OLED_buffer_update_screen();
       }
     }
@@ -152,6 +162,7 @@ void menuLoop(){
       sei();
       JoystickDir currentDir;
       currentDir = calculate_joystick_dir(joystickCoords);
+
       //Finding index for selected option
       if (currentDir != lastDir){
         switch (currentDir) {
@@ -169,18 +180,12 @@ void menuLoop(){
         lastDir = currentDir;
       }
 
-      if (!lastButtonValue && joystick_get_button() && currentNode->description == "Select level"){
-          //printf("%d\n\r", selectedOption);
+      if (!lastButtonValue && (get_slider_buttons() & 0x01) && currentNode->description == "Select level"){
           game_level_select(selectedOption);
       }
-
-      if (!lastButtonValue && joystick_get_button() && currentNode->description == "Who's playing?"){
-          game_username_select(selectedOption);
+      if (!lastButtonValue && (get_slider_buttons() & 0x01) && currentNode->description == "Who's playing?"){
+          set_username(selectedOption);
       }
-      /*if (!lastButtonValue && joystick_get_button() && currentNode->description == "Highscores: TOP 3"){
-          print_highscore_node(char place, uint8_t username, uint16_t score);
-      }*/
-
 
       //Checking if the user has selected a option
       if (!lastButtonValue && (get_slider_buttons() & 0x01)) {
@@ -189,8 +194,8 @@ void menuLoop(){
         OLED_buffer_clear();
       }
       lastButtonValue = (get_slider_buttons() & 0x01);
-      //printing the current node info to the OLED
 
+      //printing the current node info to the OLED
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();
     //_delay_ms(50);
@@ -241,6 +246,9 @@ void game_level_select(uint8_t selected_option){
     msg.data[j] = array[j];
   }
   msg.length = 1;
+  cli();
+  send_CAN_msg(&msg);
+  sei();
 }
 
 void game_highscore_update(){
@@ -273,17 +281,8 @@ void set_play_game(uint8_t value){
   play_game = value;
 }
 
-uint8_t get_username(){
-  return username;
-}
-
 void set_username(uint8_t name){
   username = name;
-}
-
-void game_username_select(uint8_t selectedOption){
-  // game_user_update(node->options[selectedOption]);
-  set_username(selectedOption);
 }
 
 uint8_t get_restart_game(){
