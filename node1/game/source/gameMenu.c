@@ -133,7 +133,6 @@ void menuLoop(){
         currentNode = &middleGameNode;
       }
       else {
-        printf("A");
         //Playing game, sending
         restart_game = 0;
         play_game = 1;
@@ -170,7 +169,7 @@ void menuLoop(){
       }
 
       if (!lastButtonValue && joystick_get_button() && currentNode->description == "Select level"){
-          printf("%d\n\r", selectedOption);
+          //printf("%d\n\r", selectedOption);
           game_level_select(selectedOption);
       }
 
@@ -201,13 +200,13 @@ void menuLoop(){
 
 
 void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
+  OLED_buffer_print_line(node->description,0,0);
+  if(node->description == "Highscores TOP 3"){
 
-  if(node == &highScoresNode){
 
-    OLED_buffer_print_line(node->description,0,0);
-    print_highscore_place(2*128, 1);
-    print_highscore_place(3*128, 2);
-    print_highscore_place(3*128, 3);
+    print_highscore_place(3, 1, 1);
+    //print_highscore_place(2, 2);
+    //print_highscore_place(3, 3);
     //print_highscore_node(1, game_highscore_update()[1], 0, 0);
     for (int i = 0; i < node->numOptions; i++){
       if (i == selectedOption){
@@ -219,7 +218,7 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
     }
   }
   else{
-    OLED_buffer_print_line (node->description,0,0);
+    //OLED_buffer_print_line(node->description,0,0);
 
     for (int i = 0; i < node->numOptions; i++){
       if (i == selectedOption){
@@ -269,29 +268,7 @@ uint8_t* game_highscore_update(){
   return highscore_data;
 }
 
-// make highscore list, must be updated when new highscore
-/*
-void game_highscore_SRAM_update(uint8_t user, uint16_t score, uint8_t place){
-  uint8_t data[3] = {user, score, score};
-  uint8_t data_amount = 3;
 
-  for (uint8_t i = 0; i < data_amount; i++){
-    char* ext_ram = (char*)0x1800+1024+place*16;
-    ext_ram[i] = data[i];
-  }
-}
-
-uint8_t* game_highscore_SRAM_get(uint8_t place){
-  uint8_t data[2];
-  char* ext_ram = (char*)0x1800+1024+place*16;
-
-  uint8_t data_amount = 2;
-    for (uint8_t i = 0; i < data_amount; i++){
-      data[i] = ext_ram[i];
-  }
-  return data;
-}
-*/
 uint8_t get_play_game(){
   return play_game;
 }
@@ -312,147 +289,7 @@ void game_username_select(uint8_t selectedOption){
   // game_user_update(node->options[selectedOption]);
   set_username(selectedOption);
 }
-/*
-void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint8_t score_L){
-  uint16_t currentByte = place*128;
 
-  // PLACE
-  char* number;
-  switch(place){
-    case 1:
-      number = "1. ";
-      break;
-    case 2:
-      number = "2. ";
-      break;
-    case 3:
-      number = "3. ";
-      break;
-  }
-  uint16_t a = 0;
-  while(number[a]) {
-    uint8_t currentChar = (uint8_t)number[a];
-    if(currentChar < 32){
-      continue;
-    }
-    uint8_t font_table_index = currentChar - 32;
-  for (int j=0; j < 3; j++) {
-      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
-      //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
-      currentByte++;
-    }
-  }
-
-  // USERNAME
-  char* name;
-  uint8_t length;
-  switch(username){
-    case 0:
-      name = "Magne";
-      length = 5;
-      break;
-    case 1:
-      name = "Andrine";
-      length = 7;
-      break;
-    case 2:
-      name = "Thea";
-      length = 4;
-      break;
-  }
-
-  uint16_t b = 0;
-  while(name[b]) {
-    uint8_t currentChar = (uint8_t)name[b];
-    if(currentChar < 32){
-      continue;
-    }
-    uint8_t font_table_index = currentChar - 32;
-  for (int j=0; j < length; j++) {
-      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
-      //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
-      currentByte++;
-    }
-  }
-
-  char* score = (char*)0;//(score_H << 8) + score_L;
-  uint16_t c = 0;
-  while(score[c]) {
-    uint8_t currentChar = (uint8_t)score[c];
-    if(currentChar < 32){
-      continue;
-    }
-    uint8_t font_table_index = currentChar - 32;
-  for (int j=0; j < 5; j++) {
-      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
-      //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
-      currentByte++;
-    }
-  }
-}
-/*
-void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint8_t score_L){
-  printf("H");
-  char data[128];
-  data[0] = (char)place;
-  data[1] = '.';
-  data[2] = ' ';
-  char* name;
-  uint8_t length;
-  switch(username){
-    case 0:
-      name = "Magne";
-      length = 5;
-      for (int i = 3; i < length+3; i++){
-        data[i] = name[i];
-      }
-      break;
-    case 1:
-      name = "Andrine";
-      length = 7;
-      for (int i = 3; i < length+3; i++){
-        data[i] = name[i];
-      }
-      break;
-    case 2:
-      name = "Thea";
-      length = 4;
-      for (int i = 3; i < length+3; i++){
-        data[i] = name[i];
-      }
-      break;
-  }
-  //char score = (char) score_L;
-  //data[length+3] = (char) score_L;
-  /*for (int i = length+3; i < length+11; i++){
-        data[i] = score_L;
-      }
-  OLED_update_buffer_line(place, data);
-}
-*/
-/*
-  MAPPING
-  id = 3
-  data[0] = gameStart
-  data[1] = pause
-  data[2] = calibrateEncoder
-  length = 3
-*/
-
-/*
-void game_send_data_CAN(){
-  // send can msg
-  struct CAN_msg msg;
-  msg.id = 3;
-  uint8_t array[8] = {gameData.gameStart,gameData.pause,gameData.calibrateEncoder,0,0,0,0,0};
-  for (int j = 0; j < 8; j++){
-    msg.data[j] = array[j];
-
-  }
-  msg.length = 3;
-  send_CAN_msg(&msg);
-}
-*/
 uint8_t get_restart_game(){
   return restart_game;
 }
