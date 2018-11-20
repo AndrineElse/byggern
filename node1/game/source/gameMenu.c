@@ -115,7 +115,7 @@ void menuInit(){
   usernameNode.optionNodes[0] = &levelsNode;
   usernameNode.optionNodes[1] = &levelsNode;
   usernameNode.optionNodes[2] = &levelsNode;
-  
+
 }
 
 void menuLoop(){
@@ -209,11 +209,8 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
   OLED_buffer_print_line(node->description,0,0);
   if(node->description == "Highscores TOP 3"){
 
-
-    //print_highscore_place(3, 1, 1);
-    //print_highscore_place(2, 2);
-    //print_highscore_place(3, 3);
     game_highscore_update();
+    printf("%d", highscore_data[0]);
     print_highscore_node(highscore_data[0], highscore_data[1], highscore_data[2], highscore_data[3]);
     for (int i = 0; i < node->numOptions; i++){
       if (i == selectedOption){
@@ -253,19 +250,20 @@ void game_level_select(uint8_t selected_option){
 
 void game_highscore_update(){
 
-  for (int i = 0; i < 3; i++){
-    
-    if (game_status_container_get_ptr()->score > score_array[i]){
+  for (uint8_t i = 1; i < 4; i++){
+
+    if (game_status_container_get_ptr()->score > score_array[i-1]){
       highscore_data[0] = i;
       highscore_data[1] = username;
       highscore_data[2] = (game_status_container_get_ptr()->score >> 8) & 0xFF;
       highscore_data[3] = game_status_container_get_ptr()->score & 0xFF;
 
-      score_array[i] = game_status_container_get_ptr()->score;
+      score_array[i-1] = game_status_container_get_ptr()->score;
+      break;
     }
-    else if (score_array[i] == 0){
+    else if (score_array[i-1] == 0){
       highscore_data[0] = i;
-      highscore_data[1] = " - ";
+      highscore_data[1] = 3;
       highscore_data[2] = 0;
       highscore_data[3] = 0;
     }

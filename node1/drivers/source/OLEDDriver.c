@@ -169,7 +169,7 @@ void OLED_buffer_fill(){
 
 
 void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint8_t score_L){
-  uint16_t currentByte = (place+1)*128; // select line
+  uint16_t currentByte = (place)*128; // select line
 
   char* number;
   switch (place){
@@ -200,25 +200,29 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
     a++;
 
   }
-  currentByte+=10;
+  //currentByte+=10;
 
   // USERNAME
   char* name;
-  uint8_t length;
+
   switch(username){
     case 0:
       name = "Magne";
-      length = 5;
+
       break;
     case 1:
       name = "Andrine";
-      length = 7;
+
       break;
     case 2:
       name = "Thea";
-      length = 4;
+
       break;
-  }
+    case 3:
+      name = " - ";
+
+      break;
+}
   //OLED_buffer_print_line(name, 2, 0);
 
   uint16_t b = 0;
@@ -235,7 +239,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
     b++;
   }
 
-  currentByte+=10;
+  //currentByte+=10;
 
 
 // PLACE
