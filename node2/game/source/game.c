@@ -14,12 +14,9 @@
 #include "../../drivers/include/solenoidDriver.h"
 #include "../../tests/include/servoTesting.h"
 #include "../../containers/include/userInputContainer.h"
-
-
 #include "../include/game.h"
 
 struct Game_status game;
-
 
 void game_init() {
   game.playing = 0;
@@ -111,7 +108,7 @@ void game_send_update_CAN(){
 
 
 void game_select_controller(struct CAN_msg new_input_message){
-  uint8_t level = new_input_message.data[0]; // 0 = easy, 1 = medium, 2 = hard
+  uint8_t level = new_input_message.data[0];
   printf("Level%d\n\r", level);
   switch(level){
     case 0:   // easy
@@ -160,7 +157,6 @@ void game_loop(){
 
           //play until you die
           while(game.playing){
-            printf("IR:%d\n\r", IR_get_mean_value());
             //these functions are currently run in the respective ISRs
             //for their sampled values. Only running if game.playing is high
             //IR_get_new_sample();

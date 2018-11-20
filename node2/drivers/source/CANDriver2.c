@@ -135,8 +135,6 @@ ISR(INT2_vect) {
 void CAN_message_handler(){
   struct CAN_msg new_message = receive_msg();
 
-  printf("%d\n\r", game_get_playing_status());
-
   switch(new_message.id){
     case 1:
       input_container_update(new_message);
@@ -144,16 +142,12 @@ void CAN_message_handler(){
         servo_update_position(input_container_get_ptr()->joystick.x);
         solenoid_update_status(input_container_get_ptr()->joystickButton);
       }
-    break;
+      break;
     case 4:
-      printf("ID=4\n\r");
       game_select_controller(new_message);
       break;
 
     default:
-      //printf("Message with unmapped ID loaded :(\n\r");
       break;
   }
-  // add more elements here for further message types
-//    solenoid_update_status(input_container_get_ptr()->joystickButton);
 }

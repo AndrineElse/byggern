@@ -48,7 +48,6 @@ void menuInit(){
   optionsNode.options[0] = "Go back";
   optionsNode.description = "Options";
   optionsNode.numOptions = 1;
-
   optionsNode.optionNodes[0] = &mainMenuNode;
 
   mainMenuNode.parent = (struct Node*)0;
@@ -58,7 +57,6 @@ void menuInit(){
 
   mainMenuNode.description = "This is the main menu :)";
   mainMenuNode.numOptions = 3;
-
   mainMenuNode.optionNodes[0] = &levelsNode;
   mainMenuNode.optionNodes[1] = &highScoresNode;
   mainMenuNode.optionNodes[2] = &optionsNode;
@@ -91,8 +89,6 @@ void menuInit(){
   levelsNode.optionNodes[1] = &playGameNode;
   levelsNode.optionNodes[2] = &playGameNode;
   levelsNode.optionNodes[3] = &mainMenuNode;
-
-  //mainMenuNode = &mainMenuNode;
 }
 
 void menuLoop(){
@@ -135,6 +131,7 @@ void menuLoop(){
       sei();
       JoystickDir currentDir;
       currentDir = calculate_joystick_dir(joystickCoords);
+
       //Finding index for selected option
       if (currentDir != lastDir){
         switch (currentDir) {
@@ -153,15 +150,9 @@ void menuLoop(){
       }
 
       if (!lastButtonValue && (get_slider_buttons() & 0x01) && currentNode->description == "Select level"){
-          printf("%d\n\r", selectedOption);
           game_level_select(selectedOption);
-
-
-        //selectedOption = 0;
-        //OLED_buffer_clear();
       }
 
-    
       //Checking if the user has selected a option
       if (!lastButtonValue && (get_slider_buttons() & 0x01)) {
         currentNode = currentNode->optionNodes[selectedOption];
@@ -169,8 +160,8 @@ void menuLoop(){
         OLED_buffer_clear();
       }
       lastButtonValue = (get_slider_buttons() & 0x01);
-      //printing the current node info to the OLED
 
+      //printing the current node info to the OLED
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();
 
@@ -179,7 +170,6 @@ void menuLoop(){
 }
 
 void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
-
   OLED_buffer_print_line (node->description,0,0);
 
   for (int i = 0; i < node->numOptions; i++){
@@ -193,7 +183,6 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
 }
 
 void game_level_select(uint8_t selected_option){
-  printf("A\n\r");
   struct CAN_msg msg;
   msg.id = 4;
   uint8_t array[8] = {selected_option,0,0,0,0,0,0,0};
