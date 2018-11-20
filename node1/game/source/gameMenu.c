@@ -1,23 +1,28 @@
 #define F_CPU 5000000
 #include <stdint.h>
 #include <stdio.h>
-#include <util/delay.h>
 #include <avr/interrupt.h>
 
 //drivers
 #include "../../drivers/include/CANDriver.h"
+#include "../../drivers/include/ADCDriver.h"
 #include "../include/gameMenu.h"
 #include "../../drivers/include/OLEDDriver.h"
 #include "../../drivers/include/userInputDriver.h"
 #include "../../containers/include/gameStatusContainer.h"
-#include "../../drivers/include/ADCDriver.h"
+#include <util/delay.h>
 
 struct Node mainMenuNode;
+
 struct Node playGameNode;
 struct Node highScoresNode;
+
 struct Node optionsNode;
+
 struct Node middleGameNode;
+
 struct Node endGameNode;
+struct Node levelsNode;
 
 
 
@@ -29,20 +34,19 @@ void menuInit(){
   //Initializing main menu system nodes
 
   playGameNode.parent = &mainMenuNode;
-  playGameNode.options[0] = "Go back";
   playGameNode.description = "Game";
-  playGameNode.numOptions = 1;
+  playGameNode.numOptions = 0;
   playGameNode.optionNodes[0] = &mainMenuNode;
 
   highScoresNode.parent = &mainMenuNode;
   highScoresNode.options[0] = "Go back";
-  highScoresNode.description = "highscore";
+  highScoresNode.description = "Highscore";
   highScoresNode.numOptions = 1;
   highScoresNode.optionNodes[0] = &mainMenuNode;
 
   optionsNode.parent = &mainMenuNode;
   optionsNode.options[0] = "Go back";
-  optionsNode.description = "options";
+  optionsNode.description = "Options";
   optionsNode.numOptions = 1;
   optionsNode.optionNodes[0] = &mainMenuNode;
 
@@ -53,8 +57,7 @@ void menuInit(){
 
   mainMenuNode.description = "This is the main menu :)";
   mainMenuNode.numOptions = 3;
-
-  mainMenuNode.optionNodes[0] = &playGameNode;
+  mainMenuNode.optionNodes[0] = &levelsNode;
   mainMenuNode.optionNodes[1] = &highScoresNode;
   mainMenuNode.optionNodes[2] = &optionsNode;
 
@@ -75,7 +78,17 @@ void menuInit(){
   middleGameNode.optionNodes[0] = &playGameNode;
   middleGameNode.optionNodes[1] = &mainMenuNode;
 
-
+  levelsNode.parent = &mainMenuNode;
+  levelsNode.options[0] = "Easy";
+  levelsNode.options[1] = "Medium";
+  levelsNode.options[2] = "Hard";
+  levelsNode.options[3] = "Go back";
+  levelsNode.description = "Select level";
+  levelsNode.numOptions = 4;
+  levelsNode.optionNodes[0] = &playGameNode;
+  levelsNode.optionNodes[1] = &playGameNode;
+  levelsNode.optionNodes[2] = &playGameNode;
+  levelsNode.optionNodes[3] = &mainMenuNode;
 }
 
 void menuLoop(){
@@ -122,6 +135,7 @@ void menuLoop(){
       sei();
       JoystickDir currentDir;
       currentDir = calculate_joystick_dir(joystickCoords);
+
       //Finding index for selected option
       if (currentDir != lastDir){
         switch (currentDir) {
@@ -138,6 +152,11 @@ void menuLoop(){
         }
         lastDir = currentDir;
       }
+
+      if (!lastButtonValue && (get_slider_buttons() & 0x01) && currentNode->description == "Select level"){
+          game_level_select(selectedOption);
+      }
+
       //Checking if the user has selected a option
       if (!lastButtonValue && (get_slider_buttons() & 0x01)) {
         currentNode = currentNode->optionNodes[selectedOption];
@@ -145,8 +164,8 @@ void menuLoop(){
         OLED_buffer_clear();
       }
       lastButtonValue = (get_slider_buttons() & 0x01);
-      //printing the current node info to the OLED
 
+      //printing the current node info to the OLED
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();
 
@@ -155,7 +174,6 @@ void menuLoop(){
 }
 
 void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
-
   OLED_buffer_print_line (node->description,0,0);
 
   for (int i = 0; i < node->numOptions; i++){
@@ -166,6 +184,19 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
       OLED_buffer_print_line(node->options[i],i+1,0);
     }
   }
+}
+
+void game_level_select(uint8_t selected_option){
+  struct CAN_msg msg;
+  msg.id = 4;
+  uint8_t array[8] = {selected_option,0,0,0,0,0,0,0};
+  for (int j = 0; j < 8; j++){
+    msg.data[j] = array[j];
+  }
+  msg.length = 1;
+  cli();
+  send_CAN_msg(&msg);
+  sei();
 }
 
 uint8_t get_play_game(){

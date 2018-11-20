@@ -9,7 +9,7 @@ struct Game_status {
 
 void game_init();
 void game_loop();
-//void count_game_score(struct Game_status* game, uint16_t* timer, uint8_t* flag);
 void count_game_score();
 void game_send_update_CAN();
 uint8_t  game_get_playing_status();
+void game_select_controller(struct CAN_msg new_input_message);

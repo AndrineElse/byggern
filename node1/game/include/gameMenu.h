@@ -1,4 +1,3 @@
-
 struct Node {
   volatile struct Node* parent;
   char* options[4];
@@ -7,10 +6,10 @@ struct Node {
   uint8_t numOptions;
 };
 
-
 void menuLoop();
 void menuInit();
 void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption);
+void game_level_select(uint8_t selected_option);
 void game_send_data_CAN();
 uint8_t get_play_game();
 void set_play_game(uint8_t value);
