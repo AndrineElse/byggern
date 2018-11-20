@@ -36,7 +36,6 @@ void motor_set_power(int16_t power) {
   msg[0] = slave_address;
   msg[1] = 0;
   msg[2] = motor_set_direction_and_return_abs(power);
-
   TWI_Start_Transceiver_With_Data(msg, msgSize);
 }
 
@@ -92,14 +91,19 @@ void motor_encoder_reset(){
 }
 
 int16_t motor_get_max_encoder(){
+  printf("C\n\r");
   motor_encoder_reset();
+  printf("C\n\r");
   motor_set_power(0);
+  printf("C\n\r");
   int16_t last_encoder_value = 100;
   int16_t current_encoder_value;
   uint8_t count = 0;
   //Drive the motor to the opposite side
   motor_set_power(80);
+  printf("K\n\r");
   while(count < 10){
+    printf("C\n\r");
     _delay_ms(20);
     current_encoder_value = read_motor_encoder();
     if (current_encoder_value == last_encoder_value){

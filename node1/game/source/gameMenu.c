@@ -162,9 +162,6 @@ void menuLoop(){
           printf("playback\n\r");
           watchReplayNode.optionNodes[0] = currentNode;
           run_playback = 1;
-          while(1){
-            printf("w:%d\n\r",get_run_playback());
-          }
           //hold the program here until node2 acknowledges playback
           while(!game_status_container_get_ptr()->running_playback) {
             printf("waiting\n\r");

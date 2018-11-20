@@ -141,15 +141,21 @@ void game_loop(){
           }
 
           if(input_container_get_ptr()->run_playback){
+            printf("C\n\r");
+            motor_get_max_encoder();//used to reset encoder, and drive to known location
+            printf("D\n\r");
+            pos_controller_reset();//reset error sum, and latest power.
+            printf("D\n\r");
+
             game.running_playback = 1;
             game_send_update_CAN();
-            motor_get_max_encoder();//used to reset encoder, and drive to known location
-            pos_controller_reset();//reset error sum, and latest power.
+            printf("%d %d\n\r",!playback_get_finished_playing(),input_container_get_ptr()->run_playback );
             while(input_container_get_ptr()->run_playback && !playback_get_finished_playing()){
+              printf("a\n\r");
               _delay_ms(10);
             }
           }
-          printf("D\n\r");
+          printf("E\n\r");
           game.running_playback = 0;
           playback_stop_playing();
 

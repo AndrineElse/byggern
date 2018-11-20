@@ -45,10 +45,12 @@ void timer_hundred_ms_init(){
 
 ISR(TIMER3_COMPA_vect) {
   tenths_of_second_counter++;
-  if(game_get_playback_status()){
+  printf("I:%d\n\r",game_get_playback_status());
+  if(game_get_playback_status() && (tenths_of_second_counter & 1)){
     printf("F\n\r");
     struct playback_sample_set_container current_samples =  playback_get_next_sample();
-    motor_set_power(pos_controller_calculate_power(current_samples.controller_reference,-1*read_motor_encoder()));
+    pos_controller_calculate_power(current_samples.controller_reference,-1*read_motor_encoder());
+    motor_set_power(pos_controller_get_power());
     servo_update_position(current_samples.servo_reference);
     solenoid_update_status(current_samples.solenoid_trigger);
   }
@@ -79,12 +81,15 @@ void timer_twenty_ms_init(){
 }
 
 ISR(TIMER0_COMPA_vect) {
-  uint8_t pos_reference = input_container_get_ptr()->right_slider;
-  int16_t pos_measured = -1*read_motor_encoder();
-  pos_controller_calculate_power(pos_reference, pos_measured);
+  //uint8_t pos_reference = input_container_get_ptr()->right_slider;
+  //int16_t pos_measured = -1*read_motor_encoder();
+  //pos_controller_calculate_power(pos_reference, pos_measured);
   IR_get_new_sample();
   //fuckit gonna try running everything periodically
   if(game_get_playing_status()){
+    uint8_t pos_reference = input_container_get_ptr()->right_slider;
+    int16_t pos_measured = -1*read_motor_encoder();
+    pos_controller_calculate_power(pos_reference, pos_measured);
     motor_set_power(pos_controller_get_power());
   }
 }

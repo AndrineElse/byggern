@@ -18,7 +18,8 @@ void game_status_container_update(struct CAN_msg new_game_message){
   game_status_container.lives = (new_game_message.data[0] & 0x07); //gets bit 1,2,3
   game_status_container.score = (new_game_message.data[1] << 8)+(new_game_message.data[2]);
   game_status_container.fail_detected = ((new_game_message.data[0] & 0x40) >> 6);
-  game_status_container.running_playback = ((new_game_message.data[0] & 0x80) >> 7);
+  printf("game: %d\n\r",new_game_message.data[0]);
+  game_status_container.running_playback = ((new_game_message.data[2] & 0x08) >> 7);
 }
 
 volatile struct Game_status* game_status_container_get_ptr(){
