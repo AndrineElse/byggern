@@ -42,9 +42,7 @@ void game_loop(){
         game_send_update_CAN();
 
         //wait for new desired state from node1
-        while(!(input_container_get_ptr()->playGame || input_container_get_ptr()->run_playback)) {
-          printf("B\n\r");
-        }
+        while(!(input_container_get_ptr()->playGame || input_container_get_ptr()->run_playback));
 
         if(input_container_get_ptr()->run_playback){
 
@@ -56,14 +54,12 @@ void game_loop(){
           game.running_playback = 1;
           game_send_update_CAN();
 
-          printf("bef: %d %d\n\r",!playback_get_finished_playing(),input_container_get_ptr()->run_playback );
 
           //waiting for either a stop from node1, or for the playback to run out of samples
           while(input_container_get_ptr()->run_playback && !playback_get_finished_playing()){
             _delay_ms(10);
           }
 
-          printf("aft: %d %d\n\r",!playback_get_finished_playing(),input_container_get_ptr()->run_playback );
 
           //housekeeping after finishing a playback
           game.running_playback = 0;
@@ -74,7 +70,7 @@ void game_loop(){
           while(input_container_get_ptr()->run_playback){
             _delay_ms(10);
           }
-        } else if (input_container_get_ptr()->run_playback) {
+        } else if (input_container_get_ptr()->playGame) {
           //set intial game state
           game.timer = time_get_counter();
           solenoid_set_timer();
@@ -161,4 +157,3 @@ void game_select_controller(struct CAN_msg new_input_message){
       break;
   }
 }
-

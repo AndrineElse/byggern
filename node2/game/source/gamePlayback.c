@@ -2,6 +2,7 @@
 #include "../include/gamePlayback.h"
 
 volatile struct game_playback_container playback_container;
+struct playback_sample_set_container current_sample_container;
 
 void playback_reset() {
 	playback_container.current_filler_index = 0;
@@ -10,6 +11,9 @@ void playback_reset() {
 	for(uint8_t i = 0; i < 150; i++){
 		playback_container.solenoid_trigger_timeseries[i] = 0;
 	}
+	current_sample_container.controller_reference = 0;
+	current_sample_container.servo_reference = 0;
+	current_sample_container.solenoid_trigger = 0;
 }
 
 void playback_set_next_sample(uint8_t position_reference, int8_t servo_reference, uint8_t solenoid_trigger) {
@@ -25,14 +29,14 @@ void playback_set_next_sample(uint8_t position_reference, int8_t servo_reference
 	playback_container.current_filler_index++;
 }
 
-struct playback_sample_set_container playback_get_next_sample() {
+void playback_load_next_sample() {
 
 
 	uint16_t index = playback_container.current_playback_index;
 
 	if(index >= playback_container.current_filler_index){
 		playback_container.finished_playing = 1;
-		return (struct playback_sample_set_container){0,0,0};
+		return;
 	}
 
 	struct playback_sample_set_container returnValue;
@@ -42,8 +46,13 @@ struct playback_sample_set_container playback_get_next_sample() {
 
 	playback_container.current_playback_index++;
 
-	return returnValue;
+	current_sample_container = returnValue;
 }
+
+struct playback_sample_set_container playback_get_current_sample() {
+	return current_sample_container;
+}
+
 
 uint8_t playback_get_finished_playing() {
 	printf("%d\n\r",playback_container.current_filler_index);

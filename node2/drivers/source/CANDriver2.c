@@ -14,6 +14,7 @@
 #include "../../containers/include/userInputContainer.h"
 #include "../../game/include/game.h"
 #include "../../controllers/include/posController.h"
+#include "../../game/include/gamePlayback.h"
 
 void CAN_init(){
   mcp2515_init();

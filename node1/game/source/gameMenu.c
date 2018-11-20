@@ -65,13 +65,11 @@ void menuInit(){
 
   endGameNode.parent = (struct Node*)0;
   endGameNode.description = "All lives lost, game over";
-  endGameNode.numOptions = 3;
+  endGameNode.numOptions = 2;
   endGameNode.options[0] = "New game";
   endGameNode.options[1] = "Back to main menu";
-  endGameNode.options[2] = "Watch replay";
   endGameNode.optionNodes[0] = &playGameNode;
   endGameNode.optionNodes[1] = &mainMenuNode;
-  endGameNode.optionNodes[2] = &watchReplayNode;
 
 
   middleGameNode.parent = (struct Node*)0;
@@ -88,7 +86,7 @@ void menuInit(){
   watchReplayNode.description = "Watching replay";
   watchReplayNode.numOptions = 1;
   watchReplayNode.options[0] = "Stop watching";
-  watchReplayNode.optionNodes[0] = &mainMenuNode;
+  watchReplayNode.optionNodes[0] = &middleGameNode;
   //optionnode pointer has to be set to whatever state you started watching from,
   //either middleGameNode or endGameNode.
 
@@ -183,14 +181,14 @@ void menuLoop(){
         printf("push!\n\r");
         //add specific handling for node transistions here
         if(currentNode->optionNodes[selectedOption]->description == "Watching replay"){
-          printf("sel playback\n\r");
+          
           watchReplayNode.optionNodes[0] = currentNode;
           run_playback = 1;
+
           //hold the program here until node2 acknowledges playback
           while(!game_status_container_get_ptr()->running_playback) {
             //printf("waiting\n\r");
           }
-          printf("node2 acked playback\n\r");
         } else if (currentNode->description == "Watching replay") {
           run_playback = 0;
         }

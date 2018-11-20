@@ -15,7 +15,8 @@ struct playback_sample_set_container {
 };
 
 void playback_reset();
-void set_next_sample(uint8_t position_reference, int8_t servo_reference, uint8_t solenoid_trigger);
-struct playback_sample_set_container playback_get_next_sample();
+void playback_set_next_sample(uint8_t position_reference, int8_t servo_reference, uint8_t solenoid_trigger);
+void playback_load_next_sample();
 uint8_t playback_get_finished_playing();
 void playback_stop_playing();
+struct playback_sample_set_container playback_get_current_sample();
