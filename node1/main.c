@@ -32,7 +32,6 @@ void main(){
 
   MCUCR = (1<<SRE);
   SFIOR = (1<<XMM2);
-  //SREG |= 0x80;
 
   //init
   USART_Init ( MYUBRR );

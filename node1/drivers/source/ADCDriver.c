@@ -1,4 +1,3 @@
-//System frequency used by util/delay, 16MHz for node 2, 5MHz for node 1
 #define F_CPU 5000000
 
 #include <stdlib.h>

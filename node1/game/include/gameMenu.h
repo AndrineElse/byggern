@@ -1,4 +1,3 @@
-
 struct Node {
   volatile struct Node* parent;
   char* options[4];
@@ -6,7 +5,6 @@ struct Node {
   char* description;
   uint8_t numOptions;
 };
-
 
 void menuLoop();
 void menuInit();
