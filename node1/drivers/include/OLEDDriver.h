@@ -54,3 +54,4 @@ void OLED_buffer_update_screen();
 
 void OLED_buffer_clear();
 void OLED_buffer_fill();
+void OLED_fun();

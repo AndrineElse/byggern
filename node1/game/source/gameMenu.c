@@ -91,19 +91,23 @@ void menuLoop(){
         //All lives are lost, game over.
         play_game = 0;
         restart_game = 1;
+        OLED_buffer_clear();
         game_status_container_init();
         currentNode = &endGameNode;
       }
       else if (game_status_container_get_ptr()->fail_detected){
         //Lost a life, need verification from user to restart the game
+        OLED_buffer_clear();
         play_game = 0;
         currentNode = &middleGameNode;
       }
       else {
         //Playing game, sending
+        OLED_buffer_clear();
+        OLED_fun();
         restart_game = 0;
         play_game = 1;
-        OLED_buffer_clear();
+        //OLED_buffer_clear();
         OLED_buffer_update_screen();
       }
     }

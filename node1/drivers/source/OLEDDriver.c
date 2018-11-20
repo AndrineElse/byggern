@@ -210,3 +210,9 @@ void OLED_buffer_fill(){
   }
 }
 //drawingfunctions
+
+void OLED_fun(){
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim[i]));
+  }
+}
