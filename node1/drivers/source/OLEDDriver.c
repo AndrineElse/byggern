@@ -169,6 +169,42 @@ void OLED_buffer_fill(){
 
 void OLED_fun(){
   for (int i=0; i < 1024; i++) {
-    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim[i]));
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim1[i]));
   }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim2[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim3[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim4[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim5[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim6[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim5[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim4[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim3[i]));
+  }
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim2[i]));
+  }
+  OLED_buffer_update_screen();
 }
