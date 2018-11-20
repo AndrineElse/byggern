@@ -206,6 +206,8 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
 
     OLED_buffer_print_line(node->description,0,0);
     print_highscore_place(2*128, 1);
+    print_highscore_place(3*128, 2);
+    print_highscore_place(3*128, 3);
     //print_highscore_node(1, game_highscore_update()[1], 0, 0);
     for (int i = 0; i < node->numOptions; i++){
       if (i == selectedOption){

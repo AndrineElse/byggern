@@ -214,7 +214,7 @@ void OLED_buffer_fill(){
 
 void print_highscore_place(uint8_t place, uint16_t currentByte){
   printf("A");
-  uint16_t currentByte = (place*1)*128; // select line
+  //uint16_t currentByte = (place*1)*128; // select line
 
   char* number;
   switch(place){
@@ -240,8 +240,9 @@ void print_highscore_place(uint8_t place, uint16_t currentByte){
     }
     currentByte++;
   }
+}
   //currentByte = (place+1)*128;
-  currentByte += 40;
+  //currentByte += 40;
 
   // PLACE
   /*char* number;
@@ -318,4 +319,4 @@ void print_highscore_place(uint8_t place, uint16_t currentByte){
     }
   }*/
 
-}
+
