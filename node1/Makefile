@@ -4,10 +4,6 @@ SOURCE_FILES := main.c drivers/source/UARTdriver.c drivers/source/SRAMDriver.c  
 drivers/source/userInputDriver.c drivers/source/SPIDriver.c drivers/source/MCP2515Driver.c drivers/source/CANDriver.c tests/source/CANTesting.c \
 drivers/source/timerDriver.c containers/source/gameStatusContainer.c
 
-#tests/source/OLEDTesting.c tests/source/addressTesting.c  tests/source/joystickTesting.c
-
-
-
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes
@@ -52,6 +48,7 @@ fuse:
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)
+	mkdir -p $(BUILD_DIR)/controllers/source
 	mkdir -p $(BUILD_DIR)/drivers/source
 	mkdir -p $(BUILD_DIR)/tests/source
 	mkdir -p $(BUILD_DIR)/game/source

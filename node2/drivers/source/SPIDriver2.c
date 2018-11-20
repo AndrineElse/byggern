@@ -1,4 +1,3 @@
-//system clock frequency, used by util/delay, 16MHz for node 2, 5MHz for node 1
 #define F_CPU 16000000
 
 #include <stdlib.h>
@@ -21,8 +20,6 @@ void SPI_write(char cData) {
 
   SPDR = cData;
   /* Wait for transmission complete */
-
-  //SPSR &= ~(1<<SPIF);
 
   while(!(SPSR & (1<<SPIF)));
 

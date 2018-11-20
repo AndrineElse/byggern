@@ -1,3 +1,4 @@
+#define F_CPU 5000000
 #include <avr/io.h>
 #include <stdio.h>
 #include <float.h>
@@ -6,8 +7,6 @@
 #include "../include/CANDriver2.h"
 #include "../include/timerDriver.h"
 #include "../../containers/include/userInputContainer.h"
-
-// data[2] = button (LSB = button), 7 unused bits here
 
 uint16_t solenoid_timer = 0;
 

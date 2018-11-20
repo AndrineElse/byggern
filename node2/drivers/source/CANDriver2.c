@@ -17,11 +17,7 @@
 
 void CAN_init(){
   mcp2515_init();
-  // TODO not sure what this is
   mcp2515_bit_modify(MCP_RXB0CTRL, 0x60 , 0xFF);
-
-  // TODO not sure what this is
-  // mcp2515_bit_modify(MCP_CANINTE, 0x40 , 0xFF);
 
   // enables interrupt on message transfer to RX0
   mcp2515_bit_modify(MCP_CANINTE, 0x01 , 0xFF);
@@ -38,32 +34,11 @@ void CAN_init_interrupt() {
   // enable int2
   EIMSK |= 0x04;
 
-  // set int 2 trigger mode
-  // donothing, trigger mode is already low level.
-
-  // Set PD4 as input
-  // donothing, should be input by default
-
-
-
-  // interrupt config for PinChange interrupt on PB4
-  /* NOT IN USE --------------------------------------------
-  // enables external pin change interrupt 0
-  PCICR |= 0x01;
-
-  // sets portb pin 4 (PB4) as a pin change interrupt source
-  PCMSK0 |= (1 << DDB4);
-
-  // configure PB4 as an input
-  //donothing, should be input by default
-  */ //NOT IN USE END --------------------------------------
-
   sei();
 }
 
 
 void send_CAN_msg(struct CAN_msg* msg){
-  // mcp2515_write(MCP_TXB0SIDL,((msg->id)&(0x07)<<5));
   mcp2515_bit_modify(MCP_TXB0SIDL, 0xD0, (((msg->id)&(0x07))<<5));
   mcp2515_write(MCP_TXB0SIDH,(msg->id)>>3);
   for(int i = 0; i < msg->length; i ++){
@@ -84,10 +59,6 @@ void send_CAN_msg(struct CAN_msg* msg){
   buffermsg.id |= (upperID<<3);
   buffermsg.length = mcp2515_read(MCP_TXB0DLC)&0xF;
 
-  /*mcp2515_read_store_pointe(MCP_TXB0SIDL,((buffermsg.id)&(0x07)<<5));
-  mcp2515_read_store_pointer(MCP_TXB0SIDH,(buffermsg.id)>>3);
-  buffermsg.length = mcp2515_read(MCP_TXB0DLC); // data length command, RXB0DLC*/
-
   for(int i = 0; i < buffermsg.length; i ++){
     mcp2515_read_store_pointer(MCP_TXB0D0+i,buffermsg.data + i);
   }
@@ -96,7 +67,6 @@ void send_CAN_msg(struct CAN_msg* msg){
       mcp2515_request_to_send();
       _delay_ms(100);
   }
-  //sjekk at request to send flag er høyt ???
 }
 
 
@@ -134,12 +104,22 @@ ISR(INT2_vect) {
 //    look at the id,
 //    and perform the appropriate action
 void CAN_message_handler(){
-
   struct CAN_msg new_message = receive_msg();
-  input_container_update(new_message);
-  if (game_get_playing_status()) {
-    servo_update_position(input_container_get_ptr()->joystick.x);
-    solenoid_update_status(input_container_get_ptr()->joystickButton);
-    playback_set_next_sample(pos_controller_get_power(),input_container_get_ptr()->joystick.x,input_container_get_ptr()->joystickButton);
+
+  switch(new_message.id){
+    case 1:
+      input_container_update(new_message);
+      if (game_get_playing_status()) {
+        servo_update_position(input_container_get_ptr()->joystick.x);
+        solenoid_update_status(input_container_get_ptr()->joystickButton);
+        playback_set_next_sample(pos_controller_get_power(),input_container_get_ptr()->joystick.x,input_container_get_ptr()->joystickButton);
+      }
+      break;
+    case 4:
+      game_select_controller(new_message);
+      break;
+
+    default:
+      break;
   }
 }

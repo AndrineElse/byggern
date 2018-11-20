@@ -17,20 +17,13 @@ void servo_set_duty_cycle(uint8_t u){
   float u_scalar = 0.294; //(((u*1.0)/255)*(1.2/20))*1249;
   uint16_t duty_cycle = u*u_scalar + d_0;
 
-  //TODO, add a saturation test here, to ensure only safe pulses
 
-  cli(); //interrupt disable due to 16 bit write action
+  cli(); 
   OCR1A = duty_cycle;
-  sei(); //interrupts safe again
+  sei(); 
 }
 
-//updates servo angle,
-//setting should be a number in [-100, 100]
-//  where 0 is the servo being straight.
 void servo_update_position(int8_t setting){
-  //transforms to an uint8,
-  //  where max/min is 0,255
-  //  and center is 128
   uint8_t uint8_transform = (setting*1.27)+128;
   servo_set_duty_cycle(uint8_transform);
 }

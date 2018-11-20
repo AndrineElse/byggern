@@ -14,29 +14,18 @@ void CAN_init(){
   mcp2515_init();
 
   mcp2515_bit_modify(MCP_RXB0CTRL, 0x60 , 0xFF);
-  // mcp2515_bit_modify(MCP_CANINTE, 0x40 , 0xFF);
   mcp2515_bit_modify(MCP_CANINTE, 0x01 , 0xFF);
-  //mcp2515_bit_modify(MCP_CANCTRL, 0xE0, MODE_LOOPBACK);
   mcp2515_bit_modify(MCP_CANCTRL, 0xE0, MODE_NORMAL);
 
 }
 
 void CAN_init_interrupt() {
-  //enable int1 (PD3) to trigger on new can message ready
-
-  //  enable int1 flag
+  //  enable int1 flag (PD3) to trigger on new can message ready
   GICR |= 0x80;
-
-  //  set int2 to trigger on low value
-  //donothing, is trigger on low value by default
-
-  //  set PD3 as input
-  //donothing, should be input by default
 }
 
 void send_CAN_msg(struct CAN_msg* msg){
   cli();
-  // mcp2515_write(MCP_TXB0SIDL,((msg->id)&(0x07)<<5));
   mcp2515_bit_modify(MCP_TXB0SIDL, 0xD0, (((msg->id)&(0x07))<<5));
   mcp2515_write(MCP_TXB0SIDH,(msg->id)>>3);
   for(int i = 0; i < msg->length; i ++){
@@ -63,11 +52,8 @@ struct CAN_msg receive_msg(){
   msg.id |= (upperID<<3);
   msg.length = mcp2515_read(MCP_RXB0DLC)&0xF;
 
-  //printf("length: %d\n\r", msg.length);
-
   for(int i = 0; i < msg.length; i ++){
     mcp2515_read_store_pointer(MCP_RXB0D0+i,msg.data + i);
-    //printf("data : %d\n\r", msg.data[i]);
   }
   //clear interrupt flag after reading message
   mcp2515_bit_modify(MCP_CANINTF,0x01,0);

@@ -6,7 +6,6 @@ struct Game_status {
   uint8_t running_playback;
 };
 
-
 void game_status_container_init();
 volatile struct Game_status* game_status_container_get_ptr();
 void game_status_container_update(struct CAN_msg new_game_message);
