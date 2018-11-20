@@ -183,14 +183,14 @@ void menuLoop(){
         printf("push!\n\r");
         //add specific handling for node transistions here
         if(currentNode->optionNodes[selectedOption]->description == "Watching replay"){
-          printf("playback\n\r");
+          printf("sel playback\n\r");
           watchReplayNode.optionNodes[0] = currentNode;
           run_playback = 1;
           //hold the program here until node2 acknowledges playback
           while(!game_status_container_get_ptr()->running_playback) {
-            printf("waiting\n\r");
+            //printf("waiting\n\r");
           }
-
+          printf("node2 acked playback\n\r");
         } else if (currentNode->description == "Watching replay") {
           run_playback = 0;
         }

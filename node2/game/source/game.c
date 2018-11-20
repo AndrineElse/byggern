@@ -48,21 +48,32 @@ void game_loop(){
 
         if(input_container_get_ptr()->run_playback){
 
-          motor_get_max_encoder();//used to reset encoder, and drive to known location
-          pos_controller_reset();//reset error sum, and latest power.
+          //houskeeeping
+          motor_get_max_encoder();
+          pos_controller_reset();
 
+          //letting node1 playback has started
           game.running_playback = 1;
           game_send_update_CAN();
 
           printf("bef: %d %d\n\r",!playback_get_finished_playing(),input_container_get_ptr()->run_playback );
 
+          //waiting for either a stop from node1, or for the playback to run out of samples
           while(input_container_get_ptr()->run_playback && !playback_get_finished_playing()){
             _delay_ms(10);
           }
+
           printf("aft: %d %d\n\r",!playback_get_finished_playing(),input_container_get_ptr()->run_playback );
+
+          //housekeeping after finishing a playback
           game.running_playback = 0;
           playback_stop_playing();
           game_send_update_CAN();
+
+          //waiting for node1 to ackowledge playback has stopped
+          while(input_container_get_ptr()->run_playback){
+            _delay_ms(10);
+          }
         } else if (input_container_get_ptr()->run_playback) {
           //set intial game state
           game.timer = time_get_counter();
@@ -120,7 +131,10 @@ void count_game_score(){
 void game_send_update_CAN(){
   struct CAN_msg msg;
   msg.id = 2;
-  uint8_t array[8] = {((game.running_playback)+(game.fail_detected << 6)+(game.fails << 3)+(game.lives)),((game.score & 0xFF00) >> 8),(game.score & 0x00FF),0,0,0,0,0};
+  uint8_t array[8] = {((game.running_playback << 7) + (game.fail_detected << 6) + (game.fails << 3) + (game.lives)),
+                      ((game.score & 0xFF00) >> 8),
+                      (game.score & 0x00FF),
+                      0,0,0,0,0};
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
   }
