@@ -18,7 +18,6 @@ void motor_init() {
 
   TWI_Master_Initialise();
   DDRK = 0x00;
-  //TWCR |= (1 << TWIE);
   DDRH |= (1 << DDH1)|(1 << DDH3)|(1 << DDH4)|(1 << DDH5)|(1 << DDH6);
   PORTH |= (1<<PH4); // Enables motor
   PORTH &= ~(1<<PH3); // Output enable of encoder !OE
@@ -27,8 +26,6 @@ void motor_init() {
   PORTH |= (1<<PH6);
   motor_set_power(0);
   power_saturation = 100;
-  //PINH4 = 0xFF; // EN
-  //PINH1 = 0xFF;// DIR
 }
 
 void motor_set_power(int16_t power) {
@@ -46,7 +43,6 @@ void motor_set_power(int16_t power) {
 
 unsigned char motor_set_direction_and_return_abs(int16_t signed_power) {
   uint16_t unsigned_power;
-  //printf("|power| p: %d\n\r",signed_power);
   if (signed_power < 0){
     PORTH &= ~(1<<PH1); //sets dir to down
     unsigned_power = (uint16_t)(-1*(signed_power));
@@ -59,13 +55,9 @@ unsigned char motor_set_direction_and_return_abs(int16_t signed_power) {
   if(unsigned_power > power_saturation){
     unsigned_power = power_saturation;
   }
-  //printf("%d %d\n\r", unsigned_power, power_saturation);
 
   return (unsigned char)unsigned_power;
 }
-// slave address for DAC:
-// 0101 + AD0 + AD1 + AD2 + 0 // LSB 0 when writing to MAX520
-// coords.y skal styre motorhastighet
 
 
 uint16_t read_motor_encoder() {
@@ -73,18 +65,15 @@ uint16_t read_motor_encoder() {
   PORTH &= ~(1<<PH5); // Output enable of encoder !OE
   PORTH &= ~(1<<PH3); // SEL high/low set low
   _delay_us(20);
-  uint16_t encoder_counter = (PINK << 8); // read MSB
+  uint16_t encoder_counter = (PINK << 8);
   PORTH |= (1<<PH3); // SEL high/low set high
   _delay_us(20);
-  encoder_counter |= PINK; // read LSB
-
-  //insert encoder reset toggle here, if wanting speed measures
+  encoder_counter |= PINK; 
 
   PORTH |= (1<<PH5); // Output disable of encoder !OE
   sei();
 
   return encoder_counter;
-  // 2's complement from for negative numbers
 }
 
 

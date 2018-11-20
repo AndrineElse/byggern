@@ -154,7 +154,7 @@ void joystick_set_max_min_values(){
   y_below_scaler = ((float)100)/(centerY-minY);
 }
 
-//after running calibration routine,
+// after running calibration routine,
 // this function will return joystick measures that are always [-100,100]
 // returns (0,0) otherwise
 JoystickCoords get_joystick_coords(uint8_t rawX, uint8_t rawY) {

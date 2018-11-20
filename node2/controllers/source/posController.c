@@ -11,9 +11,6 @@
 #include "../include/posController.h"
 #include "../../containers/include/userInputContainer.h"
 
-// Encoder -1207 til 7480-7536 ish = ca 8700
-// Joystick Y -100 to 96 = 196
-
 volatile struct PID_data pi_container;
 
 

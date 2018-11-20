@@ -8,8 +8,6 @@
 #include "../include/timerDriver.h"
 #include "../../containers/include/userInputContainer.h"
 
-// data[2] = button (LSB = button), 7 unused bits here
-
 uint16_t solenoid_timer = 0;
 
 void solenoid_init(){

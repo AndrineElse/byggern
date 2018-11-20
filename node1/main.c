@@ -32,7 +32,6 @@ void main(){
 
   MCUCR = (1<<SRE);
   SFIOR = (1<<XMM2);
-  //SREG |= 0x80;
 
   //init
   USART_Init ( MYUBRR );
@@ -43,19 +42,13 @@ void main(){
   CAN_init();
   CAN_init_interrupt();
   OLED_init();
-  //OLED_clear();
   OLED_init_buffer_mode();
   OLED_buffer_clear();
 
   user_input_init();
   game_status_container_init();
   timer_init();
-
-  //Comment in again
-  //joystick_set_max_min_values();
-
-
-
+  joystick_set_max_min_values();
   menuInit();
   sei();
 

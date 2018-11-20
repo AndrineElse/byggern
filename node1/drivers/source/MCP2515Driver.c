@@ -46,14 +46,11 @@ uint8_t mcp2515_init() {
     printf("MCP2515 is NOT in configuration mode after reset!\n");
     return 1;
   }
-  // More initialization
-  // set mode to normal?
   return 0;
 }
 
 uint8_t mcp2515_read_status(){
   PORTB &= ~(1<<CAN_CS);
-  // SPI_write(MCP_CANSTAT);
   uint8_t read_value = mcp2515_read(MCP_CANSTAT);
   PORTB |= (1<<CAN_CS);
   return read_value;
@@ -62,7 +59,7 @@ uint8_t mcp2515_read_status(){
 void mcp2515_request_to_send(){
   PORTB &= ~(1<<CAN_CS);
   SPI_write(0x81);
-  PORTB |= (1<<CAN_CS); //may be high???
+  PORTB |= (1<<CAN_CS);
 }
 
 void mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data){
