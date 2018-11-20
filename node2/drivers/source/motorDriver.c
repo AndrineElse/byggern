@@ -26,6 +26,7 @@ void motor_init() {
   _delay_ms(10);
   PORTH |= (1<<PH6);
   motor_set_power(0);
+  power_saturation = 100;
   //PINH4 = 0xFF; // EN
   //PINH1 = 0xFF;// DIR
 }
@@ -58,7 +59,7 @@ unsigned char motor_set_direction_and_return_abs(int16_t signed_power) {
   if(unsigned_power > power_saturation){
     unsigned_power = power_saturation;
   }
-  printf("%d %d\n\r", unsigned_power, power_saturation);
+  //printf("%d %d\n\r", unsigned_power, power_saturation);
 
   return (unsigned char)unsigned_power;
 }

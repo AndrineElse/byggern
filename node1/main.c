@@ -52,7 +52,7 @@ void main(){
   timer_init();
 
   //Comment in again
-  joystick_set_max_min_values();
+  //joystick_set_max_min_values();
 
 
 

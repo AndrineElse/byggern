@@ -116,13 +116,16 @@ void game_select_controller(struct CAN_msg new_input_message){
   switch(level){
     case 0:   // easy
       pos_controller_update(1,5);
-      power_saturation_set(150);
+      power_saturation_set(80);
+      break;
     case 1:   // medium
       pos_controller_update(1,5);
-      power_saturation_set(200);
+      power_saturation_set(100);
+      break;
     case 2:   // hard
       pos_controller_update(1,5);
-      power_saturation_set(250);
+      power_saturation_set(150);
+      break;
   }
 }
 
