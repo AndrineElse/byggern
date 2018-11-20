@@ -11,6 +11,7 @@ struct Input_status {
   uint8_t right_button; // not in use
   uint8_t left_button; // not in use
   uint8_t playGame;
+  uint8_t restart_game;
 };
 
 void input_container_init();

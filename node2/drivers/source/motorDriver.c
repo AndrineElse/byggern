@@ -8,9 +8,11 @@
 #include "../include/TWI_Master.h"
 #include "../include/motorDriver.h"
 #include "../include/servoDriver.h"
+#include "../../controllers/include/posController.h"
 
 int16_t min_encoder;
 int16_t max_encoder;
+uint16_t power_saturation;
 
 void motor_init() {
 
@@ -24,6 +26,7 @@ void motor_init() {
   _delay_ms(10);
   PORTH |= (1<<PH6);
   motor_set_power(0);
+  power_saturation = 100;
   //PINH4 = 0xFF; // EN
   //PINH1 = 0xFF;// DIR
 }
@@ -53,9 +56,10 @@ unsigned char motor_set_direction_and_return_abs(int16_t signed_power) {
     unsigned_power = (uint16_t)(signed_power);
   }
 
-  if(unsigned_power > 100){
-    unsigned_power = 100;
+  if(unsigned_power > power_saturation){
+    unsigned_power = power_saturation;
   }
+  //printf("%d %d\n\r", unsigned_power, power_saturation);
 
   return (unsigned char)unsigned_power;
 }
@@ -126,5 +130,9 @@ int16_t motor_get_max_encoder(){
         }
       }
     last_encoder_value = current_encoder_value;
-    }
+  }
+}
+
+void power_saturation_set(uint16_t saturation){
+  power_saturation = saturation;
 }

@@ -39,20 +39,14 @@ void speed_controller_init(float p_factor, uint8_t encoder_factor){
 //      value measured from encoder,
 //      conceivable values from -400 to 400
 void speed_controller_calculate_power(int8_t reference_value, int16_t measured_value) {
-
   measured_value = (measured_value > 200 || measured_value < 200 ? pi_container.last_encoder_value : measured_value);
 
   int16_t error = reference_value - measured_value;
-  //pi_container.error_sum += error;
 
-  //returns kp*e + T*ki*int(e)
   pi_container.current_power = (int16_t)(pi_container.Kp*error);
-  //printf("error: %d\n\r", error);
-  //printf("power: %d\n\r", pi_container.current_power);
 }
 
 int16_t speed_controller_get_power() {
-  printf("u: %d",pi_container.current_power);
   return pi_container.current_power;
   return 0;
 }

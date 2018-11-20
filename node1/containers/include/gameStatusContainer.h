@@ -1,8 +1,8 @@
 struct Game_status {
   uint8_t fails;
-  uint16_t timer;
   uint8_t lives;
   uint16_t score;
+  uint8_t fail_detected;
 };
 
 

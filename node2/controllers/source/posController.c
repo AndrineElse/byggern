@@ -23,13 +23,17 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time) {
   pi_container.Ki = i_factor;
   pi_container.sample_time = sample_time;
   pi_container.encoder_max = motor_get_max_encoder();
-  //TODO, insert encoder_scale = max/255 here!!
   pi_container.encoder_scale = pi_container.encoder_max/255;
 
   //variables
   pi_container.error_sum = 0;
   pi_container.current_power = 0;
   pi_container.last_encoder_value = 0;
+}
+
+void pos_controller_update(int8_t p_factor, int8_t i_factor){
+  pi_container.Kp = p_factor;
+  pi_container.Ki = i_factor;
 }
 
 
@@ -50,25 +54,18 @@ void pos_controller_calculate_power(uint8_t reference_value, int16_t measured_va
   int16_t raw_power;
   if(error < 20){
     pi_container.error_sum += error;
-
-    //ive never seen such raw power before
-
     raw_power = pi_container.Kp*error + (int16_t)(pi_container.sample_time*(pi_container.Ki*pi_container.error_sum));
-
   }
   else{
       raw_power = pi_container.Kp*error;
       pi_container.error_sum = 0;
   }
-
-  //return kp*e + T*ki*int(e)
   pi_container.current_power = (raw_power);
   pi_container.last_encoder_value = measured_value;
 }
 
 int16_t pos_controller_get_power() {
   return pi_container.current_power;
-  //return 0;
 }
 
 void pos_controller_reset() {
@@ -76,3 +73,4 @@ void pos_controller_reset() {
   pi_container.current_power = 0;
   pi_container.last_encoder_value = 0;
 }
+
