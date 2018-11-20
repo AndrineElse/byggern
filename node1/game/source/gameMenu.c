@@ -28,6 +28,7 @@ struct Node endGameNode;
 uint8_t play_game;
 uint8_t username = 0;
 uint16_t score_array[3] = {0,0,0};
+uint8_t highscore_data[4];
 uint8_t restart_game;
 
 void menuInit(){
@@ -204,10 +205,11 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
   if(node->description == "Highscores TOP 3"){
 
 
-    print_highscore_place(3, 1, 1);
+    //print_highscore_place(3, 1, 1);
     //print_highscore_place(2, 2);
     //print_highscore_place(3, 3);
-    //print_highscore_node(1, game_highscore_update()[1], 0, 0);
+    game_highscore_update();
+    print_highscore_node(highscore_data[0], highscore_data[1], highscore_data[2], highscore_data[3]);
     for (int i = 0; i < node->numOptions; i++){
       if (i == selectedOption){
         OLED_buffer_print_line(node->options[i], i+4, 1);
@@ -241,31 +243,25 @@ void game_level_select(uint8_t selected_option){
   msg.length = 1;
 }
 
-uint8_t* game_highscore_update(){
+void game_highscore_update(){
 
-  uint8_t highscore_data[4];
   for (int i = 0; i < 3; i++){
-    if (highScoresNode.options[i] == "-"|| game_status_container_get_ptr()->score > score_array[i]){
+    
+    if (game_status_container_get_ptr()->score > score_array[i]){
       highscore_data[0] = i;
       highscore_data[1] = username;
       highscore_data[2] = (game_status_container_get_ptr()->score >> 8) & 0xFF;
       highscore_data[3] = game_status_container_get_ptr()->score & 0xFF;
 
       score_array[i] = game_status_container_get_ptr()->score;
-      // game_highscore_SRAM_update(game_status_container_get_ptr()->user, game_status_container_get_ptr()->score);
-      // game_highscore_SRAM_get(uint8_t place)
-      //highScoresNode.options[i] = username; // + ': ' + (char*)(game_status_container_get_ptr()->score);
-
-
     }
-    else{
+    else if (score_array[i] == 0){
       highscore_data[0] = i;
-      highscore_data[1] = username;
+      highscore_data[1] = " - ";
       highscore_data[2] = 0;
       highscore_data[3] = 0;
     }
   }
-  return highscore_data;
 }
 
 
