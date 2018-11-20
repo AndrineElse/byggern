@@ -48,7 +48,7 @@ ISR(TIMER3_COMPA_vect) {
   if(game_get_playback_status()){
     printf("F\n\r");
     struct playback_sample_set_container current_samples =  playback_get_next_sample();
-    motor_set_power(current_samples.controller_reference);
+    motor_set_power(pos_controller_calculate_power(current_samples.controller_reference,-1*read_motor_encoder()));
     servo_update_position(current_samples.servo_reference);
     solenoid_update_status(current_samples.solenoid_trigger);
   }

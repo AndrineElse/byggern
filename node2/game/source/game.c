@@ -143,9 +143,9 @@ void game_loop(){
           if(input_container_get_ptr()->run_playback){
             game.running_playback = 1;
             game_send_update_CAN();
-            printf("%d\n\r",!playback_get_finished_playing());
+            motor_get_max_encoder();//used to reset encoder, and drive to known location
+            pos_controller_reset();//reset error sum, and latest power.
             while(input_container_get_ptr()->run_playback && !playback_get_finished_playing()){
-              printf("A\n\r");
               _delay_ms(10);
             }
           }
