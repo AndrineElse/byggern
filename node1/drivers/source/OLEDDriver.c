@@ -274,6 +274,15 @@ void OLED_draw_line(uint8_t x0,uint8_t y0,uint8_t x1,uint8_t y1){
 
 void OLED_fun(){
   for (int i=0; i < 1024; i++) {
-    OLED_write_data(pgm_read_byte(&gameAnim[i]));
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim1[i]));
   }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim2[i]));
+  }
+  OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim3[i]));
+  }
+  OLED_buffer_update_screen();
 }
