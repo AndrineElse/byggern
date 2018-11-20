@@ -25,7 +25,7 @@ void input_container_update(struct CAN_msg new_input_message){
   input_container.joystickButton = (new_input_message.data[2] & 0x01);
   input_container.playGame = (( new_input_message.data[2] & 0x2 ) >> 1);
   input_container.restart_game = ((new_input_message.data[2] & 0x4) >> 2);
-  printf("RESTART GAME: %d\n\r", input_container.restart_game);
+  //printf("RESTART GAME: %d\n\r", input_container.restart_game);
   //printf("%x %x\n\r", input_container.playGame, input_container.joystickButton);
   /*
   input_container.left_slider = 0; // not in use
