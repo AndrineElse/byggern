@@ -160,7 +160,7 @@ void game_loop(){
 
           //play until you die
           while(game.playing){
-
+            printf("IR:%d\n\r", IR_get_mean_value());
             //these functions are currently run in the respective ISRs
             //for their sampled values. Only running if game.playing is high
             //IR_get_new_sample();
