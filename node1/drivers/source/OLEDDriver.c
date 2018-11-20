@@ -285,4 +285,8 @@ void OLED_fun(){
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim3[i]));
   }
   OLED_buffer_update_screen();
+  for (int i=0; i < 1024; i++) {
+    OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim2[i]));
+  }
+  OLED_buffer_update_screen();
 }
