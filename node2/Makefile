@@ -5,8 +5,6 @@ SOURCE_FILES := main.c drivers/source/SPIDriver2.c drivers/source/UARTDriver2.c 
  drivers/source/timerDriver.c drivers/source/TWI_Master.c drivers/source/motorDriver.c \
  drivers/source/solenoidDriver.c  containers/source/userInputContainer.c controllers/source/posController.c \
 
-
-#   tests/source/gameTesting.c tests/source/CANTesting2.c  tests/source/servoTesting.c
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes
 

@@ -1,7 +1,3 @@
-// nesten lik som UART, sjekk datablad, 16 MHz
-// SPIen er annerledes
-
-
 #include "../include/UARTDriver2.h"
 #include <avr/io.h>
 #include <stdio.h>
@@ -15,7 +11,7 @@ void USART_Init( unsigned int  ubrr )
   /* Enable receiver and transmitter */
   UCSR0B = (1<<RXEN0)|(1<<TXEN0);
   /* Set frame format: 8data, 2stop bit */
-  UCSR0C = (1<<USBS0)|(1<<UCSZ00)|(1<<UCSZ01); // not sure whether to use ucsz00, 01 or 02...
+  UCSR0C = (1<<USBS0)|(1<<UCSZ00)|(1<<UCSZ01);
   fdevopen(USART_Transmit, NULL);
 }
 

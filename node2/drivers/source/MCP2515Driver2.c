@@ -1,4 +1,3 @@
-//system clock frequency, used by util/delay, 16MHz for node 2, 5MHz for node 1
 #define F_CPU 16000000
 
 #include <stdlib.h>
@@ -51,23 +50,16 @@ uint8_t mcp2515_init() {
   SPI_init(); // Initialize SPI
   mcp2515_reset(); // Send reset-command
 
-  // Self-test
   mcp2515_read_store_pointer(MCP_CANSTAT, &value);
 
   if ((value & MODE_MASK) != MODE_CONFIG) {
-    printf("MCP2515 is NOT in configuration mode after reset!\n");
     return 1;
   }
-  // More initialization
-  // set mode to normal?
-
-
   return 0;
 }
 
 uint8_t mcp2515_read_status(){
   PORTB &= ~(1<<DDB7);
-  // SPI_write(MCP_CANSTAT);
   uint8_t read_value = mcp2515_read(MCP_CANSTAT);
   PORTB |= (1<<DDB7);
   return read_value;
@@ -76,7 +68,7 @@ uint8_t mcp2515_read_status(){
 void mcp2515_request_to_send(){
   PORTB &= ~(1<<DDB7);
   SPI_write(0x81);
-  PORTB |= (1<<DDB7); //may be high???
+  PORTB |= (1<<DDB7);
 }
 
 void mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data){

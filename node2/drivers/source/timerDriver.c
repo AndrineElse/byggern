@@ -73,7 +73,7 @@ ISR(TIMER0_COMPA_vect) {
   int16_t pos_measured = -1*read_motor_encoder();
   pos_controller_calculate_power(pos_reference, pos_measured);
   IR_get_new_sample();
-  //fuckit gonna try running everything periodically
+  
   if(game_get_playing_status()){
     motor_set_power(pos_controller_get_power());
   }
