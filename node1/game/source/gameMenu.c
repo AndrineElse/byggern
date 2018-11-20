@@ -203,9 +203,10 @@ void menuLoop(){
 void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
 
   if(node == &highScoresNode){
-    printf("O");
-    OLED_buffer_print_line (node->description,0,0);
-    print_highscore_node(1, game_highscore_update()[1], 0, 0);
+
+    OLED_buffer_print_line(node->description,0,0);
+    print_highscore_place(2*128, 1);
+    //print_highscore_node(1, game_highscore_update()[1], 0, 0);
     for (int i = 0; i < node->numOptions; i++){
       if (i == selectedOption){
         OLED_buffer_print_line(node->options[i], i+4, 1);
