@@ -51,7 +51,7 @@ void main(){
   solenoid_init();
   motor_init();
   pos_controller_init(1,5,0.02); //params: kp, ki, sample_time, encoder_max
-
+  playback_reset();
   game_loop();
 
   return;

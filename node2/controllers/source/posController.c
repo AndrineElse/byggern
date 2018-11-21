@@ -30,7 +30,7 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time) {
   //logging for playback
   pi_container.power_log_index = 0;
   for(uint8_t i = 0; i < 5; i++){
-    pi_container.power_log = 0;
+    pi_container.power_log[i] = 0;
   }
 }
 
@@ -89,4 +89,3 @@ int16_t pos_controller_get_avg_power(){
   }
   return sum/5;
 }
-

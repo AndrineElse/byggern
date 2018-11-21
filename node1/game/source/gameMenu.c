@@ -175,7 +175,7 @@ void menuLoop(){
 
       //Checking if the user has selected a option
       if (!lastButtonValue && (get_slider_buttons() & 0x01)) {
-        
+
         //add specific handling for node transistions here
         if (currentNode->description == "Select level"){
           game_level_select(selectedOption);
@@ -185,7 +185,7 @@ void menuLoop(){
 
           //hold the program here until node2 acknowledges playback
           while(!game_status_container_get_ptr()->running_playback) {
-            //printf("waiting\n\r");
+            printf("waiting for playback ack\n\r");
           }
         } else if (currentNode->description == "Watching replay") {
           run_playback = 0;

@@ -42,7 +42,10 @@ void game_loop(){
         game_send_update_CAN();
 
         //wait for new desired state from node1
-        while(!(input_container_get_ptr()->playGame || input_container_get_ptr()->run_playback));
+        while(!(input_container_get_ptr()->playGame || input_container_get_ptr()->run_playback)) {
+          printf("Q\n\r");
+          _delay_ms(10);
+        }
 
         if(input_container_get_ptr()->run_playback){
 
@@ -58,6 +61,7 @@ void game_loop(){
           //waiting for either a stop from node1, or for the playback to run out of samples
           while(input_container_get_ptr()->run_playback && !playback_get_finished_playing()){
             _delay_ms(10);
+            printf("W\n\r");
           }
 
 

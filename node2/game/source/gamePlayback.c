@@ -23,7 +23,7 @@ void playback_set_next_sample(int16_t power_average, int8_t servo_reference, uin
 	}
 
 	uint16_t index = playback_container.current_filler_index;
-	playback_container.power_average_timeseries[index] = position_reference;
+	playback_container.power_average_timeseries[index] = power_average;
 	playback_container.servo_reference_timeseries[index] = servo_reference;
 	playback_container.solenoid_trigger_timeseries[index/8] |= (solenoid_trigger << ( index % 8 ));
 	playback_container.current_filler_index++;
