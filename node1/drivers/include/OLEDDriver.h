@@ -43,6 +43,6 @@ void OLED_buffer_update_screen();
 void OLED_buffer_clear();
 void OLED_buffer_fill();
 
-void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint8_t score_L);
+void print_highscore_node(uint8_t place, uint8_t username, uint16_t score_value);
 //void print_highscore_place(uint16_t currentByte, uint8_t username, uint8_t place);
 void OLED_fun();

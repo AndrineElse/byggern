@@ -29,7 +29,7 @@ void game_loop(){
 
       game.lives = 3;
       game.fails = 0;
-      game.timer = time_get_counter();
+      game.timer = 0;
       game.score = 0;
       game.playing = 0;
       game.fail_detected = 0;
@@ -37,8 +37,14 @@ void game_loop(){
       while(game.fails < game.lives){
         game.fail_detected = 0;
         game_send_update_CAN();
-        //wait for node1 to give start signal
-        while(!input_container_get_ptr()->playGame);
+
+        //wait for node1 to provide new instruction (either quit or play next life)
+        while((!input_container_get_ptr()->playGame) && !(input_container_get_ptr()->restart_game));
+
+        //leave game loop if user said quit
+        if(input_container_get_ptr()->restart_game){
+          break;
+        }
 
         //set intial game state
         game.timer = time_get_counter();
@@ -50,10 +56,16 @@ void game_loop(){
 
         //play until you die
         while(game.playing){
+
           //these functions are currently run in the respective ISRs
-          //for their sampled values. Only running if game.playing is high
-          //IR_get_new_sample();
-          //solenoid_update_status(input_container_get_ptr()->joystickButton);
+          //for their sampled values. Only running if (game.playing) is high
+          //  IR_get_new_sample();
+          //  solenoid_update_status();
+          //  pos_controller_calculate_new_power();
+          //  set_motor_power();
+
+
+          //if you have died..
           if (IR_check_obstruction()){
             game.fail_detected = 1;
             solenoid_reset();
@@ -69,6 +81,8 @@ void game_loop(){
 
         //waiting for node1 to acknowledge death
         while(input_container_get_ptr()->playGame);
+
+
       }
     }
   }
@@ -118,4 +132,3 @@ void game_select_controller(struct CAN_msg new_input_message){
       break;
   }
 }
-

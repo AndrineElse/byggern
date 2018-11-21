@@ -168,8 +168,8 @@ void OLED_buffer_fill(){
 //drawingfunctions
 
 
-void print_highscore_node(uint8_t place, uint8_t username, uint16_t score){
-  uint16_t currentByte = (place)*128; // select line
+void print_highscore_node(uint8_t place, uint8_t username, uint16_t score_value){
+  uint16_t currentByte = (place+1)*128; // select line
 
   char* number;
   switch (place){
@@ -207,19 +207,19 @@ void print_highscore_node(uint8_t place, uint8_t username, uint16_t score){
 
   switch(username){
     case 0:
-      name = "Magne";
+      name = "Magne   ";
 
       break;
     case 1:
-      name = "Andrine";
+      name = "Andrine ";
 
       break;
     case 2:
-      name = "Thea";
+      name = "Thea    ";
 
       break;
     case 3:
-      name = " - ";
+      name = " -      ";
 
       break;
 }
@@ -243,59 +243,105 @@ void print_highscore_node(uint8_t place, uint8_t username, uint16_t score){
 
 
 // SCORE
-  char* score = (char*)score;
+// finn antall siffer, heltallsdivisjon
+  uint16_t tenths = 10;
+  uint8_t digits = 1;
+
+  //while value larger than powers of ten
+  while(score_value >= tenths){
+    tenths = tenths*10;
+    digits++;
+  }
+
+  //digits is accurate here
+  //tenths is one exponent too big. EG. 100 > 43 => digits = 2
+
+  for (int j=0; j < 5*(5-digits); j++) {
+    OLED_update_buffer_single_byte(currentByte, 0);
+    //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
+    currentByte++;
+  }
+
+  //theoretical max score digits
+  char score[5];
+
+  for(uint8_t i = 0; i < digits; i++) {
+
+    tenths = tenths/10; //divide first since tenths
+    score[i] = score_value/tenths + 48; //find nth digit, offset 48 to match ascii table
+    score_value = score_value%tenths ; //remove nth radix
+  }
+
+  //score is now filled with each digit, in decimal notation
+  //digits corresponds to the length of the score_array
+
+  //add termination character to string
+  score[digits] = 0;
+
   uint16_t c = 0;
+
   while(score[c]) {
     uint8_t currentChar = (uint8_t)score[c];
     if(currentChar < 32){
       continue;
     }
     uint8_t font_table_index = currentChar - 32;
-  for (int j=0; j < 5; j++) {
+    for (int j=0; j < 5; j++) {
       OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
       //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
       currentByte++;
     }
-    c++;
+  c++;
   }
 }
 
 void OLED_fun(){
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim1[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim2[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim3[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim4[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim5[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim6[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim5[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim4[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim3[i]));
   }
+  OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim2[i]));
   }

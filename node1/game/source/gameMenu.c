@@ -66,25 +66,13 @@ void menuInit(){
   optionsNode.numOptions = 1;
   optionsNode.optionNodes[0] = &mainMenuNode;
 
-  middleGameNode.parent = (struct Node*)0;
-  middleGameNode.description = "Fail registerd";
-  middleGameNode.numOptions = 3;
-  middleGameNode.options[0] = "Your score: ";// game_status_container_get_ptr()->score;
-  middleGameNode.options[1] = "Continue game";
-  middleGameNode.options[2] = "Back to main menu";
-  middleGameNode.optionNodes[0] = &mainMenuNode;
-  middleGameNode.optionNodes[1] = &playGameNode;
-  middleGameNode.optionNodes[2] = &mainMenuNode;
-
   endGameNode.parent = (struct Node*)0;
   endGameNode.description = "All lives lost, game over";
-  endGameNode.numOptions = 3;
-  endGameNode.options[0] = "Your score: ";// game_status_container_get_ptr()->score;
-  endGameNode.options[1] = "New game";
-  endGameNode.options[2] = "Back to main menu";
-  endGameNode.optionNodes[0] = &mainMenuNode;
-  endGameNode.optionNodes[1] = &playGameNode;
-  endGameNode.optionNodes[2] = &mainMenuNode;
+  endGameNode.numOptions = 2;
+  endGameNode.options[0] = "New game";
+  endGameNode.options[1] = "Back to main menu";
+  endGameNode.optionNodes[0] = &playGameNode;
+  endGameNode.optionNodes[1] = &mainMenuNode;
 
   middleGameNode.parent = (struct Node*)0;
   middleGameNode.description = "Fail registered";
@@ -137,6 +125,7 @@ void menuLoop(){
     if(currentNode->description == "Game"){
       if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
         //All lives are lost, game over.
+        game_highscore_update();
         play_game = 0;
         restart_game = 1;
         OLED_buffer_clear();
@@ -145,6 +134,7 @@ void menuLoop(){
       }
       else if (game_status_container_get_ptr()->fail_detected){
         //Lost a life, need verification from user to restart the game
+        //game_highscore_update();
         OLED_buffer_clear();
         play_game = 0;
         currentNode = &middleGameNode;
@@ -196,6 +186,10 @@ void menuLoop(){
         if (currentNode->description == "Select level"){
           game_level_select(selectedOption);
         }
+        if (currentNode->description == "Fail registered" &&
+          currentNode->options[selectedOption] == "Back to main menu"){
+          restart_game = 1;
+        }
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
         OLED_buffer_clear();
@@ -216,17 +210,16 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
   OLED_buffer_print_line(node->description,0,0);
   if(node->description == "Highscores TOP 3"){
 
-    game_highscore_update();
     //printf("%d", highscore_data[0]);
     for (int i = 1; i < 4; i++){
-      print_highscore_node(i, highscore_data.users[i-1], (highscore_data.scores[i-1]);
+      print_highscore_node(i, highscore_data.users[i-1], (highscore_data.scores[i-1]));
     }
     for (int i = 0; i < node->numOptions; i++){
       if (i == selectedOption){
-        OLED_buffer_print_line(node->options[i], i+4, 1);
+        OLED_buffer_print_line(node->options[i], i+6, 1);
       }
       else {
-        OLED_buffer_print_line(node->options[i],i+4,0);
+        OLED_buffer_print_line(node->options[i],i+6, 0);
       }
     }
   }
@@ -262,13 +255,13 @@ void game_highscore_update(){
   for (uint8_t i = 1; i < 4; i++){
 
     if (game_status_container_get_ptr()->score > highscore_data.scores[i-1]){
-      if(i !== 3){
-        highscore_data.users[i+1] = highscore_data.users[i];
-        highscore_data.scores[i+1] = highscore_data.scores[i];
-        highscore_data.users[i] = highscore_data.users[i-1];
-        highscore_data.scores[i] = highscore_data.scores[i-1];
+      for(uint8_t j = 2; j >= i; j--){
+        /*highscore_data.users[i+1] = highscore_data.users[i];
+        highscore_data.scores[i+1] = highscore_data.scores[i];*/
+        highscore_data.users[j] = highscore_data.users[j-1];
+        highscore_data.scores[j] = highscore_data.scores[j-1];
       }
-      
+
       highscore_data.users[i-1] = username;
       highscore_data.scores[i-1] = game_status_container_get_ptr()->score;
 /*
@@ -276,7 +269,7 @@ void game_highscore_update(){
       highscore_data[1] = username;
       highscore_data[2] = (game_status_container_get_ptr()->score >> 8) & 0xFF;
       highscore_data[3] = game_status_container_get_ptr()->score & 0xFF;
-      
+
       score_array[i-1] = game_status_container_get_ptr()->score;*/
       break;
     }/*
