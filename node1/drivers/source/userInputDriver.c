@@ -216,9 +216,3 @@ uint8_t get_joystick_coords_x(uint8_t rawX) {
   finalValue = (finalValue < -100 ? -100 : finalValue);
   return (uint8_t)finalValue;
 }
-
-
-
-void select_game_controller(uint8_t controller){
-  select_game_controller = controller;
-}
