@@ -64,12 +64,8 @@ void game_loop(){
           //  pos_controller_calculate_new_power();
           //  set_motor_power();
 
-
           //if you have died..
           if (IR_check_obstruction()){
-            cli();
-            printf("D:%d\n\r",IR_get_oldest_sample_delta());
-            sei();
             game.fail_detected = 1;
             solenoid_reset();
             game.fails++;
