@@ -188,15 +188,14 @@ void menuLoop(){
         lastDir = currentDir;
       }
 
-      if (!lastButtonValue && (get_slider_buttons() & 0x01) && currentNode->description == "Select level"){
-          game_level_select(selectedOption);
-      }
-      if (!lastButtonValue && (get_slider_buttons() & 0x01) && currentNode->description == "Who's playing?"){
-          set_username(selectedOption);
-      }
-
       //Checking if the user has selected a option
       if (!lastButtonValue && (get_slider_buttons() & 0x01)) {
+        if (currentNode->description == "Who's playing?"){
+          set_username(selectedOption);
+        }
+        if (currentNode->description == "Select level"){
+          game_level_select(selectedOption);
+        }
         currentNode = currentNode->optionNodes[selectedOption];
         selectedOption = 0;
         OLED_buffer_clear();
