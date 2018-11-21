@@ -96,11 +96,13 @@ void menuInit(){
   usernameNode.options[0] = "Magne";
   usernameNode.options[1] = "Andrine";
   usernameNode.options[2] = "Thea";
+  usernameNode.options[3] = "Go back";
   usernameNode.description = "Who's playing?";
-  usernameNode.numOptions = 3;
+  usernameNode.numOptions = 4;
   usernameNode.optionNodes[0] = &levelsNode;
   usernameNode.optionNodes[1] = &levelsNode;
   usernameNode.optionNodes[2] = &levelsNode;
+  usernameNode.optionNodes[3] = &mainMenuNode;
 
   highscore_data.users[0] = 3;
   highscore_data.users[1] = 3;
@@ -234,10 +236,10 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
 
     for (int i = 0; i < node->numOptions; i++){
       if (i == selectedOption){
-        OLED_buffer_print_line(node->options[i], i+1, 1);
+        OLED_buffer_print_line(node->options[i], i+2, 1);
       }
       else {
-        OLED_buffer_print_line(node->options[i],i+1,0);
+        OLED_buffer_print_line(node->options[i],i+2,0);
       }
     }
   }
