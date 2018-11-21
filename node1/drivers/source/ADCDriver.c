@@ -16,7 +16,7 @@
 //this flag also serves as a state indicator for the conversion cycle,
 uint8_t current_conversion_channel;
 uint8_t current_joystick_x_sample;
-uint8_t current_right_slider_sample;
+uint8_t current_controller_signal_sample;
 
 //TODO, make this a precompiled constant
 volatile char* adc_ch1;
@@ -39,7 +39,7 @@ void ADC_init() {
   //initializing member variables
   current_conversion_channel = 0;
   current_joystick_x_sample = 0;
-  current_right_slider_sample = 0;
+  current_controller_signal_sample = 0;
 }
 
 //Mapping of channels:
@@ -62,7 +62,6 @@ void ADC_start_conversion(uint8_t channel) {
 
 uint8_t ADC_read_current_channel() {
   if(current_conversion_channel & 0x8 || !current_conversion_channel){
-    printf("adc_read_unexp_chnl\n\r");
     return 0;
   }
   return adc_ch1[0];
@@ -73,17 +72,13 @@ uint8_t ADC_read_current_channel() {
 //NB, this is dependent on SRAM_init already being run.
 // Reads 8 bit discretized value, from channel 1-4
 uint8_t ADC_ad_hoc_read(uint8_t channel) {
-
-  //stalls the program if there is a critical conversion cycle running
-  while(current_conversion_channel) {
-    printf("Ac:%d\n\r",current_conversion_channel);
-    printf("Ag:%d\n\r",get_play_game());
-  }
+  //stalls the program if there is a conversion cycle running
+  while(current_conversion_channel);
 
   //sets a flag on the 4th bit (0x8)
   //to let the ISR the conversion can be disregarded
   cli();
-  current_conversion_channel = channel;
+  current_conversion_channel = 8 + channel;
 
   uint8_t mappedChannel = 3 + channel;
 
@@ -92,13 +87,13 @@ uint8_t ADC_ad_hoc_read(uint8_t channel) {
 
   // Waiting for ADC to sample value
   //TODO, try reducing this delay
-  _delay_ms(60);
+  _delay_ms(10);
 
   //Pulling value
   uint8_t retrieved_value = adc_ch1[0];
   current_conversion_channel = 0;
-
   sei();
+
   return retrieved_value;
 
 }
@@ -121,8 +116,7 @@ void ADC_start_conversion_cycle() {
   //should not be necessary
   while(current_conversion_channel) {
     //there is no conceivable way to get into this loop...
-    printf("c:%d\n\r",current_conversion_channel);
-    printf("g:%d\n\r",get_play_game());
+    printf("waiting for reg convert\n\r");
   }
 
   current_conversion_channel = 2;
@@ -133,9 +127,8 @@ void ADC_start_conversion_cycle() {
 //so this function might want to run after an
 // ad hoc conversion has finished
 ISR(INT0_vect){
-
   //disregards the conversion interrupt if the conversion was ad hoc
-  if(current_conversion_channel & 0x8 || (!current_conversion_channel)){
+  if(current_conversion_channel & 0x8){
     return;
   }
 
@@ -143,20 +136,26 @@ ISR(INT0_vect){
     case 2:
       //first conversion finished, start second one
       current_joystick_x_sample = ADC_read_current_channel();
-      current_conversion_channel = 4;
+
+      //set this dependent on controller choice
+      current_conversion_channel = (get_game_select_controller() ? 4 : 1);
+
+      //start second conversion based on choice
       ADC_start_conversion(current_conversion_channel);
       break;
     case 4:
       //second conversion finished, send can message
-      current_right_slider_sample = ADC_read_current_channel();
+      current_controller_signal_sample = ADC_read_current_channel();
       current_conversion_channel = 0;
-      //SEND CAN message here!
-      //printf("%d:%d\n\r",current_joystick_x_sample,current_right_slider_sample);
-      user_input_send_can(current_joystick_x_sample, current_right_slider_sample);
+      user_input_send_CAN(current_joystick_x_sample, current_controller_signal_sample);
+      break;
+    case 1:
+      //second conversion finished, send can message
+      current_controller_signal_sample = ADC_read_current_channel();
+      current_conversion_channel = 0;
+      user_input_send_CAN(current_joystick_x_sample, current_controller_signal_sample);
       break;
     default:
-      printf("adc_isr_unexp_chnl\n\r");
       break;
   }
-
 }

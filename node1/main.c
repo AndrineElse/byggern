@@ -41,7 +41,7 @@ void main(){
   OLED_init();
   OLED_init_buffer_mode();
   OLED_buffer_clear();
-
+  ADC_init();
   user_input_init();
   game_status_container_init();
   timer_init();

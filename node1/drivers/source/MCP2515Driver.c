@@ -43,7 +43,7 @@ uint8_t mcp2515_init() {
   // Self-test
   mcp2515_read_store_pointer(MCP_CANSTAT, &value);
   if ((value & MODE_MASK) != MODE_CONFIG) {
-    printf("MCP2515 is NOT in configuration mode after reset!\n");
+    //printf("MCP2515 is NOT in configuration mode after reset!\n");
     return 1;
   }
   return 0;

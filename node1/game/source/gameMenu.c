@@ -172,10 +172,8 @@ void menuLoop(){
       play_game = 0;
 
       //get joystick input
-      cli();
       JoystickCoords joystickCoords;
-      joystickCoords = get_joystick_coords(readChannel(2),readChannel(1));
-      sei();
+      joystickCoords = get_joystick_coords(ADC_ad_hoc_read(2),ADC_ad_hoc_read(1));
       JoystickDir currentDir;
       currentDir = calculate_joystick_dir(joystickCoords);
 

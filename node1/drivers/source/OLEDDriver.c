@@ -365,7 +365,7 @@ void print_score(uint8_t line, uint16_t score_value){
 }
 
 void OLED_fun(){
-
+/*
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim1[i]));
   }
@@ -414,5 +414,5 @@ void OLED_fun(){
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim2[i]));
   }
-  OLED_buffer_update_screen();
+  OLED_buffer_update_screen();*/
 }

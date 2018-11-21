@@ -55,8 +55,8 @@ JoystickDir calculate_joystick_dir(JoystickCoords coords){
 SliderPosition get_slider_positions(){
 
   SliderPosition position;
-  uint8_t rawLeft = readChannel(3);
-  uint8_t rawRight = readChannel(4);
+  uint8_t rawLeft = ADC_ad_hoc_read(3);
+  uint8_t rawRight = ADC_ad_hoc_read(4);
 
   position.left = rawLeft;
   position.right = rawRight;
@@ -65,7 +65,7 @@ SliderPosition get_slider_positions(){
 }
 
 uint8_t get_slider_position_right(){
-  return readChannel(4);
+  return ADC_ad_hoc_read(4);
 }
 
 //returns value of slider buttons
@@ -84,11 +84,11 @@ uint8_t joystick_get_button(){
   return !(PINB & 0x01);
 }
 
-
+/*
 void send_joystick_position(){
   struct CAN_msg msg;
   msg.id = 1;
-  JoystickCoords coords = get_joystick_coords(readChannel(2),readChannel(1));
+  JoystickCoords coords = get_joystick_coords(ADC_ad_hoc_read(2),ADC_ad_hoc_read(1));
   uint8_t y;
   if(get_game_select_controller()){
     y = get_slider_position_right();
@@ -98,6 +98,22 @@ void send_joystick_position(){
   }
   uint8_t array[8] = {coords.x,
                       y,
+                      (joystick_get_button() + (get_play_game() << 1)+(get_restart_game() << 2) + (get_game_select_controller() << 3)),
+                      0,0,0,0,0};
+
+  for (int j = 0; j < 8; j++){
+    msg.data[j] = array[j];
+
+  }
+  msg.length = 3;
+  send_CAN_msg(&msg);
+}*/
+
+void user_input_send_CAN(uint8_t servoSignal, uint8_t controllerSignal){
+  struct CAN_msg msg;
+  msg.id = 1;
+  uint8_t array[8] = {get_joystick_coords_x(servoSignal),
+                      (get_game_select_controller() ? controllerSignal : get_joystick_coords_y(controllerSignal)),
                       (joystick_get_button() + (get_play_game() << 1)+(get_restart_game() << 2) + (get_game_select_controller() << 3)),
                       0,0,0,0,0};
 
@@ -126,10 +142,10 @@ void joystick_set_max_min_values(){
 
     if(flag == 0){
       cli();
-      uint8_t rawX = readChannel(2);
-      uint8_t rawY = readChannel(1);
+      uint8_t rawX = ADC_ad_hoc_read(2);
+      uint8_t rawY = ADC_ad_hoc_read(1);
       sei();
-      
+
       switch (i) {
 
         case 0:
@@ -163,12 +179,10 @@ void joystick_set_max_min_values(){
   y_below_scaler = ((float)100)/(centerY-minY);
 }
 
-// after running calibration routine,
-// this function will return joystick measures that are always [-100,100]
-// returns (0,0) otherwise
+// Wrapper for combined call of get_x and get_y
 JoystickCoords get_joystick_coords(uint8_t rawX, uint8_t rawY) {
   JoystickCoords finalValues;
-  //return naive calibration if calibration routine has not run
+
   if(!centerX){
     finalValues.x = (rawX - 128)/1.28;
     finalValues.y = (rawY - 128)/1.28;
@@ -193,8 +207,8 @@ JoystickCoords get_joystick_coords(uint8_t rawX, uint8_t rawY) {
   return finalValues;
 }
 
-uint8_t get_joystick_coords_x(uint8_t rawX) {
-  uint8_t finalValue;
+int8_t get_joystick_coords_x(uint8_t rawX) {
+  int8_t finalValue;
   //return naive calibration if calibration routine has not run
   if(!centerX){
     finalValue = (rawX - 128)/1.28;
@@ -212,5 +226,26 @@ uint8_t get_joystick_coords_x(uint8_t rawX) {
   //probably wont need this, might be better to just run calibration scheme again
   finalValue = (finalValue >= 100 ? 100 : finalValue);
   finalValue = (finalValue < -100 ? -100 : finalValue);
-  return (uint8_t)finalValue;
+  return finalValue;
+}
+
+int8_t get_joystick_coords_y(uint8_t rawY) {
+  int8_t finalValue;
+  //return naive calibration if calibration routine has not run
+  if(!centerY){
+    finalValue = (rawY - 128)/1.28;
+    return finalValue;
+  }
+
+  //shift values to center about zero
+  int16_t centeredY = rawY - centerY;
+
+  //scale values to [-100,100]
+  finalValue = (centeredY >= 0 ? centeredY*y_above_scaler : centeredY*y_below_scaler);
+
+  //in case measurements have drifted off from inital max/min values
+  //probably wont need this, might be better to just run calibration scheme again
+  finalValue = (finalValue >= 100 ? 100 : finalValue);
+  finalValue = (finalValue < -100 ? -100 : finalValue);
+  return finalValue;
 }
