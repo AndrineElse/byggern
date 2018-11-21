@@ -25,7 +25,7 @@ uint16_t IR_get_mean_value(){
 }
 
 uint8_t IR_check_obstruction(){
-  return (IR_get_mean_value() < 100);
+  return IR_get_mean_value() < 100; //&& IR_get_oldest_sample_delta() > 100);
 }
 
 void IR_get_new_sample() {

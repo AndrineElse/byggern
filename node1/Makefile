@@ -1,7 +1,7 @@
 # List all source files to be compiled; separate with space
 SOURCE_FILES := main.c drivers/source/UARTdriver.c drivers/source/SRAMDriver.c  \
  drivers/source/ADCDriver.c drivers/source/OLEDDriver.c game/source/gameMenu.c \
-drivers/source/userInputDriver.c drivers/source/SPIDriver.c drivers/source/MCP2515Driver.c drivers/source/CANDriver.c tests/source/CANTesting.c \
+drivers/source/userInputDriver.c drivers/source/SPIDriver.c drivers/source/MCP2515Driver.c drivers/source/CANDriver.c  \
 drivers/source/timerDriver.c containers/source/gameStatusContainer.c
 
 
@@ -50,7 +50,6 @@ clean:
 	rm -rf $(BUILD_DIR)
 	mkdir -p $(BUILD_DIR)/controllers/source
 	mkdir -p $(BUILD_DIR)/drivers/source
-	mkdir -p $(BUILD_DIR)/tests/source
 	mkdir -p $(BUILD_DIR)/game/source
 	mkdir -p $(BUILD_DIR)/containers/source
 

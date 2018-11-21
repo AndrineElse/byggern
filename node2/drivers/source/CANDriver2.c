@@ -64,7 +64,6 @@ void send_CAN_msg(struct CAN_msg* msg){
 
   if (buffermsg.id == msg->id && buffermsg.data[0] == msg->data[0] && buffermsg.length == msg->length){
       mcp2515_request_to_send();
-      _delay_ms(100);
   }
 }
 

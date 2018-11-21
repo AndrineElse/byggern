@@ -222,7 +222,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint16_t score_value)
       name = " -      ";
 
       break;
-}
+  }
   //OLED_buffer_print_line(name, 2, 0);
 
   uint16_t b = 0;

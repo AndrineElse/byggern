@@ -23,7 +23,7 @@ struct Node optionsNode;
 struct Node usernameNode;
 
 struct Node middleGameNode;
-
+struct Node selectControllerNode;
 struct Node endGameNode;
 struct Node levelsNode;
 
@@ -31,6 +31,7 @@ uint8_t play_game;
 uint8_t username = 0;
 uint8_t restart_game;
 uint16_t last_score = 0;
+uint8_t select_game_controller;
 
 struct Highscore highscore_data;
 
@@ -59,11 +60,25 @@ void menuInit(){
   highScoresNode.numOptions = 1;
   highScoresNode.optionNodes[0] = &mainMenuNode;
 
+  selectControllerNode.parent = &optionsNode;
+  selectControllerNode.options[0] = "Joystick";
+  selectControllerNode.options[1] = "Slider right";
+  selectControllerNode.options[2] = "Go back";
+  selectControllerNode.description = "Select game controller";
+  selectControllerNode.numOptions = 3;
+  selectControllerNode.optionNodes[0] = &mainMenuNode;
+  selectControllerNode.optionNodes[1] = &mainMenuNode;
+  selectControllerNode.optionNodes[2] = &optionsNode;
+
+
   optionsNode.parent = &mainMenuNode;
-  optionsNode.options[0] = "Go back";
+  optionsNode.options[0] = "Select game controller";
+  optionsNode.options[1] = "Go back";
   optionsNode.description = "Options";
-  optionsNode.numOptions = 1;
-  optionsNode.optionNodes[0] = &mainMenuNode;
+  optionsNode.numOptions = 2;
+  optionsNode.optionNodes[1] = &mainMenuNode;
+  optionsNode.optionNodes[0] = &selectControllerNode;
+
 
   endGameNode.parent = (struct Node*)0;
   endGameNode.description = "All lives lost, game over";
@@ -122,6 +137,7 @@ void menuLoop(){
   JoystickDir lastDir = 0;
   uint8_t lastButtonValue = 0;
   restart_game = 0;
+  select_game_controller = 1;
   while(1){
     if(currentNode->description == "Game"){
       if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
@@ -185,6 +201,9 @@ void menuLoop(){
         if (currentNode->description == "Who's playing?"){
           set_username(selectedOption);
         }
+        if (currentNode->description == "Select game controller" && selectedOption!=2){
+          select_game_controller = selectedOption;
+        }
         if (currentNode->description == "Select level"){
           game_level_select(selectedOption);
         }
@@ -223,7 +242,7 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
       }
     }
   }
-  if(node->description == "Fail registered" || node->description == "All lives lost, game over"){
+  else if(node->description == "Fail registered" || node->description == "All lives lost, game over"){
 
     print_score(2, last_score);
     for (int i = 0; i < node->numOptions; i++){
@@ -248,6 +267,8 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
   }
 }
 
+
+
 void game_level_select(uint8_t selected_option){
   struct CAN_msg msg;
   msg.id = 4;
@@ -262,18 +283,23 @@ void game_level_select(uint8_t selected_option){
 }
 
 void game_highscore_update(){
+  //find highest score that's lower than new score
+  for(uint8_t i = 1; i < 4; i++){
+    //test if lower
+    if(game_status_container_get_ptr()->score > highscore_data.scores[i-1]){
 
-  for (uint8_t i = 1; i < 4; i++){
-
-    if (game_status_container_get_ptr()->score > highscore_data.scores[i-1]){
+      //shift subsequent scores downward
       for(uint8_t j = 2; j >= i; j--){
         highscore_data.users[j] = highscore_data.users[j-1];
         highscore_data.scores[j] = highscore_data.scores[j-1];
       }
 
+      //save the new score
       highscore_data.users[i-1] = username;
       highscore_data.scores[i-1] = game_status_container_get_ptr()->score;
-      break;
+
+      //your score has been saved in the highest possible position, finished
+      return;
     }
   }
 }
@@ -293,4 +319,8 @@ void set_username(uint8_t name){
 
 uint8_t get_restart_game(){
   return restart_game;
+}
+
+uint8_t get_game_select_controller(){
+  return select_game_controller;
 }

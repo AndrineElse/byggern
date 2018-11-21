@@ -15,7 +15,7 @@ void timer_init() {
 
   // using prescaler of 256
   // TOP has to be 0x7A2 for the frequency to be 10Hz
-  cli();
+
   // Set WGM to 0100 (CTC mode with OCRA containing top)
   // WGM 2:1 = 0b01,
   // CS3 2:0 = 0b100 (prescaler of 256)
@@ -31,7 +31,7 @@ void timer_init() {
   // the corresponding flag OCF3A in TIFR3.
   // This flag clears automatically when the interrupt handler is called.
   ETIMSK |= 0x10;
-  sei();
+
   tenths_of_second_counter = 0;
 }
 

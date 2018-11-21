@@ -64,7 +64,6 @@ void game_loop(){
           //  pos_controller_calculate_new_power();
           //  set_motor_power();
 
-
           //if you have died..
           if (IR_check_obstruction()){
             game.fail_detected = 1;

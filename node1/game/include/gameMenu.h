@@ -19,6 +19,7 @@ void game_send_data_CAN();
 uint8_t get_play_game();
 void set_play_game(uint8_t value);
 void set_username(uint8_t name);
-void print_highscore_node(uint8_t place, uint8_t username, uint16_t score);
+//void print_highscore_node(uint8_t place, uint8_t username, uint16_t score);
 void game_highscore_update();
 uint8_t get_restart_game();
+uint8_t get_game_select_controller();

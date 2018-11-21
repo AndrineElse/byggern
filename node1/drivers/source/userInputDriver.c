@@ -21,6 +21,7 @@ float y_below_scaler;
 float x_above_scaler;
 float x_below_scaler;
 
+
 void user_input_init(){
   PORTB |= 1<<PB0; // set pinB0 as pull-up resistor input
   centerX = 0;
@@ -87,19 +88,25 @@ uint8_t joystick_get_button(){
 void user_input_send(){
   struct CAN_msg msg;
   msg.id = 1;
-  uint8_t array[8] = {get_joystick_coords_x(readChannel(2)),
-                      get_slider_position_right(),
-                      (joystick_get_button() + (get_play_game() << 1)+(get_restart_game() << 2)),
+  JoystickCoords coords = get_joystick_coords(readChannel(2),readChannel(1));
+  uint8_t y;
+  if(get_game_select_controller()){
+    y = get_slider_position_right();
+  }
+  else{
+    y = coords.y;
+  }
+  uint8_t array[8] = {coords.x,
+                      y,
+                      (joystick_get_button() + (get_play_game() << 1)+(get_restart_game() << 2) + (get_game_select_controller() << 3)),
                       0,0,0,0,0};
+
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
 
   }
   msg.length = 3;
-  cli();
   send_CAN_msg(&msg);
-  sei();
-
 }
 
 
@@ -118,9 +125,11 @@ void joystick_set_max_min_values(){
     OLED_buffer_update_screen();
 
     if(flag == 0){
+      cli();
       uint8_t rawX = readChannel(2);
       uint8_t rawY = readChannel(1);
-
+      sei();
+      
       switch (i) {
 
         case 0:
