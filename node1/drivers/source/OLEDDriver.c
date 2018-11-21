@@ -296,7 +296,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint16_t score_value)
 void print_score(uint8_t line, uint16_t score_value){
   uint16_t currentByte = (line)*128; // select line
 
-  char* string = "Your score: "
+  char* string = "Your score: ";
 
   uint16_t b = 0;
   while(string[b]) {
