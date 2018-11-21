@@ -106,10 +106,7 @@ void send_joystick_position(){
 
   }
   msg.length = 3;
-  cli();
   send_CAN_msg(&msg);
-  sei();
-
 }
 
 
@@ -128,9 +125,11 @@ void joystick_set_max_min_values(){
     OLED_buffer_update_screen();
 
     if(flag == 0){
+      cli();
       uint8_t rawX = readChannel(2);
       uint8_t rawY = readChannel(1);
-
+      sei();
+      
       switch (i) {
 
         case 0:

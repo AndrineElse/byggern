@@ -6,8 +6,6 @@
 #include <avr/interrupt.h>
 #include "drivers/include/UARTdriver.h"
 #include "drivers/include/SRAMDriver.h"
-#include "tests/include/addressTesting.h"
-#include "tests/include/joystickTesting.h"
 #include "drivers/include/ADCDriver.h"
 #include "drivers/include/OLEDDriver.h"
 #include "game/include/gameMenu.h"
@@ -16,8 +14,6 @@
 #include "drivers/include/MCP2515Driver.h"
 #include "drivers/include/MCP2515.h"
 #include "drivers/include/CANDriver.h"
-#include "tests/include/OLEDTesting.h"
-#include "tests/include/CANTesting.h"
 #include "drivers/include/timerDriver.h"
 #include "containers/include/gameStatusContainer.h"
 
@@ -51,7 +47,7 @@ void main(){
   timer_init();
 
   //Comment in again
-  //joystick_set_max_min_values();
+  joystick_set_max_min_values();
 
 
 

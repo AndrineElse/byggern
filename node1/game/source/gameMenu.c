@@ -30,6 +30,7 @@ struct Node levelsNode;
 uint8_t play_game;
 uint8_t username = 0;
 uint8_t restart_game;
+uint16_t last_score = 0;
 uint8_t select_game_controller;
 
 struct Highscore highscore_data;
@@ -111,11 +112,13 @@ void menuInit(){
   usernameNode.options[0] = "Magne";
   usernameNode.options[1] = "Andrine";
   usernameNode.options[2] = "Thea";
+  usernameNode.options[3] = "Go back";
   usernameNode.description = "Who's playing?";
-  usernameNode.numOptions = 3;
+  usernameNode.numOptions = 4;
   usernameNode.optionNodes[0] = &levelsNode;
   usernameNode.optionNodes[1] = &levelsNode;
   usernameNode.optionNodes[2] = &levelsNode;
+  usernameNode.optionNodes[3] = &mainMenuNode;
 
   highscore_data.users[0] = 3;
   highscore_data.users[1] = 3;
@@ -140,6 +143,7 @@ void menuLoop(){
       if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
         //All lives are lost, game over.
         game_highscore_update();
+        last_score = game_status_container_get_ptr()->score;
         play_game = 0;
         restart_game = 1;
         OLED_buffer_clear();
@@ -148,6 +152,7 @@ void menuLoop(){
       }
       else if (game_status_container_get_ptr()->fail_detected){
         //Lost a life, need verification from user to restart the game
+        last_score = game_status_container_get_ptr()->score;
         OLED_buffer_clear();
         play_game = 0;
         currentNode = &middleGameNode;
@@ -237,14 +242,26 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
       }
     }
   }
+  else if(node->description == "Fail registered" || node->description == "All lives lost, game over"){
+
+    print_score(2, last_score);
+    for (int i = 0; i < node->numOptions; i++){
+      if (i == selectedOption){
+        OLED_buffer_print_line(node->options[i], i+4, 1);
+      }
+      else {
+        OLED_buffer_print_line(node->options[i],i+4, 0);
+      }
+    }
+  }
   else{
 
     for (int i = 0; i < node->numOptions; i++){
       if (i == selectedOption){
-        OLED_buffer_print_line(node->options[i], i+1, 1);
+        OLED_buffer_print_line(node->options[i], i+2, 1);
       }
       else {
-        OLED_buffer_print_line(node->options[i],i+1,0);
+        OLED_buffer_print_line(node->options[i],i+2,0);
       }
     }
   }
