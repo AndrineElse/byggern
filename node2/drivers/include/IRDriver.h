@@ -10,3 +10,4 @@ uint8_t IR_check_obstruction();
 void IR_init(uint8_t sample_amount);
 void IR_get_new_sample();
 void IR_reset_samples();
+uint16_t IR_get_oldest_sample_delta();

@@ -8,11 +8,6 @@ struct SliderPosition{
   uint8_t right;
 } typedef SliderPosition;
 
-struct JoystickOffset {
-  int8_t x;
-  int8_t y;
-} typedef JoystickOffset;
-
 enum JoystickDir{NEUTRAL, LEFT, RIGHT, UP, DOWN} typedef JoystickDir;
 
 void user_input_init();

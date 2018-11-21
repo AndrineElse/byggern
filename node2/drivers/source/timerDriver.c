@@ -69,19 +69,21 @@ void timer_twenty_ms_init(){
 }
 
 ISR(TIMER0_COMPA_vect) {
-  //uint8_t pos_reference = input_container_get_ptr()->right_slider;
-  uint8_t pos_reference;
-  if(input_container_get_ptr()->select_game_controller){
-    pos_reference = input_container_get_ptr()->right_slider;
-  }
-  else{
-    pos_reference = input_container_get_ptr()->joystick.y + 100 ;
-  }
-  int16_t pos_measured = -1*read_motor_encoder();
-  pos_controller_calculate_power(pos_reference, pos_measured);
+
   IR_get_new_sample();
 
   if(game_get_playing_status()){
-    motor_set_power(pos_controller_get_power());
+    //this corresponds to controlling position via slider
+    if (input_container_get_ptr()->select_game_controller) {
+      uint8_t pos_reference = input_container_get_ptr()->right_slider;
+      int16_t pos_measured = -1*read_motor_encoder();
+      pos_controller_calculate_power(pos_reference, pos_measured);
+      motor_set_power(pos_controller_get_power());
+    }
+    //this corresponds to controlling power via joystick
+    else{
+      int8_t new_power = input_container_get_ptr()->joystick.y;
+      motor_set_power((int16_t)(new_power*1.5));
+    }
   }
 }

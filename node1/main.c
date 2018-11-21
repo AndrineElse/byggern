@@ -36,6 +36,7 @@ void main(){
   //init
   USART_Init ( MYUBRR );
   set_play_game(0);
+  game_status_container_init();
   SRAM_init ();
   SPI_init();
   mcp2515_init();
@@ -48,8 +49,14 @@ void main(){
   user_input_init();
   game_status_container_init();
   timer_init();
-  joystick_set_max_min_values();
+
+  //Comment in again
+  //joystick_set_max_min_values();
+
+
+
   menuInit();
+
   sei();
 
   menuLoop();

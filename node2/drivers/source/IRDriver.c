@@ -25,7 +25,21 @@ uint16_t IR_get_mean_value(){
 }
 
 uint8_t IR_check_obstruction(){
-  return (IR_get_mean_value() < 100);
+  return (IR_get_mean_value() < 100); //&& IR_get_oldest_sample_delta() > 100);
+}
+
+uint16_t IR_get_oldest_sample_delta(){
+  cli();
+  uint8_t newest_index = IR_sample_container.current_sample_index;
+  uint8_t oldest_index = ( (IR_sample_container.current_sample_index != (IR_sample_container.sample_counter - 1))
+                              ? (IR_sample_container.current_sample_index + 1)
+                              : (IR_sample_container.sample_counter - 1) );
+  uint16_t delta = IR_sample_container.IR_samples[oldest_index] - IR_sample_container.IR_samples[newest_index];
+  delta = (delta > IR_sample_container.IR_samples[oldest_index]
+              ? 0
+              : delta );
+  sei();
+  return delta;
 }
 
 void IR_get_new_sample() {

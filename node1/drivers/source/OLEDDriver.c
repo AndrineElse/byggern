@@ -64,6 +64,7 @@ void OLED_buffer_print_line(char* string, uint8_t line, uint8_t inverseFlag){
   }
 }
 
+
 /*buffer for oled starts at 0x1800
 * uses 1024 addresses, each containing 8 bits
 * should have final adress at 0x1bFF
@@ -132,7 +133,6 @@ void OLED_set_vertical_bounds(uint8_t lower, uint8_t upper) {
   OLED_write_command(0x22);
   OLED_write_command(lower);
   OLED_write_command(upper);
-
 }
 
 void OLED_init_buffer_mode(){
@@ -167,42 +167,181 @@ void OLED_buffer_fill(){
 }
 //drawingfunctions
 
+
+void print_highscore_node(uint8_t place, uint8_t username, uint16_t score_value){
+  uint16_t currentByte = (place+1)*128; // select line
+
+  char* number;
+  switch (place){
+
+    case 1:
+      number = "1. ";
+      break;
+    case 2:
+      number = "2. ";
+      break;
+    case 3:
+      number = "3. ";
+      break;
+  }
+  uint16_t a = 0;
+  while(number[a]) {
+    uint8_t currentChar = (uint8_t)number[a];
+    if(currentChar < 32){
+
+      continue;
+    }
+    uint8_t font_table_index = currentChar - 32;
+
+    for (int j=0; j < 5; j++) {
+      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
+      currentByte++;
+    }
+    a++;
+
+  }
+  //currentByte+=10;
+
+  // USERNAME
+  char* name;
+
+  switch(username){
+    case 0:
+      name = "Magne   ";
+
+      break;
+    case 1:
+      name = "Andrine ";
+
+      break;
+    case 2:
+      name = "Thea    ";
+
+      break;
+    case 3:
+      name = " -      ";
+
+      break;
+}
+  //OLED_buffer_print_line(name, 2, 0);
+
+  uint16_t b = 0;
+  while(name[b]) {
+    uint8_t currentChar = (uint8_t)name[b];
+    if(currentChar < 32){
+      continue;
+    }
+    uint8_t font_table_index = currentChar - 32;
+  for (int j=0; j < 5; j++) {
+      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
+      currentByte++;
+    }
+    b++;
+  }
+
+  //currentByte+=10;
+
+
+// SCORE
+// finn antall siffer, heltallsdivisjon
+  uint16_t tenths = 10;
+  uint8_t digits = 1;
+
+  //while value larger than powers of ten
+  while(score_value >= tenths){
+    tenths = tenths*10;
+    digits++;
+  }
+
+  //digits is accurate here
+  //tenths is one exponent too big. EG. 100 > 43 => digits = 2
+
+  for (int j=0; j < 5*(5-digits); j++) {
+    OLED_update_buffer_single_byte(currentByte, 0);
+    //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
+    currentByte++;
+  }
+
+  //theoretical max score digits
+  char score[5];
+
+  for(uint8_t i = 0; i < digits; i++) {
+
+    tenths = tenths/10; //divide first since tenths
+    score[i] = score_value/tenths + 48; //find nth digit, offset 48 to match ascii table
+    score_value = score_value%tenths ; //remove nth radix
+  }
+
+  //score is now filled with each digit, in decimal notation
+  //digits corresponds to the length of the score_array
+
+  //add termination character to string
+  score[digits] = 0;
+
+  uint16_t c = 0;
+
+  while(score[c]) {
+    uint8_t currentChar = (uint8_t)score[c];
+    if(currentChar < 32){
+      continue;
+    }
+    uint8_t font_table_index = currentChar - 32;
+    for (int j=0; j < 5; j++) {
+      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
+      //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
+      currentByte++;
+    }
+  c++;
+  }
+}
+
 void OLED_fun(){
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim1[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim2[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim3[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim4[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim5[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim6[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim5[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim4[i]));
   }
   OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim3[i]));
   }
+  OLED_buffer_update_screen();
+
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim2[i]));
   }

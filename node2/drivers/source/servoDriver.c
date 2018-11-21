@@ -17,10 +17,14 @@ void servo_set_duty_cycle(uint8_t u){
   float u_scalar = 0.294; //(((u*1.0)/255)*(1.2/20))*1249;
   uint16_t duty_cycle = u*u_scalar + d_0;
 
+  //implementing pulse width saturation
+  duty_cycle = (duty_cycle < 56 ? 56 : duty_cycle);
+  duty_cycle = (duty_cycle > 131 ? 131 : duty_cycle);
 
-  cli(); 
+
+  cli();
   OCR1A = duty_cycle;
-  sei(); 
+  sei();
 }
 
 void servo_update_position(int8_t setting){
