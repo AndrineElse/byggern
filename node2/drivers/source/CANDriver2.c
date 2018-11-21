@@ -113,7 +113,7 @@ void CAN_message_handler(){
       }
       break;
     case 4:
-      game_select_controller(new_message);
+      game_level_controller_select(new_message);
       break;
 
     default:

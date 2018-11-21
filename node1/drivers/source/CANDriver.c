@@ -69,7 +69,7 @@ ISR(INT1_vect){
 
 void CAN_message_handler() {
   struct CAN_msg new_message = receive_msg();
-  if(new_message.id ==2){
+  if(new_message.id == 2){
     game_status_container_update(new_message);
   }
 }
