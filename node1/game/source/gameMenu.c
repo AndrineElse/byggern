@@ -165,6 +165,7 @@ void menuLoop(){
         play_game = 1;
         //OLED_buffer_clear();
         OLED_buffer_update_screen();
+        _delay_ms(50);
       }
     }
     else{

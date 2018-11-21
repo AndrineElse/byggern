@@ -158,7 +158,7 @@ void joystick_set_max_min_values(){
 JoystickCoords get_joystick_coords(uint8_t rawX, uint8_t rawY) {
   JoystickCoords finalValues;
 
-  if(!centerX){
+  /*if(!centerX){
     finalValues.x = (rawX - 128)/1.28;
     finalValues.y = (rawY - 128)/1.28;
     return finalValues;
@@ -177,7 +177,10 @@ JoystickCoords get_joystick_coords(uint8_t rawX, uint8_t rawY) {
   finalValues.x = (finalValues.x >= 100 ? 100 : finalValues.x);
   finalValues.x = (finalValues.x < -100 ? -100 : finalValues.x);
   finalValues.y = (finalValues.y >= 100 ? 100 : finalValues.y);
-  finalValues.y = (finalValues.y < -100 ? -100 : finalValues.y);
+  finalValues.y = (finalValues.y < -100 ? -100 : finalValues.y);*/
+  
+  finalValues.x = get_joystick_coords_x(rawX);
+  finalValues.y = get_joystick_coords_x(rawY);
 
   return finalValues;
 }

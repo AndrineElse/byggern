@@ -9,12 +9,14 @@
 
 volatile char* command_address = (char*)0x1000;
 volatile char* data_address = (char*)0x1200;
+uint8_t animation_state;
 
 void OLED_write_command(uint8_t c) {
   command_address[0] = c;
 }
 
 void OLED_init(){
+  animation_state = 0;
   cli();
   OLED_write_command(0xae);        //  display  off
   OLED_write_command(0xa1);        //segment  remap
@@ -365,7 +367,35 @@ void print_score(uint8_t line, uint16_t score_value){
 }
 
 void OLED_fun(){
-/*
+  switch(animation_state){
+    case 0:
+      for (int i=0; i < 1024; i++) {
+        OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim1[i]));
+      }
+      break;
+    case 1:
+      for (int i=0; i < 1024; i++) {
+        OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim3[i]));
+      }
+      break;
+    case 2:
+      for (int i=0; i < 1024; i++) {
+        OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim5[i]));
+      }
+      break;
+    case 3:
+      for (int i=0; i < 1024; i++) {
+        OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim3[i]));
+      }
+      break;
+    case 4:
+      for (int i=0; i < 1024; i++) {
+        OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim1[i]));
+      }
+      break;
+  }
+  animation_state = (animation_state + 1)%5;
+  /*
   for (int i=0; i < 1024; i++) {
     OLED_update_buffer_single_byte(i, pgm_read_byte(&gameAnim1[i]));
   }

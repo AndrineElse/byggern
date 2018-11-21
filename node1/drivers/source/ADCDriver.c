@@ -108,7 +108,7 @@ void ADC_start_conversion_cycle() {
 
   //dont bother calculating essential samples if not playing game
   if(!get_play_game()){
-    user_input_send_can(0, 0);
+    user_input_send_CAN(0, 0);
     return;
   }
 
