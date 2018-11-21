@@ -172,17 +172,15 @@ void menuLoop(){
         lastDir = currentDir;
       }
 
-      if (!lastButtonValue && (get_slider_buttons() & 0x01) && currentNode->description == "Select level"){
-          game_level_select(selectedOption);
-      }
 
       //Checking if the user has selected a option
       if (!lastButtonValue && (get_slider_buttons() & 0x01)) {
-        printf("push!\n\r");
+        
         //add specific handling for node transistions here
-        if(currentNode->optionNodes[selectedOption]->description == "Watching replay"){
-          
-          watchReplayNode.optionNodes[0] = currentNode;
+        if (currentNode->description == "Select level"){
+          game_level_select(selectedOption);
+        }
+        else if(currentNode->optionNodes[selectedOption]->description == "Watching replay"){
           run_playback = 1;
 
           //hold the program here until node2 acknowledges playback
@@ -191,6 +189,11 @@ void menuLoop(){
           }
         } else if (currentNode->description == "Watching replay") {
           run_playback = 0;
+
+          //hold the program until node2 acknowledges playback end
+          while(game_status_container_get_ptr()->running_playback) {
+            //printf("waiting\n\r");
+          }
         }
 
         currentNode = currentNode->optionNodes[selectedOption];

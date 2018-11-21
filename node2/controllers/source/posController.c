@@ -26,6 +26,12 @@ void pos_controller_init(int8_t p_factor, int8_t i_factor, float sample_time) {
   pi_container.error_sum = 0;
   pi_container.current_power = 0;
   pi_container.last_encoder_value = 0;
+
+  //logging for playback
+  pi_container.power_log_index = 0;
+  for(uint8_t i = 0; i < 5; i++){
+    pi_container.power_log = 0;
+  }
 }
 
 void pos_controller_update(int8_t p_factor, int8_t i_factor){
@@ -69,5 +75,18 @@ void pos_controller_reset() {
   pi_container.error_sum = 0;
   pi_container.current_power = 0;
   pi_container.last_encoder_value = 0;
+}
+
+void pos_controller_log_current_power(){
+  pi_container.power_log[pi_container.power_log_index] = pi_container.current_power;
+  pi_container.power_log_index = (pi_container.power_log_index + 1)  % 5;
+}
+
+int16_t pos_controller_get_avg_power(){
+  int16_t sum = 0;
+  for(uint8_t i = 0; i < 5; i++){
+    sum += pi_container.power_log[i];
+  }
+  return sum/5;
 }
 

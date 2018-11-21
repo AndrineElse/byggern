@@ -11,19 +11,19 @@ void playback_reset() {
 	for(uint8_t i = 0; i < 150; i++){
 		playback_container.solenoid_trigger_timeseries[i] = 0;
 	}
-	current_sample_container.controller_reference = 0;
+	current_sample_container.power_average = 0;
 	current_sample_container.servo_reference = 0;
 	current_sample_container.solenoid_trigger = 0;
 }
 
-void playback_set_next_sample(uint8_t position_reference, int8_t servo_reference, uint8_t solenoid_trigger) {
+void playback_set_next_sample(int16_t power_average, int8_t servo_reference, uint8_t solenoid_trigger) {
 
 	if(playback_container.current_filler_index >= 1200){
 		return;
 	}
 
 	uint16_t index = playback_container.current_filler_index;
-	playback_container.controller_reference_timeseries[index] = position_reference;
+	playback_container.power_average_timeseries[index] = position_reference;
 	playback_container.servo_reference_timeseries[index] = servo_reference;
 	playback_container.solenoid_trigger_timeseries[index/8] |= (solenoid_trigger << ( index % 8 ));
 	playback_container.current_filler_index++;
@@ -40,7 +40,7 @@ void playback_load_next_sample() {
 	}
 
 	struct playback_sample_set_container returnValue;
-	returnValue.controller_reference = playback_container.controller_reference_timeseries[index];
+	returnValue.power_average = playback_container.power_average_timeseries[index];
 	returnValue.servo_reference = playback_container.servo_reference_timeseries[index];
 	returnValue.solenoid_trigger = playback_container.servo_reference_timeseries[index/8] & (1 << ( index % 8 ));
 

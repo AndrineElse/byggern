@@ -45,15 +45,16 @@ void timer_hundred_ms_init(){
 
 ISR(TIMER3_COMPA_vect) {
   tenths_of_second_counter++;
-  if(game_get_playback_status() && !(tenths_of_second_counter%3)){
+  if(game_get_playback_status()){
     playback_load_next_sample();
     struct playback_sample_set_container current_samples = playback_get_current_sample();
-    printf("%d %d %d\n\r",current_samples.controller_reference,current_samples.servo_reference,current_samples.solenoid_trigger);
-    pos_controller_calculate_power(current_samples.controller_reference,-1*read_motor_encoder());
-    motor_set_power(pos_controller_get_power());
+    motor_set_power(current_samples.power_average);
     servo_update_position(current_samples.servo_reference);
     solenoid_update_status(current_samples.solenoid_trigger);
-  }
+  } /*else if (game_get_playing_status()){
+      playback_set_next_sample(pos_controller_get_avg_power());
+      //create get functions for servo and solenoid if this is to be tried
+  }*/
 }
 
 uint16_t time_get_counter(){
@@ -91,10 +92,6 @@ ISR(TIMER0_COMPA_vect) {
     int16_t pos_measured = -1*read_motor_encoder();
     pos_controller_calculate_power(pos_reference, pos_measured);
     motor_set_power(pos_controller_get_power());
-  }
-  if(game_get_playback_status()){
-    struct playback_sample_set_container current_samples =  playback_get_current_sample();
-    pos_controller_calculate_power(current_samples.controller_reference,-1*read_motor_encoder());
-    motor_set_power(pos_controller_get_power());
+    pos_controller_log_current_power();
   }
 }
