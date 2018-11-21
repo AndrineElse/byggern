@@ -65,7 +65,7 @@ void main(){
   //Use the one below if you want to run without menu
   /*
   while(1){
-    send_joystick_position();
+    user_input_send();
     _delay_ms(200);
   }*/
   return;

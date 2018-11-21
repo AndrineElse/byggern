@@ -84,7 +84,7 @@ uint8_t joystick_get_button(){
 }
 
 
-void send_joystick_position(){
+void user_input_send(){
   struct CAN_msg msg;
   msg.id = 1;
   uint8_t array[8] = {get_joystick_coords_x(readChannel(2)),
