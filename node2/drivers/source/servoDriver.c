@@ -27,7 +27,7 @@ void servo_set_duty_cycle(uint8_t u){
 
   //force pb5 low to avoid missing the compare match
   //arbitrary margin chosen after some testing
-  if(TCNT1 + 15 > duty_cycle){
+  if(TCNT1 + 2 > duty_cycle){
     PINB &= ~0x20;
   }
   sei();
