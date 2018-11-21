@@ -116,6 +116,14 @@ void menuInit(){
   usernameNode.optionNodes[1] = &levelsNode;
   usernameNode.optionNodes[2] = &levelsNode;
 
+  highscore_data.users[0] = 3;
+  highscore_data.users[1] = 3;
+  highscore_data.users[2] = 3;
+
+  highscore_data.scores[0] = 0;
+  highscore_data.scores[1] = 0;
+  highscore_data.scores[2] = 0;
+
 }
 
 void menuLoop(){

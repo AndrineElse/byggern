@@ -7,8 +7,8 @@ struct Node {
 };
 
 struct Highscore {
-  uint8_t users[3] = {3,3,3};
-  uint16_t scores[3] = {0,0,0};
+  uint8_t users[3];
+  uint16_t scores[3];
 };
 
 void menuLoop();
