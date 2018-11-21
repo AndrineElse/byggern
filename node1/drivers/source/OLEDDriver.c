@@ -168,7 +168,7 @@ void OLED_buffer_fill(){
 //drawingfunctions
 
 
-void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint8_t score_L){
+void print_highscore_node(uint8_t place, uint8_t username, uint16_t score){
   uint16_t currentByte = (place)*128; // select line
 
   char* number;
@@ -242,7 +242,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint8_t score_H, uint
   //currentByte+=10;
 
 
-// PLACE
+// SCORE
   char* score = (char*)0;//(score_H << 8) + score_L;
   uint16_t c = 0;
   while(score[c]) {
