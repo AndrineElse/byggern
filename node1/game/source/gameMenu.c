@@ -113,7 +113,7 @@ void menuLoop(){
   JoystickDir lastDir = 0;
   uint8_t lastButtonValue = 0;
   restart_game = 0;
-  select_game_controller = 0;
+  select_game_controller = 1;
   while(1){
     if(currentNode->description == "Game"){
       if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){

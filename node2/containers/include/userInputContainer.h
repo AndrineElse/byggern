@@ -7,11 +7,12 @@ struct Input_status {
   struct JoystickCoords joystick;
   uint8_t joystickButton;
   uint8_t left_slider; // not in use
-  uint8_t right_slider; 
-  uint8_t right_button; 
+  uint8_t right_slider;
+  uint8_t right_button;
   uint8_t left_button; // not in use
   uint8_t playGame;
   uint8_t restart_game;
+  uint8_t select_game_controller;
 };
 
 void input_container_init();
