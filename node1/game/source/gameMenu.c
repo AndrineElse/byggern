@@ -29,8 +29,6 @@ struct Node levelsNode;
 
 uint8_t play_game;
 uint8_t username = 0;
-uint16_t score_array[3] = {0,0,0};
-//uint8_t highscore_data[4];
 uint8_t restart_game;
 
 struct Highscore highscore_data;
@@ -134,7 +132,6 @@ void menuLoop(){
       }
       else if (game_status_container_get_ptr()->fail_detected){
         //Lost a life, need verification from user to restart the game
-        //game_highscore_update();
         OLED_buffer_clear();
         play_game = 0;
         currentNode = &middleGameNode;
@@ -199,7 +196,6 @@ void menuLoop(){
       //printing the current node info to the OLED
       printNodeUsingBuffer(currentNode, selectedOption);
       OLED_buffer_update_screen();
-    //_delay_ms(50);
     }
 
   }
@@ -210,7 +206,6 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
   OLED_buffer_print_line(node->description,0,0);
   if(node->description == "Highscores TOP 3"){
 
-    //printf("%d", highscore_data[0]);
     for (int i = 1; i < 4; i++){
       print_highscore_node(i, highscore_data.users[i-1], (highscore_data.scores[i-1]));
     }
@@ -224,7 +219,6 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
     }
   }
   else{
-    //OLED_buffer_print_line(node->description,0,0);
 
     for (int i = 0; i < node->numOptions; i++){
       if (i == selectedOption){
@@ -256,29 +250,14 @@ void game_highscore_update(){
 
     if (game_status_container_get_ptr()->score > highscore_data.scores[i-1]){
       for(uint8_t j = 2; j >= i; j--){
-        /*highscore_data.users[i+1] = highscore_data.users[i];
-        highscore_data.scores[i+1] = highscore_data.scores[i];*/
         highscore_data.users[j] = highscore_data.users[j-1];
         highscore_data.scores[j] = highscore_data.scores[j-1];
       }
 
       highscore_data.users[i-1] = username;
       highscore_data.scores[i-1] = game_status_container_get_ptr()->score;
-/*
-      highscore_data[0] = i;
-      highscore_data[1] = username;
-      highscore_data[2] = (game_status_container_get_ptr()->score >> 8) & 0xFF;
-      highscore_data[3] = game_status_container_get_ptr()->score & 0xFF;
-
-      score_array[i-1] = game_status_container_get_ptr()->score;*/
       break;
-    }/*
-    else if (score_array[i-1] == 0){
-      highscore_data[0] = i;
-      highscore_data[1] = 3;
-      highscore_data[2] = 0;
-      highscore_data[3] = 0;
-    }*/
+    }
   }
 }
 
