@@ -243,7 +243,7 @@ void print_highscore_node(uint8_t place, uint8_t username, uint16_t score){
 
 
 // SCORE
-  char* score = (char*)0;//(score_H << 8) + score_L;
+  char* score = (char*)score;
   uint16_t c = 0;
   while(score[c]) {
     uint8_t currentChar = (uint8_t)score[c];
