@@ -12,4 +12,4 @@ void game_loop();
 void count_game_score();
 void game_send_update_CAN();
 uint8_t  game_get_playing_status();
-void game_select_controller(struct CAN_msg new_input_message);
+void game_level_controller_select(struct CAN_msg new_input_message);

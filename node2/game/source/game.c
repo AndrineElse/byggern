@@ -114,7 +114,7 @@ void game_send_update_CAN(){
   sei();
 }
 
-void game_select_controller(struct CAN_msg new_input_message){
+void game_level_controller_select(struct CAN_msg new_input_message){
   uint8_t level = new_input_message.data[0];
   switch(level){
     case 0:   // easy
