@@ -173,14 +173,10 @@ void menuLoop(){
           game_level_select(selectedOption);
       }
 
-      if (!lastButtonValue && (get_slider_buttons() & 0x01) && currentNode->description == "Select level"){
-          game_level_select(selectedOption);
-      }
-
       if (!lastButtonValue && (get_slider_buttons() & 0x01) && currentNode->description == "Select game controller"){
           select_game_controller = selectedOption;
       }
-      
+
       //Checking if the user has selected a option
       if (!lastButtonValue && (get_slider_buttons() & 0x01)) {
         currentNode = currentNode->optionNodes[selectedOption];
