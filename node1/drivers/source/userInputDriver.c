@@ -21,6 +21,7 @@ float y_below_scaler;
 float x_above_scaler;
 float x_below_scaler;
 
+
 void user_input_init(){
   PORTB |= 1<<PB0; // set pinB0 as pull-up resistor input
   centerX = 0;
@@ -87,10 +88,20 @@ uint8_t joystick_get_button(){
 void send_joystick_position(){
   struct CAN_msg msg;
   msg.id = 1;
-  uint8_t array[8] = {get_joystick_coords_x(readChannel(2)),
-                      get_slider_position_right(),
-                      (joystick_get_button() + (get_play_game() << 1)+(get_restart_game() << 2)),
-                      0,0,0,0,0};
+  JoystickCoords coords = get_joystick_coords(readChannel(2),readChannel(1));
+  if (get_game_select_controller()){
+    uint8_t array[8] = {get_joystick_coords_x(readChannel(2)),
+                        get_slider_position_right(),
+                        (joystick_get_button() + (get_play_game() << 1)+(get_restart_game() << 2) + (get_game_select_controller() << 3)),
+                        0,0,0,0,0};
+  }
+  else{
+    uint8_t array[8] = {coord.x,
+                        coords.y,
+                        (joystick_get_button() + (get_play_game() << 1)+(get_restart_game() << 2) + (get_game_select_controller() << 3)),
+                        0,0,0,0,0};
+  }
+
   for (int j = 0; j < 8; j++){
     msg.data[j] = array[j];
 
@@ -204,4 +215,10 @@ uint8_t get_joystick_coords_x(uint8_t rawX) {
   finalValue = (finalValue >= 100 ? 100 : finalValue);
   finalValue = (finalValue < -100 ? -100 : finalValue);
   return (uint8_t)finalValue;
+}
+
+
+
+void select_game_controller(uint8_t controller){
+  select_game_controller = controller;
 }

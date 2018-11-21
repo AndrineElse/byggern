@@ -18,7 +18,7 @@ struct Node playGameNode;
 struct Node highScoresNode;
 
 struct Node optionsNode;
-
+struct Node selectControllerNode;
 struct Node middleGameNode;
 
 struct Node endGameNode;
@@ -28,6 +28,7 @@ struct Node levelsNode;
 
 uint8_t play_game;
 uint8_t restart_game;
+uint8_t select_game_controller;
 
 void menuInit(){
 
@@ -44,11 +45,25 @@ void menuInit(){
   highScoresNode.numOptions = 1;
   highScoresNode.optionNodes[0] = &mainMenuNode;
 
+  selectControllerNode.parent = &optionsNode;
+  selectControllerNode.options[0] = "Joystick";
+  selectControllerNode.options[1] = "Slider right";
+  selectControllerNode.options[2] = "Go back";
+  selectControllerNode.description = "Select game controller";
+  selectControllerNode.numOptions = 3;
+  selectControllerNode.optionNodes[0] = &mainMenuNode;
+  selectControllerNode.optionNodes[1] = &mainMenuNode;
+  selectControllerNode.optionNodes[2] = &optionsNode;
+
+
   optionsNode.parent = &mainMenuNode;
-  optionsNode.options[0] = "Go back";
+  optionsNode.options[0] = "Select game controller";
+  optionsNode.options[1] = "Go back";
   optionsNode.description = "Options";
-  optionsNode.numOptions = 1;
-  optionsNode.optionNodes[0] = &mainMenuNode;
+  optionsNode.numOptions = 2;
+  optionsNode.optionNodes[1] = &mainMenuNode;
+  optionsNode.optionNodes[0] = &selectControllerNode;
+
 
   mainMenuNode.parent = (struct Node*)0;
   mainMenuNode.options[0] = "Play game";
@@ -98,6 +113,7 @@ void menuLoop(){
   JoystickDir lastDir = 0;
   uint8_t lastButtonValue = 0;
   restart_game = 0;
+  select_game_controller = 0;
   while(1){
     if(currentNode->description == "Game"){
       if(game_status_container_get_ptr()->lives == game_status_container_get_ptr()->fails){
@@ -157,6 +173,14 @@ void menuLoop(){
           game_level_select(selectedOption);
       }
 
+      if (!lastButtonValue && (get_slider_buttons() & 0x01) && currentNode->description == "Select level"){
+          game_level_select(selectedOption);
+      }
+
+      if (!lastButtonValue && (get_slider_buttons() & 0x01) && currentNode->description == "Select game controller"){
+          select_game_controller = selectedOption;
+      }
+      
       //Checking if the user has selected a option
       if (!lastButtonValue && (get_slider_buttons() & 0x01)) {
         currentNode = currentNode->optionNodes[selectedOption];
@@ -186,6 +210,8 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
   }
 }
 
+
+
 void game_level_select(uint8_t selected_option){
   struct CAN_msg msg;
   msg.id = 4;
@@ -199,6 +225,8 @@ void game_level_select(uint8_t selected_option){
   sei();
 }
 
+
+
 uint8_t get_play_game(){
   return play_game;
 }
@@ -209,4 +237,8 @@ void set_play_game(uint8_t value){
 
 uint8_t get_restart_game(){
   return restart_game;
+}
+
+uint8_t get_game_select_controller(){
+  return select_game_controller;
 }
