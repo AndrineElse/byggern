@@ -218,6 +218,18 @@ void printNodeUsingBuffer(volatile struct Node* node, uint8_t selectedOption){
       }
     }
   }
+  if(node->description == "Fail registered" || node->description == "All lives lost, game over"){
+
+    print_score(2, game_status_container_get_ptr()->score);
+    for (int i = 0; i < node->numOptions; i++){
+      if (i == selectedOption){
+        OLED_buffer_print_line(node->options[i], i+4, 1);
+      }
+      else {
+        OLED_buffer_print_line(node->options[i],i+4, 0);
+      }
+    }
+  }
   else{
 
     for (int i = 0; i < node->numOptions; i++){

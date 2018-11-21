@@ -243,7 +243,76 @@ void print_highscore_node(uint8_t place, uint8_t username, uint16_t score_value)
 
 
 // SCORE
-// finn antall siffer, heltallsdivisjon
+  uint16_t tenths = 10;
+  uint8_t digits = 1;
+
+  //while value larger than powers of ten
+  while(score_value >= tenths){
+    tenths = tenths*10;
+    digits++;
+  }
+
+  //digits is accurate here
+  //tenths is one exponent too big. EG. 100 > 43 => digits = 2
+
+  for (int j=0; j < 5*(5-digits); j++) {
+    OLED_update_buffer_single_byte(currentByte, 0);
+    //printf("currentByte: %d, asciivalue: %d\n\r", currentByte, pgm_read_byte(&font5[font_table_index][j]));
+    currentByte++;
+  }
+
+  //theoretical max score digits
+  char score[5];
+
+  for(uint8_t i = 0; i < digits; i++) {
+
+    tenths = tenths/10; //divide first since tenths
+    score[i] = score_value/tenths + 48; //find nth digit, offset 48 to match ascii table
+    score_value = score_value%tenths ; //remove nth radix
+  }
+
+  //score is now filled with each digit, in decimal notation
+  //digits corresponds to the length of the score_array
+
+  //add termination character to string
+  score[digits] = 0;
+
+  uint16_t c = 0;
+
+  while(score[c]) {
+    uint8_t currentChar = (uint8_t)score[c];
+    if(currentChar < 32){
+      continue;
+    }
+    uint8_t font_table_index = currentChar - 32;
+    for (int j=0; j < 5; j++) {
+      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
+      currentByte++;
+    }
+  c++;
+  }
+}
+
+void print_score(uint8_t line, uint16_t score_value){
+  uint16_t currentByte = (line)*128; // select line
+
+  char* string = "Your score: "
+
+  uint16_t b = 0;
+  while(string[b]) {
+    uint8_t currentChar = (uint8_t)string[b];
+    if(currentChar < 32){
+      continue;
+    }
+    uint8_t font_table_index = currentChar - 32;
+  for (int j=0; j < 5; j++) {
+      OLED_update_buffer_single_byte(currentByte, (pgm_read_byte(&font5[font_table_index][j])));
+      currentByte++;
+    }
+    b++;
+  }
+
+  // SCORE
   uint16_t tenths = 10;
   uint8_t digits = 1;
 
