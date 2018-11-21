@@ -174,7 +174,9 @@ void menuLoop(){
       }
 
       if (!lastButtonValue && (get_slider_buttons() & 0x01) && currentNode->description == "Select game controller"){
-          select_game_controller = selectedOption;
+          if(selectedOption!=2){
+            select_game_controller = selectedOption;
+          }
       }
 
       //Checking if the user has selected a option
