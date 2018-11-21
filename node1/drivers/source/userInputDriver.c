@@ -84,31 +84,6 @@ uint8_t joystick_get_button(){
   return !(PINB & 0x01);
 }
 
-/*
-void send_joystick_position(){
-  struct CAN_msg msg;
-  msg.id = 1;
-  JoystickCoords coords = get_joystick_coords(ADC_ad_hoc_read(2),ADC_ad_hoc_read(1));
-  uint8_t y;
-  if(get_game_select_controller()){
-    y = get_slider_position_right();
-  }
-  else{
-    y = coords.y;
-  }
-  uint8_t array[8] = {coords.x,
-                      y,
-                      (joystick_get_button() + (get_play_game() << 1)+(get_restart_game() << 2) + (get_game_select_controller() << 3)),
-                      0,0,0,0,0};
-
-  for (int j = 0; j < 8; j++){
-    msg.data[j] = array[j];
-
-  }
-  msg.length = 3;
-  send_CAN_msg(&msg);
-}*/
-
 void user_input_send_CAN(uint8_t servoSignal, uint8_t controllerSignal){
   struct CAN_msg msg;
   msg.id = 1;

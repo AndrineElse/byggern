@@ -37,8 +37,8 @@
 #define MYUBRR F_CPU/16/BAUD-1
 
 void main(){
-  game_init();
   //init
+  game_init();
   USART_Init ( MYUBRR );
   input_container_init();
   CAN_init();

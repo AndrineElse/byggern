@@ -38,7 +38,6 @@ void timer_init() {
 ISR(TIMER3_COMPA_vect) {
   tenths_of_second_counter++;
 
-  //send_joystick_position();
   ADC_start_conversion_cycle();
 
 }
